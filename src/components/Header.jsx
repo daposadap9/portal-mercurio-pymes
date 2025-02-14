@@ -83,31 +83,31 @@ const Header = () => {
         <div className="lg:hidden absolute top-full left-0 w-full bg-slate-100 shadow-md">
           <div className="flex flex-col space-y-2 px-4 py-3">
             <Link href="/" legacyBehavior>
-              <a className="flex items-center text-teal-600 p-2 font-bold transition-colors duration-300 ease-in-out transform hover:bg-slate-300">
+              <a onClick={toggleMobileMenu} className="flex items-center text-teal-600 p-2 font-bold transition-colors duration-300 ease-in-out transform hover:bg-slate-300">
                 <FaHome className="mr-2" />
                 INICIO
               </a>
             </Link>
             <Link href="/about" legacyBehavior>
-              <a className="flex items-center text-teal-600 p-2 font-bold transition-colors duration-300 ease-in-out transform hover:bg-slate-300">
+              <a onClick={toggleMobileMenu} className="flex items-center text-teal-600 p-2 font-bold transition-colors duration-300 ease-in-out transform hover:bg-slate-300">
                 <FaConciergeBell className="mr-2" />
                 SERVICIOS
               </a>
             </Link>
             <Link href="/demo" legacyBehavior>
-              <a className="flex items-center text-teal-600 p-2 font-bold transition-colors duration-300 ease-in-out transform hover:bg-slate-300">
+              <a onClick={toggleMobileMenu} className="flex items-center text-teal-600 p-2 font-bold transition-colors duration-300 ease-in-out transform hover:bg-slate-300">
                 <FaFileAlt className="mr-2" />
                 RADICACIÓN
               </a>
             </Link>
             <Link href="/demo" legacyBehavior>
-              <a className="flex items-center text-teal-600 p-2 font-bold transition-colors duration-300 ease-in-out transform hover:bg-slate-300">
+              <a onClick={toggleMobileMenu} className="flex items-center text-teal-600 p-2 font-bold transition-colors duration-300 ease-in-out transform hover:bg-slate-300">
                 <FaEnvelope className="mr-2" />
                 CONTACTENOS
               </a>
             </Link>
             <Link href="/login" legacyBehavior>
-              <a className="flex items-center text-teal-600 p-2 font-bold transition-colors duration-300 ease-in-out transform hover:bg-slate-300">
+              <a onClick={toggleMobileMenu} className="flex items-center text-teal-600 p-2 font-bold transition-colors duration-300 ease-in-out transform hover:bg-slate-300">
                 <FaSignInAlt className="mr-2" />
                 INGRESAR
               </a>

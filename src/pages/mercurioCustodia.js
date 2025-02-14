@@ -2,7 +2,7 @@
 import React from 'react';
 import { FaCalendarAlt, FaRegCalendarAlt } from 'react-icons/fa';
 
-const MercurioPYMES = () => {
+const MercurioCustodia = () => {
   return (
     <div className="min-h-full bg-white flex items-center justify-center p-4">
       <div className="w-full max-w-6xl flex flex-col md:flex-row justify-around gap-4">
@@ -10,10 +10,16 @@ const MercurioPYMES = () => {
         <div className="w-full md:w-[35%]">
           <div className="text-center md:text-left">
             <p className="mb-4 leading-relaxed text-gray-700">
-              Mercurio PYMES es un software de gestión electrónica de documentos diseñado para estructurar y almacenar la información de pequeñas y medianas empresas, disminuyendo costos y propiciando un ambiente intuitivo y amigable que garantice el éxito en la gestión documental.
+            NUESTRO SERVICIO DE CUSTODIA ESTÁ DISEÑADO PARA que te olvides de la preocupacion por la gestión de documentos físcos, nosotros nos encargamos de todo mientras tú te concentras en hacer crecer tú negocio.
             </p>
             <p className="mb-4 leading-relaxed text-gray-700">
-              Con Mercurio PYMES podrás crear expedientes, indexar todos los tipos de documentos que PRODUCE tu empresa y, sobre todo, conservarlos en un SÓLO LUGAR sin disminuir el riesgo de pérdida y eliminando el riesgo de quedarte sin espacio suficiente.
+            Tus documentos estarán siempre disponibles cuando los necesites, con acceso rápido y seguro, sin los costos de mantenerlos en tús oficinas.
+            </p>
+            <p className="mb-4 leading-relaxed text-gray-700">
+            Con la tercerización de archivos, no solo ahorras, sino que optimizas recursos valiosos que puedes redirigir hacia áreas estratégicas de tu empresa.
+            </p>
+            <p className="mb-4 leading-relaxed text-gray-700">
+            No dejes que el desorden documental afecte tu eficiencia: con nuestra custodia física, simplificamos todo el proceso de organización y acceso.
             </p>
           </div>
         </div>
@@ -55,8 +61,8 @@ const MercurioPYMES = () => {
               </div>
               {/* Bloque para Ubicación y Botón */}
               <div className="mt-6">
-  <h3 className="text-lg font-bold text-teal-600 mb-2">Conoce el valor de tu inversión</h3>
-  <div className="flex flex-col gap-4">
+                <h3 className="text-lg font-bold text-teal-600 mb-2">Conoce el valor de tu inversión</h3>
+                <div className="flex flex-col gap-4">
               {/* Aquí definimos los botones animados */}
               <style jsx>{`
                 @keyframes wave {
@@ -72,7 +78,7 @@ const MercurioPYMES = () => {
                   animationDelay: '0s'
                 }}
               >
-                1 Usuario - $250.000
+                Desde 0 hasta 5 cajas - $210.000
               </button>
               <button 
                 className="w-full p-2 rounded-md text-white font-bold transition-all duration-300 hover:scale-105 bg-purple-500"
@@ -81,7 +87,7 @@ const MercurioPYMES = () => {
                   animationDelay: '0.2s'
                 }}
               >
-                5 Usuarios - $400.000
+                Desde 6 hasta 10 cajas - $384.000
               </button>
               <button 
                 className="w-full p-2 rounded-md text-white font-bold transition-all duration-300 hover:scale-105 bg-amber-500"
@@ -90,7 +96,34 @@ const MercurioPYMES = () => {
                   animationDelay: '0.4s'
                 }}
               >
-                10 Usuarios - $700.000
+                Desde 11 hasta 20 cajas - $696.000
+              </button>
+              <button 
+                className="w-full p-2 rounded-md text-white font-bold transition-all duration-300 hover:scale-105 bg-yellow-500"
+                style={{ 
+                  animation: 'wave 2s ease-in-out infinite',
+                  animationDelay: '0s'
+                }}
+              >
+                Desde 21 hasta 30 cajas - $936.000
+              </button>
+              <button 
+                className="w-full p-2 rounded-md text-white font-bold transition-all duration-300 hover:scale-105 bg-red-500"
+                style={{ 
+                  animation: 'wave 2s ease-in-out infinite',
+                  animationDelay: '0.2s'
+                }}
+              >
+                Desde 31 hasta 40 cajas - $1.104.000
+              </button>
+              <button 
+                className="w-full p-2 rounded-md text-white font-bold transition-all duration-300 hover:scale-105 bg-black"
+                style={{ 
+                  animation: 'wave 2s ease-in-out infinite',
+                  animationDelay: '0.4s'
+                }}
+              >
+                Desde 31 hasta 50 cajas - $1.200.000
               </button>
             </div>
             {/* Botón de Enviar */}
@@ -108,4 +141,4 @@ const MercurioPYMES = () => {
   );
 };
 
-export default MercurioPYMES;
+export default MercurioCustodia;

@@ -129,7 +129,7 @@ export default function About() {
           titleColorClass="text-orange-600"       // Opcional: cambiar color del título
           iconColorClass="text-orange-600"
           showViewMore={true}
-          onViewMore={() => alert('¡Mostrando más detalles!')}
+          onViewMore={() => router.push("/mercurioCustodia")}
           viewMoreText="Descubre más"  // Puedes cambiar este texto según necesites
         />
         <Card 
