@@ -38,3 +38,13 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
+
+## instrucciones de uso
+
+El proyecto debe de usarse con la version 18 de nodejs en adelante ya que se usa nextjs como framework en este caso se usara la ultima version de nodejs
+el comando para ver que version de nodejs es: node -v
+en este caso el proyecto usa la version v22.14.0
+en caso de no tener instalado nodejs hay que instalarlo
+Para desplegar el proyecto en desarrollo el comando es: npm run dev.
+La vista principal del proyecto sera index.js
+el proyecto usara como libreria de iconos react-icons
