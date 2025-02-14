@@ -12,7 +12,7 @@ export default function App({ Component, pageProps }) {
     const handleStart = () => setLoading(true);
     const handleComplete = () => {
       // Mantiene la transición visible durante 3 segundos
-      setTimeout(() => setLoading(false), 1000);
+      setTimeout(() => setLoading(false), 1500);
     };
 
     router.events.on('routeChangeStart', handleStart);
