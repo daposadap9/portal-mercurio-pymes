@@ -141,7 +141,7 @@ export default function About() {
           titleColorClass="text-red-600"       // Opcional: cambiar color del título
           iconColorClass="text-red-600"         // Opcional: cambiar color del icono
           showViewMore={true}
-          onViewMore={() => alert('¡Mostrando más detalles!')}
+          onViewMore={() => router.push("/mercurioDigitalizacion")}
           viewMoreText="Descubre más"  // Puedes cambiar este texto según necesites
         />
         <Card 
