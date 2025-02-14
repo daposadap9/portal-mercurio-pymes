@@ -55,30 +55,51 @@ const MercurioPYMES = () => {
               </div>
               {/* Bloque para Ubicación y Botón */}
               <div className="mt-6">
-                <h3 className="text-lg font-bold text-teal-600 mb-2">¿Estás ubicado en?</h3>
-                <div className="flex flex-col md:flex-row gap-4">
-                  {/* Columna izquierda: Inputs */}
-                  <div className="flex flex-col space-y-2 md:w-1/2">
-                    <input 
-                      type="text" 
-                      placeholder="Bogotá" 
-                      className="border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
-                    />
-                    <input 
-                      type="text" 
-                      placeholder="Medellín" 
-                      className="border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
-                    />
-                    {/* Columna derecha: Botón */}
-                  <div className="md:w-1/2 flex items-end">
-                    <button className="w-full bg-teal-500 text-white font-bold py-2 rounded-md transition-colors duration-300 hover:bg-teal-600">
-                      Enviar
-                    </button>
-                  </div>
-                  </div>
-                  
-                </div>
-              </div>
+  <h3 className="text-lg font-bold text-teal-600 mb-2">Conoce el valor de tu inversión</h3>
+  <div className="flex flex-col gap-4">
+              {/* Aquí definimos los botones animados */}
+              <style jsx>{`
+                @keyframes wave {
+                  0% { transform: translateX(-5%); }
+                  50% { transform: translateX(5%); }
+                  100% { transform: translateX(-5%); }
+                }
+              `}</style>
+              <button 
+                className="w-full p-2 rounded-md text-white font-bold transition-all duration-300 hover:scale-105 bg-blue-500"
+                style={{ 
+                  animation: 'wave 2s ease-in-out infinite',
+                  animationDelay: '0s'
+                }}
+              >
+                1 Usuario - $250.000
+              </button>
+              <button 
+                className="w-full p-2 rounded-md text-white font-bold transition-all duration-300 hover:scale-105 bg-purple-500"
+                style={{ 
+                  animation: 'wave 2s ease-in-out infinite',
+                  animationDelay: '0.2s'
+                }}
+              >
+                5 Usuarios - $400.000
+              </button>
+              <button 
+                className="w-full p-2 rounded-md text-white font-bold transition-all duration-300 hover:scale-105 bg-amber-500"
+                style={{ 
+                  animation: 'wave 2s ease-in-out infinite',
+                  animationDelay: '0.4s'
+                }}
+              >
+                10 Usuarios - $700.000
+              </button>
+            </div>
+  {/* Botón de Enviar */}
+  <div className="md:w-1/2 flex items-end mt-4">
+    <button className="w-full bg-teal-500 text-white font-bold py-2 rounded-md transition-colors duration-300 hover:bg-teal-600">
+      Link de pago
+    </button>
+  </div>
+</div>
             </div>
           </div>
         </div>
