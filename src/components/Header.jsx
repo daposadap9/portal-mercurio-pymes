@@ -94,7 +94,7 @@ const Header = () => {
                 SERVICIOS
               </a>
             </Link>
-            <Link href="/demo" legacyBehavior>
+            <Link href="/tramites" legacyBehavior>
               <a onClick={toggleMobileMenu} className="flex items-center text-teal-600 p-2 font-bold transition-colors duration-300 ease-in-out transform hover:bg-slate-300">
                 <FaFileAlt className="mr-2" />
                 TRAMITES
