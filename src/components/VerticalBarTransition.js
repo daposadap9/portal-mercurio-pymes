@@ -2,7 +2,7 @@ import React from 'react';
 
 const VerticalBarTransition = () => {
   return (
-    <div className="fixed inset-0 z-40">
+    <div className="fixed inset-0 z-20">
       <style jsx>{`
         @keyframes enterAnim {
           from { width: 0; }
@@ -14,27 +14,33 @@ const VerticalBarTransition = () => {
         }
       `}</style>
       <div className="flex h-full">
-        {/* Barra 1: se expande hasta 40% y se retrae con delay en la salida */}
+        {/* Barra 1 */}
         <div 
           className="bg-teal-600 h-full transition-all ease-in-out"
           style={{
-            '--enter-width': '40%',
+            '--enter-width': '33.33%',
             animation: 'enterAnim 0.5s ease-in-out forwards, exitAnim 0.5s ease-in-out forwards 0.4s'
           }}
         ></div>
-        {/* Barra 2: se expande hasta 70% y se retrae */}
+        {/* Barra 2: con imagen centrada */}
         <div 
-          className="bg-blue-800 h-full transition-all ease-in-out"
+          className="bg-blue-800 h-full transition-all ease-in-out flex items-center justify-center"
           style={{
-            '--enter-width': '70%',
+            '--enter-width': '33.33%',
             animation: 'enterAnim 0.5s ease-in-out forwards, exitAnim 0.5s ease-in-out forwards 0.4s'
           }}
-        ></div>
-        {/* Barra 3: se expande hasta 100% y se retrae */}
+        >
+          <img 
+            src="/logo-servisoft-30years.png" 
+            alt="Logo Servisoft" 
+            className="max-h-full"
+          />
+        </div>
+        {/* Barra 3 */}
         <div 
           className="bg-blue-400 h-full transition-all ease-in-out"
           style={{
-            '--enter-width': '100%',
+            '--enter-width': '33.33%',
             animation: 'enterAnim 0.5s ease-in-out forwards, exitAnim 0.5s ease-in-out forwards 0.4s'
           }}
         ></div>
