@@ -16,9 +16,9 @@ const VerticalBarTransition = () => {
       <div className="flex h-full">
         {/* Barra 1 */}
         <div 
-          className="bg-teal-600 h-full transition-all ease-in-out"
+          className="bg-blue-400 h-full transition-all ease-in-out"
           style={{
-            '--enter-width': '33.33%',
+            '--enter-width': '25%',
             animation: 'enterAnim 0.5s ease-in-out forwards, exitAnim 0.5s ease-in-out forwards 0.4s'
           }}
         ></div>
@@ -26,7 +26,7 @@ const VerticalBarTransition = () => {
         <div 
           className="bg-blue-800 h-full transition-all ease-in-out flex items-center justify-center"
           style={{
-            '--enter-width': '33.33%',
+            '--enter-width': '50%',
             animation: 'enterAnim 0.5s ease-in-out forwards, exitAnim 0.5s ease-in-out forwards 0.4s'
           }}
         >
@@ -40,7 +40,7 @@ const VerticalBarTransition = () => {
         <div 
           className="bg-blue-400 h-full transition-all ease-in-out"
           style={{
-            '--enter-width': '33.33%',
+            '--enter-width': '25%',
             animation: 'enterAnim 0.5s ease-in-out forwards, exitAnim 0.5s ease-in-out forwards 0.4s'
           }}
         ></div>
