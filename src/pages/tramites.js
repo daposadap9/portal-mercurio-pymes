@@ -13,7 +13,7 @@ const Tramites = () => {
       title: "PAGA TU FACTURA", 
       icon: <FaFileInvoiceDollar className="text-6xl text-teal-600" />, 
       buttonText: "Pagar factura",
-      href: "/pagar-factura"
+      action: () => alert("Pagar factura")
     },
     { 
       title: "PQRSDF", 
@@ -25,13 +25,13 @@ const Tramites = () => {
       title: "SOLICITUDES MERCURIO CLIENTES", 
       icon: <FaListAlt className="text-6xl text-blue-600" />, 
       buttonText: "Ver solicitudes",
-      href: "/solicitudes-clientes"
+      action: () => alert("Ver solicitudes")
     },
     { 
       title: "CONSULTA ESTADO DE SOLICITUD", 
       icon: <FaInfoCircle className="text-6xl text-amber-600" />, 
       buttonText: "Consultar estado",
-      href: "/consulta-estado"
+      action: () => alert("Consultar estado")
     }
   ];
 
@@ -45,11 +45,20 @@ const Tramites = () => {
           >
             {card.icon}
             <h3 className="mt-4 text-center text-lg font-bold">{card.title}</h3>
-            <Link href={card.href} legacyBehavior>
-              <a className="mt-6 bg-teal-500 text-white px-4 py-2 rounded-md transition-colors duration-300 hover:bg-teal-600">
+            {card.action ? (
+              <button 
+                onClick={card.action}
+                className="mt-6 bg-teal-500 text-white px-4 py-2 rounded-md transition-colors duration-300 hover:bg-teal-600"
+              >
                 {card.buttonText}
-              </a>
-            </Link>
+              </button>
+            ) : (
+              <Link href={card.href} legacyBehavior>
+                <a className="mt-6 bg-teal-500 text-white px-4 py-2 rounded-md transition-colors duration-300 hover:bg-teal-600">
+                  {card.buttonText}
+                </a>
+              </Link>
+            )}
           </div>
         ))}
       </div>
