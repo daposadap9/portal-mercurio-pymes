@@ -31,11 +31,16 @@ const Header = ({ handleNavigation, loading }) => {
   const activeClass = "bg-teal-600 text-white rounded-md";
   const inactiveClass = "text-teal-600 hover:bg-teal-600 hover:text-white hover:rounded-md";
 
-  // Función que intercepta el clic y bloquea la navegación si loading es true
+  // Función que intercepta el clic y bloquea la navegación si loading es true o si ya está en la misma página
   const handleLinkClick = (href, callback) => (e) => {
     e.preventDefault();
+
+    // Si ya estamos en la misma ruta, no ejecutamos la transición
+    if (isActive(href)) return;
+
     if (loading) return; // Si ya se está ejecutando una animación, no hace nada
     if (callback) callback();
+
     if (handleNavigation) {
       handleNavigation(href);
     } else {
