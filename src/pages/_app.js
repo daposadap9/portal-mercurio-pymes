@@ -1,3 +1,4 @@
+// pages/_app.js 
 import "@/styles/globals.css";
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
@@ -8,25 +9,35 @@ export default function App({ Component, pageProps }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    const handleStart = () => setLoading(true);
-    const handleComplete = () => {
-      // Mantiene la transición visible durante 3 segundos
-      setTimeout(() => setLoading(false), 1500);
-    };
+  // Función para navegar con retardo (por ejemplo, 500 ms)
+  const handleDelayedNavigation = async (href) => {
+    // Si ya se está ejecutando una transición, no hacer nada
+    if (loading) return;
 
-    router.events.on('routeChangeStart', handleStart);
+    // Activa la transición (muestra VerticalBarTransition)
+    setLoading(true);
+    // Espera 500ms para que se complete la animación de entrada
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    // Cambia de ruta
+    router.push(href);
+  };
+
+  // Cuando se complete el cambio de ruta, espera para ejecutar la animación de salida
+  useEffect(() => {
+    const handleComplete = () => {
+      // Deja que se ejecute la animación de salida (por ejemplo, 1500ms) antes de ocultar la transición
+      setTimeout(() => setLoading(false), 820);
+    };
     router.events.on('routeChangeComplete', handleComplete);
     router.events.on('routeChangeError', handleComplete);
     return () => {
-      router.events.off('routeChangeStart', handleStart);
       router.events.off('routeChangeComplete', handleComplete);
       router.events.off('routeChangeError', handleComplete);
     };
   }, [router]);
 
   return (
-    <Layout>
+    <Layout handleNavigation={handleDelayedNavigation} loading={loading}>
       {loading && <VerticalBarTransition />}
       <Component {...pageProps} />
     </Layout>

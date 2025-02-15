@@ -3,7 +3,7 @@ import React from 'react';
 import Header from './Header';
 import Footer from './Footer';
 
-const Layout = ({ children }) => {
+const Layout = ({ children, handleNavigation, loading }) => {
   return (
     <div className="min-h-screen relative bg-white text-black">
       {/* Capa de fondo con la imagen y opacidad */}
@@ -13,8 +13,8 @@ const Layout = ({ children }) => {
 
       {/* Contenido principal (se mostrará por encima de la capa de fondo) */}
       <div className="relative z-10">
-        {/* Header fijo en la parte superior */}
-        <Header />
+        {/* Header fijo en la parte superior, pasándole la función de navegación y el estado loading */}
+        <Header handleNavigation={handleNavigation} loading={loading} />
 
         {/* Área principal: se le agrega padding para evitar que el contenido quede oculto */}
         <main className="pt-10 pb-20">
