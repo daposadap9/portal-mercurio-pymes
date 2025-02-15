@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { 
   FaHome, 
   FaConciergeBell, 
@@ -11,11 +12,22 @@ import {
 import React, { useState } from 'react';
 
 const Header = () => {
+  const router = useRouter();
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!isMobileMenuOpen);
   };
+
+  // Función para determinar si el enlace es la ruta actual
+  const isActive = (href) => router.pathname === href;
+
+  // Clase base para los enlaces de desktop
+  const baseLinkClass =
+    "flex items-center font-bold p-2 transition-colors duration-300 ease-in-out transform hover:scale-105";
+
+  const activeClass = "bg-teal-600 text-white rounded-md";
+  const inactiveClass = "text-teal-600 hover:bg-teal-600 hover:text-white hover:rounded-md";
 
   return (
     <header className="sticky top-0 w-full bg-slate-100 shadow-lg z-50">
@@ -32,27 +44,23 @@ const Header = () => {
         {/* Menú para pantallas grandes (lg) */}
         <div className="hidden lg:flex space-x-6">
           <Link href="/" legacyBehavior>
-            <a className="flex items-center text-teal-600 font-bold transition-colors duration-300 ease-in-out transform hover:scale-105">
-              <FaHome className="mr-2" />
-              INICIO
+            <a className={`${baseLinkClass} ${isActive('/') ? activeClass : inactiveClass}`}>
+              <FaHome className="mr-2" /> INICIO
             </a>
           </Link>
           <Link href="/about" legacyBehavior>
-            <a className="flex items-center text-teal-600 font-bold transition-colors duration-300 ease-in-out transform hover:scale-105">
-              <FaConciergeBell className="mr-2" />
-              SERVICIOS
+            <a className={`${baseLinkClass} ${isActive('/about') ? activeClass : inactiveClass}`}>
+              <FaConciergeBell className="mr-2" /> SERVICIOS
             </a>
           </Link>
           <Link href="/tramites" legacyBehavior>
-            <a className="flex items-center text-teal-600 font-bold transition-colors duration-300 ease-in-out transform hover:scale-105">
-              <FaFileAlt className="mr-2" />
-              TRAMITES
+            <a className={`${baseLinkClass} ${isActive('/tramites') ? activeClass : inactiveClass}`}>
+              <FaFileAlt className="mr-2" /> TRAMITES
             </a>
           </Link>
           <Link href="/contactanos" legacyBehavior>
-            <a className="flex items-center text-teal-600 font-bold transition-colors duration-300 ease-in-out transform hover:scale-105">
-              <FaEnvelope className="mr-2" />
-              CONTACTENOS
+            <a className={`${baseLinkClass} ${isActive('/contactanos') ? activeClass : inactiveClass}`}>
+              <FaEnvelope className="mr-2" /> CONTACTENOS
             </a>
           </Link>
         </div>
@@ -60,9 +68,8 @@ const Header = () => {
         {/* Botón de Iniciar Sesión para pantallas grandes (lg) */}
         <div className="hidden lg:flex items-center">
           <Link href="/login" legacyBehavior>
-            <a className="flex items-center text-white bg-teal-500 rounded-md p-2 font-bold transition-colors duration-300 ease-in-out transform hover:scale-105">
-              <FaSignInAlt className="mr-2" />
-              INGRESAR
+            <a className={`${baseLinkClass} ${isActive('/login') ? activeClass : "text-white bg-teal-500 hover:bg-teal-600"} rounded-md`}>
+              <FaSignInAlt className="mr-2" /> INGRESAR
             </a>
           </Link>
         </div>
@@ -83,33 +90,28 @@ const Header = () => {
         <div className="lg:hidden absolute top-full left-0 w-full bg-slate-100 shadow-md">
           <div className="flex flex-col space-y-2 px-4 py-3">
             <Link href="/" legacyBehavior>
-              <a onClick={toggleMobileMenu} className="flex items-center text-teal-600 p-2 font-bold transition-colors duration-300 ease-in-out transform hover:bg-slate-300">
-                <FaHome className="mr-2" />
-                INICIO
+              <a onClick={toggleMobileMenu} className={`${baseLinkClass} ${isActive('/') ? activeClass : inactiveClass}`}>
+                <FaHome className="mr-2" /> INICIO
               </a>
             </Link>
             <Link href="/about" legacyBehavior>
-              <a onClick={toggleMobileMenu} className="flex items-center text-teal-600 p-2 font-bold transition-colors duration-300 ease-in-out transform hover:bg-slate-300">
-                <FaConciergeBell className="mr-2" />
-                SERVICIOS
+              <a onClick={toggleMobileMenu} className={`${baseLinkClass} ${isActive('/about') ? activeClass : inactiveClass}`}>
+                <FaConciergeBell className="mr-2" /> SERVICIOS
               </a>
             </Link>
             <Link href="/tramites" legacyBehavior>
-              <a onClick={toggleMobileMenu} className="flex items-center text-teal-600 p-2 font-bold transition-colors duration-300 ease-in-out transform hover:bg-slate-300">
-                <FaFileAlt className="mr-2" />
-                TRAMITES
+              <a onClick={toggleMobileMenu} className={`${baseLinkClass} ${isActive('/tramites') ? activeClass : inactiveClass}`}>
+                <FaFileAlt className="mr-2" /> TRAMITES
               </a>
             </Link>
             <Link href="/contactanos" legacyBehavior>
-              <a onClick={toggleMobileMenu} className="flex items-center text-teal-600 p-2 font-bold transition-colors duration-300 ease-in-out transform hover:bg-slate-300">
-                <FaEnvelope className="mr-2" />
-                CONTACTENOS
+              <a onClick={toggleMobileMenu} className={`${baseLinkClass} ${isActive('/contactanos') ? activeClass : inactiveClass}`}>
+                <FaEnvelope className="mr-2" /> CONTACTENOS
               </a>
             </Link>
             <Link href="/login" legacyBehavior>
-              <a onClick={toggleMobileMenu} className="flex items-center text-teal-600 p-2 font-bold transition-colors duration-300 ease-in-out transform hover:bg-slate-300">
-                <FaSignInAlt className="mr-2" />
-                INGRESAR
+              <a onClick={toggleMobileMenu} className={`${baseLinkClass} ${isActive('/login') ? activeClass : "text-teal-600 hover:bg-teal-600 hover:text-white hover:rounded-md"}`}>
+                <FaSignInAlt className="mr-2" /> INGRESAR
               </a>
             </Link>
           </div>
