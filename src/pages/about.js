@@ -1,7 +1,7 @@
 import React from 'react';
 import Slider from '@/components/Slider';
 import Card from '@/components/Card';
-import { FaHeart } from 'react-icons/fa';
+import { FaBoxes, FaBoxOpen, FaChartLine, FaCog, FaDatabase, FaFileAlt, FaGavel, FaHandshake, FaHdd, FaHeart, FaLock, FaMoneyBillWave, FaRobot, FaSearch, FaShieldAlt, FaTrashAlt, FaTruck, FaUserTie } from 'react-icons/fa';
 import { useRouter } from 'next/router';
 
 export default function About() {
@@ -9,9 +9,9 @@ export default function About() {
     const cardData = {
         title: 'MERCURIO SGDEA',
         lines: [
-          { text: 'Reduzca hasta un 80% el tiempo en busqueda de documentos con mercurio'},
-          { text: 'Seguridad y acceso inmediato a tu informacion con mercurio' },
-          { text: 'Digitaliza, automatiza y gestiona sin complicaciones. Mercurio lo hace por ti'},
+          { text: 'Reduzca hasta un 80% el tiempo en busqueda de documentos con mercurio', icon: <FaSearch/>},
+          { text: 'Seguridad y acceso inmediato a tu informacion con mercurio', icon: <FaLock/> },
+          { text: 'Digitaliza, automatiza y gestiona sin complicaciones. Mercurio lo hace por ti', icon: <FaRobot/>},
           
         ],
         maxLines: 7,
@@ -20,9 +20,9 @@ export default function About() {
       const cardData2 = {
         title: 'MERCURIO PYMES',
         lines: [
-          { text: 'Optimiza los procesos de tu empresa con documentos digitales de fácil acceso y busqueda rápida, digitaliza hoy y trabaja con mas eficiencia'},
-          { text: 'Ahorra costos y gana productividad con mercurio, el futuro de la gestion documental'},
-          { text: 'Dile adiós al papeleo y bienvenido a la eficiencia con mercurio'},
+          { text: 'Optimiza los procesos de tu empresa con documentos digitales de fácil acceso y busqueda rápida, digitaliza hoy y trabaja con mas eficiencia', icon: <FaFileAlt/>},
+          { text: 'Ahorra costos y gana productividad con mercurio, el futuro de la gestion documental', icon: <FaMoneyBillWave/>},
+          { text: 'Dile adiós al papeleo y bienvenido a la eficiencia con mercurio', icon: <FaTrashAlt/>},
           
         ],
         maxLines: 7,
@@ -30,9 +30,9 @@ export default function About() {
       const cardData3 = {
         title: 'CUSTODIA',
         lines: [
-          { text: 'Custodiamos desde 1 caja de documentos'},
-          { text: 'Nuestra custodia te proporciona tranquilidad al saber que tus documentos están en condiciones óptimas y con un manejo totalmente confidencial'},
-          { text: 'Aprovecha la reducción de costos operativos y de personal, al delegar la gestion de tus archivos fisicos en expertos'},
+          { text: 'Custodiamos desde 1 caja de documentos', icon: <FaBoxOpen/>},
+          { text: 'Nuestra custodia te proporciona tranquilidad al saber que tus documentos están en condiciones óptimas y con un manejo totalmente confidencial', icon: <FaShieldAlt/>},
+          { text: 'Aprovecha la reducción de costos operativos y de personal, al delegar la gestion de tus archivos fisicos en expertos', icon: <FaHandshake/>},
           
         ],
         maxLines: 7,
@@ -40,9 +40,9 @@ export default function About() {
       const cardData4 = {
         title: 'DIGITALIZACIÓN',
         lines: [
-          { text: 'La digitalización documental no es un gasto, es una inversión en segurdiad, accesibilidad y productividad'},
-          { text: 'Cumple con las normativas legales y protege tu información con copias digitales seguras y respaldadas'},
-          { text: 'Convierte tu archivo físico en digital y reduce costos operativos mientras mejoras la eficiencia de tu empresa'},
+          { text: 'La digitalización documental no es un gasto, es una inversión en segurdiad, accesibilidad y productividad', icon: <FaChartLine/>},
+          { text: 'Cumple con las normativas legales y protege tu información con copias digitales seguras y respaldadas', icon: <FaGavel/>},
+          { text: 'Convierte tu archivo físico en digital y reduce costos operativos mientras mejoras la eficiencia de tu empresa', icon: <FaFileAlt/>},
           
         ],
         maxLines: 7,
@@ -50,11 +50,11 @@ export default function About() {
       const cardData5 = {
         title: 'SERVICIOS ADICIONALES',
         lines: [
-          { text: 'Transporte de máx 50 cajas x300'},
-          { text: 'Cajas x300'},
-          { text: 'Consultas digitales hasta 5 folios'},
-          { text: '1TB de almacenamiento'},
-          { text: '100 GB de almacenamiento'},
+          { text: 'Transporte de máx 50 cajas x300', icon: <FaTruck/>},
+          { text: 'Cajas x300', icon: <FaBoxes/>},
+          { text: 'Consultas digitales hasta 5 folios', icon: <FaFileAlt/>},
+          { text: '1TB de almacenamiento', icon: <FaHdd/>},
+          { text: '100 GB de almacenamiento', icon: <FaDatabase/>},
         ],
         maxLines: 7,
       };
