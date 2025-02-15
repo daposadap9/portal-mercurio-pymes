@@ -96,8 +96,8 @@ export default function About() {
       };
   return (
     <>
-      <div className='flex justify-center pt-20 text-6xl font-bold text-orange-500'><h1>¡Cotiza tu servicio!</h1></div>
-      <div className="flex flex-col md:flex-row flex-wrap items-center justify-center pt-20 gap-4">
+      <div className='flex justify-center text-5xl font-bold text-orange-500'><h1>¡Cotiza tu servicio!</h1></div>
+      <div className="flex flex-col md:flex-row flex-wrap items-center justify-center pt-5 gap-4">
         <Card 
           title={cardData.title} 
           lines={cardData.lines} 
@@ -157,8 +157,8 @@ export default function About() {
           viewMoreText="Descubre más"  // Puedes cambiar este texto según necesites
         />
       </div>
-      <div className='flex justify-center pt-20 text-6xl font-bold text-orange-500'><h1>¡Nuestros planes!</h1></div>
-      <div className="flex flex-col md:flex-row flex-wrap items-center justify-center pt-20 gap-4">
+      <div className='flex justify-center pt-10 text-6xl font-bold text-orange-500'><h1>¡Nuestros planes!</h1></div>
+      <div className="flex flex-col md:flex-row flex-wrap items-center justify-center pt-5 gap-4">
       <Card
         title={cardData6.title} 
         lines={cardData6.lines} 
