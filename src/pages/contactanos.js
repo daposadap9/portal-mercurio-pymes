@@ -39,13 +39,13 @@ const contacts = [
 
 const Contactanos = () => {
   return (
-    <div className="min-h-full bg-white flex flex-col items-center justify-center p-6">
+    <div className="min-h-full flex flex-col items-center justify-center p-6">
       <h1 className="text-3xl font-bold text-teal-600 text-center mb-8">Contáctanos</h1>
       <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {contacts.map((contact, index) => (
           <div 
             key={index} 
-            className="bg-white rounded-lg shadow-xl p-10 flex flex-col items-center transition-transform hover:scale-105 overflow-hidden"
+            className="bg-white rounded-lg shadow-2xl p-10 flex flex-col items-center transition-transform hover:scale-105 overflow-hidden"
           >
             <img 
               src={contact.photo} 
@@ -55,7 +55,7 @@ const Contactanos = () => {
             <h3 className="text-2xl font-bold text-teal-600 mb-2 text-center">
               {contact.name}
             </h3>
-            {/* Contenedor de la información, forzamos 100% de ancho y alineación a la izquierda */}
+            {/* Contenedor de la información */}
             <div className="w-full px-1">
               <div className="flex items-center mb-1 break-words">
                 <FaBriefcase className="text-teal-500 mr-2" />
@@ -67,11 +67,23 @@ const Contactanos = () => {
               </div>
               <div className="flex items-center mb-1 break-words">
                 <FaWhatsapp className="text-teal-500 mr-2" />
-                <span className="text-gray-700 text-sm font-bold">{contact.phone}</span>
+                <a 
+                  href={`https://wa.me/${contact.phone}`} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-gray-700 text-sm font-bold hover:text-teal-600"
+                >
+                  {contact.phone}
+                </a>
               </div>
               <div className="flex items-center break-words">
                 <FaEnvelope className="text-teal-500 mr-2" />
-                <span className="text-gray-700 text-sm font-bold">{contact.email}</span>
+                <a 
+                  href={`mailto:${contact.email}`}
+                  className="text-gray-700 text-sm font-bold hover:text-teal-600"
+                >
+                  {contact.email}
+                </a>
               </div>
             </div>
           </div>
