@@ -156,7 +156,7 @@ const Header = ({ handleNavigation, loading }) => {
                 <FaEnvelope className="mr-2" /> CONTACTENOS
               </a>
             </Link>
-            <Link href="/login" legacyBehavior>
+            <Link href="/paginas/login" legacyBehavior>
               <a 
                 onClick={handleLinkClick('/paginas/login', toggleMobileMenu)}
                 className={`${baseLinkClass} ${isActive('/paginas/login') ? activeClass : "text-teal-600 hover:bg-teal-600 hover:text-white hover:rounded-md"}`}
