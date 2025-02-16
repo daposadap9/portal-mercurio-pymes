@@ -75,7 +75,7 @@ const MercurioSGDEA = () => {
                 </h3>
                 <div className="flex flex-col md:flex-row gap-4">
                   {/* Columna izquierda: Inputs */}
-                  <div className="flex flex-col space-y-2 md:w-1/2">
+                  <div className="flex flex-col space-y-2">
                     <input 
                       type="text" 
                       placeholder="Bogotá" 
@@ -86,11 +86,9 @@ const MercurioSGDEA = () => {
                       placeholder="Medellín" 
                       className="border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
                     />
-                    <div className="md:w-1/2 flex items-end">
                     <button className="w-full bg-teal-500 text-white font-bold py-2 rounded-md transition-colors duration-300 hover:bg-teal-600">
                       Enviar
                     </button>
-                  </div>
                   </div>
                   {/* Columna derecha: Botón */}
                   
