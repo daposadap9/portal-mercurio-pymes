@@ -62,10 +62,8 @@ export default function Servicios() {
         title: 'PLAN LITE',
         lines: [
           { text: 'COP 2.000.000', color: 'text-blue-500', textSize: 'text-2xl'},
-          { text: 'Mercurio pymes premium', color: 'text-black', showIcon: false },
-          { text: 'Mercurio pymes premium', color: 'text-black', icon: <FaHeart/> },
-          'Línea sin color222222',
-          'Línea sin color 2',
+          { text: 'Mercurio lite premium', color: 'text-black'},
+          { text: 'Mercurio lite premium', color: 'text-black'},
           
         ],
         maxLines: 7,
@@ -73,11 +71,9 @@ export default function Servicios() {
       const cardData7 = {
         title: 'PLAN GOLD',
         lines: [
-          { text: 'COP 2.000.000', color: 'text-blue-500', textSize: 'text-2xl'},
-          { text: 'Mercurio pymes premium', color: 'text-black', showIcon: false },
-          { text: 'Mercurio pymes premium', color: 'text-black', icon: <FaHeart/> },
-          'Línea sin color222222',
-          'Línea sin color 2',
+          { text: 'COP 2.000.000', color: 'text-yellow-600', textSize: 'text-2xl'},
+          { text: 'Mercurio gold premium', color: 'text-black'},
+          { text: 'Mercurio gold premium', color: 'text-black'},
           
         ],
         maxLines: 7,
@@ -86,10 +82,8 @@ export default function Servicios() {
         title: '¡CREA TU PLAN!',
         lines: [
           { text: 'COP 2.000.000', color: 'text-blue-500', textSize: 'text-2xl'},
-          { text: 'Mercurio pymes premium', color: 'text-black', showIcon: false },
-          { text: 'Mercurio pymes premium', color: 'text-black', icon: <FaHeart/> },
-          'Línea sin color222222',
-          'Línea sin color 2',
+          { text: 'Mercurio premium', color: 'text-black',},
+          { text: 'Mercurio premium', color: 'text-black'},
           
         ],
         maxLines: 7,
