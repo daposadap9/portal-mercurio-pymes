@@ -158,7 +158,7 @@ const Header = ({ handleNavigation, loading }) => {
             </Link>
             <Link href="/login" legacyBehavior>
               <a 
-                onClick={handleLinkClick('/login', toggleMobileMenu)}
+                onClick={handleLinkClick('/paginas/login', toggleMobileMenu)}
                 className={`${baseLinkClass} ${isActive('/paginas/login') ? activeClass : "text-teal-600 hover:bg-teal-600 hover:text-white hover:rounded-md"}`}
               >
                 <FaSignInAlt className="mr-2" /> INGRESAR
