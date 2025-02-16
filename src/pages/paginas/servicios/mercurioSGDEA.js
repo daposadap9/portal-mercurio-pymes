@@ -86,13 +86,14 @@ const MercurioSGDEA = () => {
                       placeholder="Medellín" 
                       className="border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
                     />
-                  </div>
-                  {/* Columna derecha: Botón */}
-                  <div className="md:w-1/2 flex items-end">
+                    <div className="md:w-1/2 flex items-end">
                     <button className="w-full bg-teal-500 text-white font-bold py-2 rounded-md transition-colors duration-300 hover:bg-teal-600">
                       Enviar
                     </button>
                   </div>
+                  </div>
+                  {/* Columna derecha: Botón */}
+                  
                 </div>
               </div>
             </div>
