@@ -70,26 +70,27 @@ const Header = ({ handleNavigation, loading }) => {
               <FaHome className="mr-2" /> INICIO
             </a>
           </Link>
-          <Link href="/about" legacyBehavior>
+          {/* Modificado: Acceder a /paginas/index2 */}
+          <Link href="/paginas/servicios" legacyBehavior>
             <a 
-              onClick={handleLinkClick('/about')}
-              className={`${baseLinkClass} ${isActive('/about') ? activeClass : inactiveClass}`}
+              onClick={handleLinkClick('/paginas/servicios')}
+              className={`${baseLinkClass} ${isActive('/paginas/servicios') ? activeClass : inactiveClass}`}
             >
               <FaConciergeBell className="mr-2" /> SERVICIOS
             </a>
           </Link>
-          <Link href="/tramites" legacyBehavior>
+          <Link href="/paginas/tramites" legacyBehavior>
             <a 
-              onClick={handleLinkClick('/tramites')}
-              className={`${baseLinkClass} ${isActive('/tramites') ? activeClass : inactiveClass}`}
+              onClick={handleLinkClick('/paginas/tramites')}
+              className={`${baseLinkClass} ${isActive('/paginas/tramites') ? activeClass : inactiveClass}`}
             >
               <FaFileAlt className="mr-2" /> TRAMITES
             </a>
           </Link>
-          <Link href="/contactanos" legacyBehavior>
+          <Link href="/paginas/contactanos" legacyBehavior>
             <a 
-              onClick={handleLinkClick('/contactanos')}
-              className={`${baseLinkClass} ${isActive('/contactanos') ? activeClass : inactiveClass}`}
+              onClick={handleLinkClick('/paginas/contactanos')}
+              className={`${baseLinkClass} ${isActive('/paginas/contactanos') ? activeClass : inactiveClass}`}
             >
               <FaEnvelope className="mr-2" /> CONTACTENOS
             </a>
@@ -98,10 +99,10 @@ const Header = ({ handleNavigation, loading }) => {
 
         {/* Botón de Iniciar Sesión para pantallas grandes (lg) */}
         <div className="hidden lg:flex items-center">
-          <Link href="/login" legacyBehavior>
+          <Link href="/paginas/login" legacyBehavior>
             <a 
-              onClick={handleLinkClick('/login')}
-              className={`${baseLinkClass} ${isActive('/login') ? activeClass : "text-white bg-teal-500 hover:bg-teal-600"} rounded-md`}
+              onClick={handleLinkClick('/paginas/login')}
+              className={`${baseLinkClass} ${isActive('/paginas/login') ? activeClass : "text-white bg-teal-500 hover:bg-teal-600"} rounded-md`}
             >
               <FaSignInAlt className="mr-2" /> INGRESAR
             </a>
@@ -131,26 +132,26 @@ const Header = ({ handleNavigation, loading }) => {
                 <FaHome className="mr-2" /> INICIO
               </a>
             </Link>
-            <Link href="/about" legacyBehavior>
+            <Link href="/paginas/servicios" legacyBehavior>
               <a 
-                onClick={handleLinkClick('/about', toggleMobileMenu)}
-                className={`${baseLinkClass} ${isActive('/about') ? activeClass : inactiveClass}`}
+                onClick={handleLinkClick('/paginas/servicios', toggleMobileMenu)}
+                className={`${baseLinkClass} ${isActive('/paginas/servicios') ? activeClass : inactiveClass}`}
               >
                 <FaConciergeBell className="mr-2" /> SERVICIOS
               </a>
             </Link>
-            <Link href="/tramites" legacyBehavior>
+            <Link href="/paginas/tramites" legacyBehavior>
               <a 
-                onClick={handleLinkClick('/tramites', toggleMobileMenu)}
-                className={`${baseLinkClass} ${isActive('/tramites') ? activeClass : inactiveClass}`}
+                onClick={handleLinkClick('/paginas/tramites', toggleMobileMenu)}
+                className={`${baseLinkClass} ${isActive('/paginas/tramites') ? activeClass : inactiveClass}`}
               >
                 <FaFileAlt className="mr-2" /> TRAMITES
               </a>
             </Link>
-            <Link href="/contactanos" legacyBehavior>
+            <Link href="/paginas/contactanos" legacyBehavior>
               <a 
-                onClick={handleLinkClick('/contactanos', toggleMobileMenu)}
-                className={`${baseLinkClass} ${isActive('/contactanos') ? activeClass : inactiveClass}`}
+                onClick={handleLinkClick('/paginas/contactanos', toggleMobileMenu)}
+                className={`${baseLinkClass} ${isActive('/paginas/contactanos') ? activeClass : inactiveClass}`}
               >
                 <FaEnvelope className="mr-2" /> CONTACTENOS
               </a>
@@ -158,7 +159,7 @@ const Header = ({ handleNavigation, loading }) => {
             <Link href="/login" legacyBehavior>
               <a 
                 onClick={handleLinkClick('/login', toggleMobileMenu)}
-                className={`${baseLinkClass} ${isActive('/login') ? activeClass : "text-teal-600 hover:bg-teal-600 hover:text-white hover:rounded-md"}`}
+                className={`${baseLinkClass} ${isActive('/paginas/login') ? activeClass : "text-teal-600 hover:bg-teal-600 hover:text-white hover:rounded-md"}`}
               >
                 <FaSignInAlt className="mr-2" /> INGRESAR
               </a>

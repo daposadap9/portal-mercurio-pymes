@@ -1,8 +1,7 @@
 // pages/mercurioSGDEA.js
 import React from 'react';
-import { FaCalendarAlt, FaRegCalendarAlt } from 'react-icons/fa';
 
-const MercurioPYMES = () => {
+const MercurioPYMES2 = () => {
   return (
     <div className="min-h-full bg-white flex items-center justify-center p-4">
       <div className="w-full max-w-6xl flex flex-col md:flex-row justify-around gap-4">
@@ -108,4 +107,4 @@ const MercurioPYMES = () => {
   );
 };
 
-export default MercurioPYMES;
+export default MercurioPYMES2;

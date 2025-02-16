@@ -4,7 +4,7 @@ import Card from '@/components/Card';
 import { FaBoxes, FaBoxOpen, FaChartLine, FaCog, FaDatabase, FaFileAlt, FaGavel, FaHandshake, FaHdd, FaHeart, FaLock, FaMoneyBillWave, FaRobot, FaSearch, FaShieldAlt, FaTrashAlt, FaTruck, FaUserTie } from 'react-icons/fa';
 import { useRouter } from 'next/router';
 
-export default function About() {
+export default function Servicios() {
     const router = useRouter();
     const cardData = {
         title: 'MERCURIO SGDEA',
@@ -106,7 +106,7 @@ export default function About() {
           titleColorClass="text-yellow-600"       // Opcional: cambiar color del título
           iconColorClass="text-yellow-600" 
           showViewMore={true}
-          onViewMore={() => router.push("/mercurioSGDEA")}
+          onViewMore={() => router.push("/paginas/servicios/mercurioSGDEA")}
           viewMoreText="Descubre más"  // Puedes cambiar este texto según necesites                 
         />
         <Card 
@@ -117,7 +117,7 @@ export default function About() {
           titleColorClass="text-blue-600"       // Opcional: cambiar color del título
           iconColorClass="text-blue-600"
           showViewMore={true}
-          onViewMore={() => router.push("/mercurioPYMES")}
+          onViewMore={() => router.push("/paginas/servicios/mercurioPYMES")}
           viewMoreText="Descubre más"  // Puedes cambiar este texto según necesites
           /* Aquí puedes usar los valores por defecto o personalizarlos */
         />
@@ -129,7 +129,7 @@ export default function About() {
           titleColorClass="text-orange-600"       // Opcional: cambiar color del título
           iconColorClass="text-orange-600"
           showViewMore={true}
-          onViewMore={() => router.push("/mercurioCustodia")}
+          onViewMore={() => router.push("/paginas/servicios/mercurioCustodia")}
           viewMoreText="Descubre más"  // Puedes cambiar este texto según necesites
         />
         <Card 
@@ -141,7 +141,7 @@ export default function About() {
           titleColorClass="text-red-600"       // Opcional: cambiar color del título
           iconColorClass="text-red-600"         // Opcional: cambiar color del icono
           showViewMore={true}
-          onViewMore={() => router.push("/mercurioDigitalizacion")}
+          onViewMore={() => router.push("/paginas/servicios/mercurioDigitalizacion")}
           viewMoreText="Descubre más"  // Puedes cambiar este texto según necesites
         />
         <Card 

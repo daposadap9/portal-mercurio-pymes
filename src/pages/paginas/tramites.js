@@ -19,7 +19,7 @@ const Tramites = () => {
       title: "PQRSDF", 
       icon: <FaCommentAlt className="text-6xl text-purple-600" />, 
       buttonText: "Enviar PQRSDF",
-      href: "/pqrsdf"
+      href: "/paginas/tramites/pqrsdf"
     },
     { 
       title: "SOLICITUDES MERCURIO CLIENTES", 
