@@ -81,7 +81,7 @@ export default function Servicios() {
       const cardData8 = {
         title: '¡CREA TU PLAN!',
         lines: [
-          { text: 'COP 2.000.000', color: 'text-blue-500', textSize: 'text-2xl'},
+          { text: 'COP 2.000.000', color: 'text-orange-500', textSize: 'text-2xl'},
           { text: 'Mercurio premium', color: 'text-black',},
           { text: 'Mercurio premium', color: 'text-black'},
           
