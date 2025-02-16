@@ -161,7 +161,7 @@ export default function Servicios() {
         titleColorClass="text-blue-600"       // Opcional: cambiar color del título
         iconColorClass="text-blue-600"
         showViewMore={true}
-        onViewMore={() => alert('¡Adquierelo ahora!')}
+        onViewMore={() => router.push("/paginas/servicios/PaymentFormPSE")}
         viewMoreText="¡Adquierelo ahora!"  // Puedes cambiar este texto según necesites
                          
         />
@@ -173,7 +173,7 @@ export default function Servicios() {
           titleColorClass="text-yellow-600"       // Opcional: cambiar color del título
           iconColorClass="text-yellow-600"
           showViewMore={true}
-          onViewMore={() => alert('¡Adquierelo ahora!')}
+          onViewMore={() => router.push("/paginas/servicios/PaymentFormPSE")}
           viewMoreText="¡Adquierelo ahora!"  // Puedes cambiar este texto según necesites
           badgeText="¡Oferta recomendada!"
         />
@@ -185,7 +185,7 @@ export default function Servicios() {
           titleColorClass="text-orange-600"       // Opcional: cambiar color del título
           iconColorClass="text-orange-600"
           showViewMore={true}
-          onViewMore={() => alert('¡Adquierelo ahora!')}
+          onViewMore={() => router.push("/paginas/servicios/mercurioArmaTuPlan")}
           viewMoreText="¡Adquierelo ahora!"  // Puedes cambiar este texto según necesites  
         />
       </div>
