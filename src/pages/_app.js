@@ -1,45 +1,59 @@
-// pages/_app.js 
+// _app.js
 import "@/styles/globals.css";
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 import Layout from "../components/layout";
 import VerticalBarTransition from "../components/VerticalBarTransition";
+import { ApolloProvider } from '@apollo/client';
+import client from '../lib/apolloClient';
 
 export default function App({ Component, pageProps }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
-  // Función para navegar con retardo (por ejemplo, 500 ms)
-  const handleDelayedNavigation = async (href) => {
-    // Si ya se está ejecutando una transición, no hacer nada
-    if (loading) return;
+  // Función para determinar si se debe animar.
+  const shouldAnimate = (url) => {
+    // Si se ha marcado para omitir la animación, la desactivamos y retornamos false.
+    if (typeof window !== 'undefined' && window.skipAnimation) {
+      window.skipAnimation = false;
+      return false;
+    }
+    const segments = url.split('/').filter(Boolean);
+    return !(segments[0] === 'paginas' && segments.length > 2);
+  };
 
-    // Activa la transición (muestra VerticalBarTransition)
+  // Función para navegar con retardo (1000ms) si corresponde.
+  const handleDelayedNavigation = async (href) => {
+    if (loading || !shouldAnimate(href)) {
+      router.push(href);
+      return;
+    }
     setLoading(true);
-    // Espera 500ms para que se complete la animación de entrada
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    // Cambia de ruta
+    await new Promise((resolve) => setTimeout(resolve, 800));
     router.push(href);
   };
 
-  // Cuando se complete el cambio de ruta, espera para ejecutar la animación de salida
   useEffect(() => {
-    const handleComplete = () => {
-      // Deja que se ejecute la animación de salida (por ejemplo, 1500ms) antes de ocultar la transición
-      setTimeout(() => setLoading(false), 820);
+    const handleRouteStart = (url) => {
+      if (shouldAnimate(url)) setLoading(true);
     };
-    router.events.on('routeChangeComplete', handleComplete);
-    router.events.on('routeChangeError', handleComplete);
+    const handleRouteComplete = () => {
+      // Aquí podrías reiniciar otros estados si es necesario.
+    };
+    router.events.on('routeChangeStart', handleRouteStart);
+    router.events.on('routeChangeComplete', handleRouteComplete);
     return () => {
-      router.events.off('routeChangeComplete', handleComplete);
-      router.events.off('routeChangeError', handleComplete);
+      router.events.off('routeChangeStart', handleRouteStart);
+      router.events.off('routeChangeComplete', handleRouteComplete);
     };
   }, [router]);
 
   return (
-    <Layout handleNavigation={handleDelayedNavigation} loading={loading}>
-      {loading && <VerticalBarTransition />}
-      <Component {...pageProps} />
-    </Layout>
+    <ApolloProvider client={client}>
+      <Layout handleNavigation={handleDelayedNavigation} loading={loading}>
+        {loading && <VerticalBarTransition onComplete={() => setLoading(false)} />}
+        <Component {...pageProps} />
+      </Layout>
+    </ApolloProvider>
   );
 }

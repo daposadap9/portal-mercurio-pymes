@@ -13,42 +13,47 @@ import {
 const PQRSDFPage = () => {
   const router = useRouter();
 
-  // Definimos las cards con el título (tipo de solicitud), el plazo y el ícono.
-  // Se ha ajustado el título para que sea el tipo que se enviará.
+  // Cada tarjeta tiene un título (para mostrar en pantalla) y un "tipo" que se enviará
   const cards = [
     { 
-      title: "Petición", 
+      title: "Ingresa una Petición",
+      tipo: "Petición",
       marker: "15 días hábiles", 
-      icon: <FaPenFancy className="text-6xl text-blue-500" /> 
+      icon: <FaPenFancy className="text-6xl text-blue-400" /> 
     },
     { 
-      title: "Queja", 
+      title: "Ingresa una Queja",
+      tipo: "Queja",
       marker: "15 días hábiles", 
-      icon: <FaAngry className="text-6xl text-purple-500" /> 
+      icon: <FaAngry className="text-6xl text-purple-400" /> 
     },
     { 
-      title: "Reclamo", 
+      title: "Ingresa un Reclamo",
+      tipo: "Reclamo",
       marker: "15 días hábiles", 
       icon: <FaCommentDots className="text-6xl text-green-500" /> 
     },
     { 
-      title: "Solicitud", 
+      title: "Ingresa una Solicitud",
+      tipo: "Solicitud",
       marker: "15 días hábiles", 
       icon: <FaClipboardCheck className="text-6xl text-teal-500" /> 
     },
     { 
-      title: "Denuncia", 
+      title: "Ingresa una Denuncia",
+      tipo: "Denuncia",
       marker: "10 días hábiles", 
       icon: <FaGavel className="text-6xl text-red-500" /> 
     },
     { 
-      title: "Felicitación", 
+      title: "Ingresa una Felicitación",
+      tipo: "Felicitación",
       marker: "15 días hábiles", 
       icon: <FaSmileBeam className="text-6xl text-amber-500" /> 
     },
   ];
 
-  // Al hacer clic en una card, se navega a la ruta del formulario y se pasa el tipo de solicitud en la query.
+  // Al hacer clic se envía el "tipo" a la ruta del formulario
   const handleCardClick = (tipoSolicitud) => {
     router.push({
       pathname: '/paginas/tramites/pqrsdf/formularioPQRSDF',
@@ -57,7 +62,14 @@ const PQRSDFPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white p-4 flex flex-col items-center">
+    <div className="min-h-full bg-white p-4 flex flex-col items-center">
+      {/* Alineamos el texto a la derecha y lo hacemos más notorio */}
+      <div className="mb-9 text-right">
+        <p className="text-lg font-medium text-gray-800">
+          Aquí podrás registrar tus peticiones, quejas, reclamos o recursos, 
+          los cuales gestionaremos en días hábiles y de lunes a viernes de 6 a. m. a 6:00 p. m.
+        </p>
+      </div>
       <h1 className="text-3xl font-bold text-teal-600 mb-8 text-center">
         Selecciona el tipo de solicitud que vas a radicar.
       </h1>
@@ -65,12 +77,17 @@ const PQRSDFPage = () => {
         {cards.map((card, index) => (
           <div
             key={index}
-            onClick={() => handleCardClick(card.title)}
-            className="cursor-pointer bg-white border rounded-xl shadow-lg p-6 flex flex-col items-center transition-transform transform hover:scale-105"
+            onClick={() => handleCardClick(card.tipo)}
+            className="cursor-pointer bg-white border rounded-xl shadow-lg p-6 flex flex-col items-center group transition-transform transform hover:scale-105 hover:bg-teal-600 transition-colors duration-300"
           >
-            {card.icon}
-            <h2 className="mt-4 text-xl font-bold text-center">{card.title}</h2>
-            <span className="mt-2 inline-block bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-sm font-semibold">
+            {/* Icono con sombra intensificada en hover */}
+            <div className="transition-all duration-300 group-hover:drop-shadow-[0_0_3px_rgba(0,0,0,0.9)]">
+              {card.icon}
+            </div>
+            <h2 className="mt-4 text-xl font-bold text-center group-hover:text-white">
+              {card.title}
+            </h2>
+            <span className="mt-2 inline-block bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-sm font-semibold border-2 border-transparent group-hover:bg-transparent group-hover:text-white group-hover:border-white transition-colors duration-300">
               {card.marker}
             </span>
           </div>

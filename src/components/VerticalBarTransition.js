@@ -45,19 +45,20 @@ const VerticalBarTransition = ({ onComplete }) => {
         {/* Barra 1 */}
         <div 
           ref={bar1Ref}
-          className="bg-blue-400 h-full transition-all ease-in-out"
+          className="bg-white h-full transition-all ease-in-out"
           style={{
             '--enter-width': '25%',
-            animation: 'enterAnim 0.5s ease-in-out forwards, exitAnim 1s ease-in-out forwards 0.4s'
+            // Aumentamos la duración de la animación y el retraso para un efecto más lento
+            animation: 'enterAnim 1.2s ease-in-out forwards, exitAnim 1.2s ease-in-out forwards 1.2s'
           }}
         ></div>
         {/* Barra 2 */}
         <div 
           ref={bar2Ref}
-          className="bg-blue-800 h-full transition-all ease-in-out flex items-center justify-center"
+          className="bg-white h-full transition-all ease-in-out flex items-center justify-center"
           style={{
             '--enter-width': '50%',
-            animation: 'enterAnim 0.5s ease-in-out forwards, exitAnim 1s ease-in-out forwards 0.4s'
+            animation: 'enterAnim 1.2s ease-in-out forwards, exitAnim 1.2s ease-in-out forwards 1.2s'
           }}
         >
           <img 
@@ -69,10 +70,11 @@ const VerticalBarTransition = ({ onComplete }) => {
         {/* Barra 3 */}
         <div 
           ref={bar3Ref}
-          className="bg-blue-400 h-full transition-all ease-in-out"
+          className="bg-white h-full transition-all ease-in-out"
           style={{
             '--enter-width': '25%',
-            animation: 'enterAnim 0.5s ease-in-out forwards, exitAnim 1s ease-in-out forwards 0.4s'
+            animation: 'enterAnim 1.2s ease-in-out forwards, exitAnim 1.2s ease-in-out forwards 1.2s',
+            boxShadow: '2px 0 5px rgba(0, 0, 0, 0.3)' // Sombra en el lado derecho
           }}
         ></div>
       </div>
