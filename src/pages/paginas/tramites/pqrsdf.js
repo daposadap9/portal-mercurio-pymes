@@ -1,5 +1,6 @@
 // pages/pqrsdf.js
 import React from 'react';
+import { useRouter } from 'next/router';
 import { 
   FaPenFancy, 
   FaAngry, 
@@ -10,38 +11,50 @@ import {
 } from 'react-icons/fa';
 
 const PQRSDFPage = () => {
+  const router = useRouter();
+
+  // Definimos las cards con el título (tipo de solicitud), el plazo y el ícono.
+  // Se ha ajustado el título para que sea el tipo que se enviará.
   const cards = [
     { 
-      title: "Ingresa una petición", 
+      title: "Petición", 
       marker: "15 días hábiles", 
       icon: <FaPenFancy className="text-6xl text-blue-500" /> 
     },
     { 
-      title: "Ingresa una queja", 
+      title: "Queja", 
       marker: "15 días hábiles", 
       icon: <FaAngry className="text-6xl text-purple-500" /> 
     },
     { 
-      title: "Ingresa un reclamo", 
+      title: "Reclamo", 
       marker: "15 días hábiles", 
       icon: <FaCommentDots className="text-6xl text-green-500" /> 
     },
     { 
-      title: "Ingresa una solicitud", 
+      title: "Solicitud", 
       marker: "15 días hábiles", 
       icon: <FaClipboardCheck className="text-6xl text-teal-500" /> 
     },
     { 
-      title: "Ingresa una denuncia", 
+      title: "Denuncia", 
       marker: "10 días hábiles", 
       icon: <FaGavel className="text-6xl text-red-500" /> 
     },
     { 
-      title: "Ingresa una felicitación", 
+      title: "Felicitación", 
       marker: "15 días hábiles", 
       icon: <FaSmileBeam className="text-6xl text-amber-500" /> 
     },
   ];
+
+  // Al hacer clic en una card, se navega a la ruta del formulario y se pasa el tipo de solicitud en la query.
+  const handleCardClick = (tipoSolicitud) => {
+    router.push({
+      pathname: '/paginas/tramites/pqrsdf/formularioPQRSDF',
+      query: { tipoSolicitud }
+    });
+  };
 
   return (
     <div className="min-h-screen bg-white p-4 flex flex-col items-center">
@@ -52,7 +65,8 @@ const PQRSDFPage = () => {
         {cards.map((card, index) => (
           <div
             key={index}
-            className="bg-white border rounded-xl shadow-lg p-6 flex flex-col items-center transition-transform transform hover:scale-105"
+            onClick={() => handleCardClick(card.title)}
+            className="cursor-pointer bg-white border rounded-xl shadow-lg p-6 flex flex-col items-center transition-transform transform hover:scale-105"
           >
             {card.icon}
             <h2 className="mt-4 text-xl font-bold text-center">{card.title}</h2>
