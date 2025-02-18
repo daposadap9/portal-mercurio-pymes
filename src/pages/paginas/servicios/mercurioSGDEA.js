@@ -1,4 +1,3 @@
-// pages/mercurioSGDEA.js
 import React from 'react';
 import { FaCalendarAlt, FaRegCalendarAlt } from 'react-icons/fa';
 
@@ -59,44 +58,54 @@ const MercurioSGDEA = () => {
                   className="border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
                 />
               </div>
+
               {/* Bloque para Selección de Día y Agenda */}
               <div className="flex flex-col mt-4 space-y-2">
+                <label className="text-sm text-gray-700 font-semibold">
+                  Selecciona el día de preferencia
+                </label>
                 <div className="flex items-center space-x-2">
                   <FaCalendarAlt className="text-teal-600 text-2xl" />
-                  <span className="text-sm text-gray-700">
-                    Selecciona el día de preferencia
-                  </span>
+                  <input 
+                    type="date" 
+                    className="border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  />
                 </div>
               </div>
+
+              {/* Bloque para Observaciones */}
+              <div className="flex flex-col mt-4 space-y-2">
+                <label className="text-sm text-gray-700 font-semibold">
+                  Observaciones:
+                </label>
+                <textarea
+                  placeholder="Ingresa tus observaciones aquí..."
+                  className="border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  rows="4"
+                />
+              </div>
+
               {/* Bloque para Ubicación y Botón */}
               <div className="mt-6 flex flex-col">
                 <h3 className="text-lg font-bold text-teal-600 mb-2">
                   ¿Estás ubicado en?
                 </h3>
-                <div className="flex flex-col md:flex-row gap-4">
-                  {/* Columna izquierda: Inputs */}
-                  <div className="flex flex-col space-y-2">
-                    <input 
-                      type="text" 
-                      placeholder="Bogotá" 
-                      className="border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
-                    />
-                    <input 
-                      type="text" 
-                      placeholder="Medellín" 
-                      className="border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
-                    />
-                    <button className="w-full bg-teal-500 text-white font-bold py-2 rounded-md transition-colors duration-300 hover:bg-teal-600">
-                      Enviar
-                    </button>
-                  </div>
-                  {/* Columna derecha: Botón */}
-                  
+                <div className="flex flex-col gap-4">
+                  <select 
+                    className="border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  >
+                    <option value="Bogotá">Bogotá</option>
+                    <option value="Medellín">Medellín</option>
+                  </select>
+                  <button className="w-full bg-teal-500 text-white font-bold py-2 rounded-md transition-colors duration-300 hover:bg-teal-600">
+                    Enviar
+                  </button>
                 </div>
               </div>
             </div>
           </div>
         </div>
+
       </div>
     </div>
   );

@@ -1,4 +1,3 @@
-// pages/mercurioSGDEA.js
 import React from 'react';
 
 const MercurioPYMES = () => {
@@ -52,44 +51,56 @@ const MercurioPYMES = () => {
                   className="border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
                 />
               </div>
+              {/* Bloque para Observaciones */}
+              <div className="flex flex-col space-y-2">
+                <label className="text-sm text-gray-700 font-semibold">
+                  Observaciones:
+                </label>
+                <textarea
+                  placeholder="Ingresa tus observaciones aquí..."
+                  className="border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  rows="4"
+                />
+              </div>
               {/* Bloque para Ubicación y Botón */}
               <div className="mt-6">
                 <h3 className="text-lg font-bold text-teal-600 mb-2">
                   Conoce el valor de tu inversión
                 </h3>
                 <div className="flex flex-col gap-4">
-                  {/* Aquí definimos los botones animados */}
+                  {/* Botones con efecto de ola interna */}
                   <style jsx>{`
-                    @keyframes wave {
-                      0% { transform: translateX(-5%); }
-                      50% { transform: translateX(5%); }
-                      100% { transform: translateX(-5%); }
+                    .btn-wave {
+                      position: relative;
+                      overflow: hidden;
+                    }
+                    .btn-wave::before {
+                      content: "";
+                      position: absolute;
+                      top: 0;
+                      left: -100%;
+                      width: 100%;
+                      height: 100%;
+                      background: rgba(255,255,255,0.2);
+                      transform: skewX(-20deg);
+                      transition: left 0.5s ease;
+                    }
+                    .btn-wave:hover::before {
+                      left: 100%;
                     }
                   `}</style>
                   <button 
-                    className="w-full p-2 rounded-md text-white font-bold transition-all duration-300 hover:scale-105 bg-blue-500"
-                    style={{ 
-                      animation: 'wave 2s ease-in-out infinite',
-                      animationDelay: '0s'
-                    }}
+                    className="btn-wave w-full p-2 rounded-md text-white font-bold transition-all duration-300 bg-blue-500 hover:bg-blue-600"
                   >
                     1 usuario - $250.000
                   </button>
                   <button 
-                    className="w-full p-2 rounded-md text-white font-bold transition-all duration-300 hover:scale-105 bg-purple-500"
-                    style={{ 
-                      animation: 'wave 2s ease-in-out infinite',
-                      animationDelay: '0.2s'
-                    }}
+                    className="btn-wave w-full p-2 rounded-md text-white font-bold transition-all duration-300 bg-purple-500 hover:bg-purple-600"
                   >
                     5 usuarios - $400.000
                   </button>
                   <button 
-                    className="w-full p-2 rounded-md text-white font-bold transition-all duration-300 hover:scale-105 bg-amber-500"
-                    style={{ 
-                      animation: 'wave 2s ease-in-out infinite',
-                      animationDelay: '0.4s'
-                    }}
+                    className="btn-wave w-full p-2 rounded-md text-white font-bold transition-all duration-300 bg-amber-500 hover:bg-amber-600"
                   >
                     10 usuarios - $700.000
                   </button>

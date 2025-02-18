@@ -1,6 +1,4 @@
-// pages/ServiciosAdicionales.js
 import React from 'react';
-import { FaCalendarAlt, FaRegCalendarAlt } from 'react-icons/fa';
 
 const ServiciosAdicionales = () => {
   return (
@@ -10,16 +8,13 @@ const ServiciosAdicionales = () => {
         <div className="w-full md:w-[35%]">
           <div className="text-center md:text-left">
             <p className="mb-4 leading-relaxed text-gray-700 text-base font-normal">
-              El sgdea mercurio permite a la entidad el cumplimiento de las regulaciones establecidas en la ley 594 de 2000, impidiendo sanciones y asegurando prácticas idóneas de archivo.
+              Con Servisoft S.A. dile adiós al papel desordenado y al riesgo de pérdida. Con nuestra digitalización documental, toda tu información estará organizada y protegida.
             </p>
             <p className="mb-4 leading-relaxed text-gray-700 text-base font-normal">
-              Facilita la clasificación, la ordenación y un acceso eficiente a los documentos, garantizando una gestión documental estructurada y sin pérdida de información.
+              La seguridad, accesibilidad y eficiencia en un sólo servicio. Digitalizamos tu archivo físico para que trabajes sin límites.
             </p>
             <p className="mb-4 leading-relaxed text-gray-700 text-base font-normal">
-              En compañía de nuestros partners en almacenamiento en la nube, estamos comprometidos con los más altos estándares de calidad en cuanto al resguardo de documentos físicos y digitales, evitando así cualquier tipo de alteración en la información de todos nuestros clientes.
-            </p>
-            <p className="mb-4 leading-relaxed text-gray-700 text-base font-normal">
-              Del mismo modo, con el sgdea mercurio la entidad facilita la transcripción del archivo físico a formato digital, asegurando su preservación y la consulta a largo plazo mediante altos estándares de gestión electrónica documental.
+              Te apoyamos con el cumplimiento de normativas legales y protegemos tu información con copias digitales seguras y respaldadas.
             </p>
           </div>
         </div>
@@ -28,7 +23,7 @@ const ServiciosAdicionales = () => {
         <div className="w-full md:w-[35%]">
           <div className="bg-gray-50 p-6 rounded-lg shadow-lg">
             <h2 className="text-xl font-bold text-teal-600 text-center mb-6">
-              Agenda demostración con nuestro equipo comercial
+              ¡Adquiérelo ahora!
             </h2>
             <div className="flex flex-col gap-4">
               {/* Bloque de Datos Personales */}
@@ -59,39 +54,80 @@ const ServiciosAdicionales = () => {
                   className="border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
                 />
               </div>
-              {/* Bloque para Selección de Día y Agenda */}
-              <div className="flex flex-col mt-4 space-y-2">
-                <div className="flex items-center space-x-2">
-                  <FaCalendarAlt className="text-teal-600 text-2xl" />
-                  <span className="text-sm text-gray-700">
-                    Selecciona el día de preferencia
-                  </span>
-                </div>
+
+              {/* Bloque para Observaciones */}
+              <div className="flex flex-col space-y-2">
+                <label className="text-sm text-gray-700 font-semibold">
+                  Observaciones:
+                </label>
+                <textarea 
+                  placeholder="Ingresa tus observaciones aquí..."
+                  className="border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  rows="4"
+                />
               </div>
-              {/* Bloque para Ubicación y Botón */}
-              <div className="mt-6 flex flex-col">
-                <h3 className="text-lg font-bold text-teal-600 mb-2">
-                  ¿Estás ubicado en?
-                </h3>
-                <div className="flex flex-col md:flex-row gap-4">
-                  {/* Columna izquierda: Inputs */}
-                  <div className="flex flex-col space-y-2">
-                    <input 
-                      type="text" 
-                      placeholder="Bogotá" 
-                      className="border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
-                    />
-                    <input 
-                      type="text" 
-                      placeholder="Medellín" 
-                      className="border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
-                    />
-                    <button className="w-full bg-teal-500 text-white font-bold py-2 rounded-md transition-colors duration-300 hover:bg-teal-600">
-                      Enviar
-                    </button>
-                  </div>
-                  {/* Columna derecha: Botón */}
-                  
+
+              {/* Bloque para Inversión y Botones */}
+              <div className="mt-6">
+                <h3 className="text-lg font-bold text-teal-600 mb-2">Conoce el valor de tu inversión</h3>
+                <div className="flex flex-col gap-4">
+                  {/* Botones con efecto de ola interna */}
+                  <style jsx>{`
+                    .btn-wave {
+                      position: relative;
+                      overflow: hidden;
+                    }
+                    .btn-wave::before {
+                      content: "";
+                      position: absolute;
+                      top: 0;
+                      left: -100%;
+                      width: 100%;
+                      height: 100%;
+                      background: rgba(255, 255, 255, 0.2);
+                      transform: skewX(-20deg);
+                      transition: left 0.5s ease;
+                    }
+                    .btn-wave:hover::before {
+                      left: 100%;
+                    }
+                  `}</style>
+                  <button 
+                    className="btn-wave w-full p-2 rounded-md text-white font-bold transition-all duration-300 bg-blue-500 hover:bg-blue-600"
+                  >
+                    Desde 0 hasta 5 cajas - $210.000
+                  </button>
+                  <button 
+                    className="btn-wave w-full p-2 rounded-md text-white font-bold transition-all duration-300 bg-purple-500 hover:bg-purple-600"
+                  >
+                    Desde 6 hasta 10 cajas - $384.000
+                  </button>
+                  <button 
+                    className="btn-wave w-full p-2 rounded-md text-white font-bold transition-all duration-300 bg-amber-500 hover:bg-amber-600"
+                  >
+                    Desde 11 hasta 20 cajas - $696.000
+                  </button>
+                  <button 
+                    className="btn-wave w-full p-2 rounded-md text-white font-bold transition-all duration-300 bg-yellow-500 hover:bg-yellow-600"
+                  >
+                    Desde 21 hasta 30 cajas - $936.000
+                  </button>
+                  <button 
+                    className="btn-wave w-full p-2 rounded-md text-white font-bold transition-all duration-300 bg-red-500 hover:bg-red-600"
+                  >
+                    Desde 31 hasta 40 cajas - $1.104.000
+                  </button>
+                  <button 
+                    className="btn-wave w-full p-2 rounded-md text-white font-bold transition-all duration-300 bg-black hover:bg-gray-800"
+                  >
+                    Desde 31 hasta 50 cajas - $1.200.000
+                  </button>
+                </div>
+                {/* Botón de Enviar */}
+                <div className="md:w-1/2 flex items-end mt-4">
+                  <button className="w-full bg-teal-500 text-white font-bold py-2 rounded-md transition-colors duration-300 hover:bg-teal-600">
+                    Link de pago
+                  </button>
                 </div>
               </div>
             </div>

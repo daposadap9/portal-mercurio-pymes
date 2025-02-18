@@ -250,7 +250,7 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
               }}
               className="text-blue-500 font-semibold hover:underline"
             >
-              Política de Tratamientos Personales
+              Política de Seguridad de la Información y Tratamiento de Datos
             </a>.
           </p>
         </div>
@@ -275,7 +275,7 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
           {/* Contenedor de la modal */}
           <div className="bg-white rounded-lg p-6 z-10 w-11/12 md:w-4/5 lg:w-1/2">
             <div className="flex justify-between items-center">
-              <h2 className="text-xl font-bold">Política de Tratamientos Personales</h2>
+              <h2 className="text-xl font-bold">Política de Seguridad de la Información y Tratamiento de Datos</h2>
               <button onClick={() => setShowModal(false)} className="text-gray-600 hover:text-gray-800">
                 X
               </button>
@@ -284,7 +284,7 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
               <iframe
                 src="/politicaDeTratamientosPersonales.pdf"
                 className="w-full h-[500px]"
-                title="Política de Tratamientos Personales"
+                title="Política de Seguridad de la Información y Tratamiento de Datos"
               ></iframe>
             </div>
             <div className="mt-4 flex items-center">
@@ -298,7 +298,7 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
                 }
               />
               <label htmlFor="modalAceptaTerminos" className="ml-2 text-gray-700">
-                Acepto la Política de Tratamientos Personales
+                Acepto la Política de Seguridad de la Información y Tratamiento de Datos
               </label>
             </div>
             <div className="mt-4 flex justify-end">

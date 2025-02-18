@@ -230,7 +230,7 @@ const FormularioArmaTuPlan = () => {
               }}
               className="text-blue-500 font-semibold hover:underline"
             >
-              Política de privacidad y Términos y Condiciones
+              Politica de Seguridad de la Información y Tratamiento de Datos
             </a>
           </p>
         </div>
@@ -258,7 +258,7 @@ const FormularioArmaTuPlan = () => {
           <div className="bg-white rounded-lg p-6 z-10 w-11/12 md:w-4/5 lg:w-1/2">
             <div className="flex justify-between items-center">
               <h2 className="text-xl font-bold">
-                Política de privacidad y Términos y Condiciones
+                Politica de Seguridad de la Información y Tratamiento de Datos
               </h2>
               <button
                 onClick={() => setShowModal(false)}
@@ -271,7 +271,7 @@ const FormularioArmaTuPlan = () => {
               <iframe
                 src="/politicaDeTratamientosPersonales.pdf"
                 className="w-full h-[500px]"
-                title="Política de privacidad y Términos y Condiciones"
+                title="Politica de Seguridad de la Información y Tratamiento de Datos"
               ></iframe>
             </div>
             <div className="mt-4 flex items-center">
@@ -285,7 +285,7 @@ const FormularioArmaTuPlan = () => {
                 }
               />
               <label htmlFor="modalAceptaPolitica" className="ml-2 text-gray-700">
-                Acepto la Política de privacidad y Términos y Condiciones
+                Acepto la Politica de Seguridad de la Información y Tratamiento de Datos
               </label>
             </div>
             <div className="mt-4 flex justify-end">
