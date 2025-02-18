@@ -24,7 +24,7 @@ const Card = ({
     <div className={`
       md:self-stretch relative bg-slate-50 text-black rounded-xl shadow-2xl p-6 m-2
       min-w-[320px] max-w-[320px]
-      flex flex-col items-center text-center transition-transform duration-500 hover:scale-105 border-2 ${borderColorClass}
+      flex flex-col items-center transition-transform duration-500 hover:scale-105 border-2 ${borderColorClass}
     `}>
       {/* Badge opcional */}
       {badgeText && (
@@ -33,12 +33,12 @@ const Card = ({
         </div>
       )}
       
-      <h2 className={`text-lg font-extrabold mb-4 ${titleColorClass}`}>
+      <h2 className={`text-lg font-extrabold mb-4 text-center ${titleColorClass}`}>
         {title}
       </h2>
 
       {/* Contenedor para las líneas */}
-      <ul className="space-y-2 flex-1 w-full">
+      <ul className="space-y-2 flex-1 w-full text-left">
         {displayLines.map((line, index) => {
           let content = "";
           let colorClass = "text-black";
@@ -65,7 +65,7 @@ const Card = ({
           }
 
           return (
-            <li key={index} className="flex items-center justify-center">
+            <li key={index} className="flex items-center">
               {showIcon && (
                 <span className={`${iconClass} ${iconColorClass}`}>
                   {customIcon ? customIcon : defaultIcon}
