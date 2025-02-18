@@ -45,7 +45,7 @@ const Slider = ({ images = defaultImages, autoPlay = false, autoPlayTime = 3000 
             key={index}
             src={src}
             alt={`Slide ${index}`}
-            className="w-full flex-shrink-0 h-80 sm:h-96 md:h-[32rem] object-cover"
+            className="w-full flex-shrink-0 h-80 sm:h-96 md:h-[32rem] object-contain sm:object-cover"
           />
         ))}
       </div>
@@ -72,7 +72,7 @@ const Slider = ({ images = defaultImages, autoPlay = false, autoPlayTime = 3000 
           <div
             key={index}
             onClick={() => setCurrentIndex(index)}
-            className={`w-3 h-3 rounded-full cursor-pointer ${currentIndex === index ? 'bg-white shadow-md border-black border-1' : 'bg-orange-500 shadow-md border-black border-1'}`}
+            className={`w-3 h-3 rounded-full cursor-pointer ${currentIndex === index ? 'bg-white shadow-md border-black border' : 'bg-orange-500 shadow-md border-black border'}`}
           ></div>
         ))}
       </div>
