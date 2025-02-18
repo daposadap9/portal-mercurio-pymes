@@ -196,7 +196,7 @@ export default function Servicios() {
           titleColorClass="text-orange-600"
           iconColorClass="text-orange-600"
           showViewMore={true}
-          onViewMore={() => router.push("/paginas/servicios/mercurioArmaTuPlan")}
+          onViewMore={() => router.push("/paginas/servicios/formularioArmaTuPlan")}
           viewMoreText="¡Adquierelo ahora!"  
         />
       </div>

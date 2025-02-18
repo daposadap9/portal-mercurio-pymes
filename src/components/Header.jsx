@@ -1,3 +1,4 @@
+// components/Header.jsx
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
@@ -53,7 +54,7 @@ const Header = ({ handleNavigation, loading }) => {
     }))
   ];
 
-  // Opciones para el dropdown de TRÁMITES en Desktop
+  // Opciones para el dropdown de TRÁMITES en Desktop (sin "TODOS LOS TRÁMITES")
   const desktopTramitesDropdownItems = [
     { label: "PAGA TU FACTURA", action: () => alert("Pagar factura"), icon: <FaFileInvoiceDollar className="mr-2" /> },
     { label: "PQRSDF", href: "/paginas/tramites/pqrsdf", icon: <FaCommentAlt className="mr-2" /> },
@@ -61,12 +62,13 @@ const Header = ({ handleNavigation, loading }) => {
     { label: "CONSULTA ESTADO DE SOLICITUD", href: "/paginas/tramites/estadoSolicitud", icon: <FaInfoCircle className="mr-2" /> }
   ];
 
-  // Opciones para el menú de TRÁMITES en Mobile
+  // Opciones para el menú de TRÁMITES en Mobile (incluye "TODOS LOS TRÁMITES")
   const mobileTramitesDropdownItems = [
-    { label: "PAGA TU FACTURA", action: () => alert("Pagar factura"), icon: <FaAngleRight className="mr-2" /> },
-    { label: "PQRSDF", href: "/paginas/tramites/pqrsdf", icon: <FaAngleRight className="mr-2" /> },
-    { label: "SOLICITUDES MERCURIO CLIENTES", action: () => alert("Ver solicitudes"), icon: <FaAngleRight className="mr-2" /> },
-    { label: "CONSULTA ESTADO DE SOLICITUD", href: "/paginas/tramites/estadoSolicitud", icon: <FaAngleRight className="mr-2" /> }
+    { label: "TODOS LOS TRÁMITES", href: "/paginas/tramites", icon: <FaAngleRight className="mr-2" /> },
+    ...desktopTramitesDropdownItems.map(item => ({
+      ...item,
+      icon: <FaAngleRight className="mr-2" />
+    }))
   ];
 
   // Determina si el enlace corresponde a la ruta actual (o está en esa sección)
@@ -132,7 +134,7 @@ const Header = ({ handleNavigation, loading }) => {
               </a>
             </Link>
             <div
-              className="absolute left-0 top-full w-72 bg-white/80 shadow-2xl rounded-lg backdrop-blur-sm transform transition-all duration-300 z-50 scale-95 opacity-0 group-hover:scale-100 group-hover:opacity-100"
+              className="absolute left-0 top-full w-72 bg-white/80 shadow-2xl rounded-lg backdrop-blur-sm transform transition-all duration-300 delay-75 z-50 scale-95 opacity-0 group-hover:scale-100 group-hover:opacity-100"
             >
               <ul>
                 {desktopServicesDropdownItems.map((item, index) => (
@@ -163,7 +165,7 @@ const Header = ({ handleNavigation, loading }) => {
               </a>
             </Link>
             <div
-              className="absolute left-0 top-full w-72 bg-white/80 shadow-2xl rounded-lg backdrop-blur-sm transform transition-all duration-300 z-50 scale-95 opacity-0 group-hover:scale-100 group-hover:opacity-100"
+              className="absolute left-0 top-full w-72 bg-white/80 shadow-2xl rounded-lg backdrop-blur-sm transform transition-all duration-300 delay-75 z-50 scale-95 opacity-0 group-hover:scale-100 group-hover:opacity-100"
             >
               <ul>
                 {desktopTramitesDropdownItems.map((item, index) => (

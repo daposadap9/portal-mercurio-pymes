@@ -13,31 +13,46 @@ export default async function handler(req, res) {
       return res.status(400).json({ success: false, error: "Falta el parámetro 'idDocumento'" });
     }
 
-    // Ejecutar la consulta con el parámetro dinámico
+    // Ejecutar la consulta que trae solo IDDOCUMENTO y ESTDOCUMENTO con la conversión solicitada
+    const query = `
+      SELECT IDDOCUMENTO,
+             'Evacuado' AS ESTDOCUMENTO
+      FROM MERT_RECIBIDO 
+      WHERE IDDOCUMENTO = @idDocumento
+
+      UNION 
+
+      SELECT MFR.IDDOCUMENTO,
+             CASE 
+               WHEN MFR.ESTDOCUMENTO = 'P' THEN 'Pendiente'
+               WHEN MFR.ESTDOCUMENTO = 'F' THEN 'Finalizado'
+               WHEN MFR.ESTDOCUMENTO = 'E' THEN 'Evacuado'
+               ELSE MFR.ESTDOCUMENTO
+             END AS ESTDOCUMENTO
+      FROM MERT_FLUJO_RUTA MFR
+      JOIN MERT_RECIBIDO MR ON MFR.IDDOCUMENTO = MR.IDDOCUMENTO
+      WHERE MFR.IDDOCUMENTO = @idDocumento
+
+      UNION  
+
+      SELECT MB.IDDOCUMENTO,
+             CASE 
+               WHEN MB.ESTDOCUMENTO = 'P' THEN 'Pendiente'
+               WHEN MB.ESTDOCUMENTO = 'F' THEN 'Finalizado'
+               WHEN MB.ESTDOCUMENTO = 'E' THEN 'Evacuado'
+               ELSE MB.ESTDOCUMENTO
+             END AS ESTDOCUMENTO
+      FROM MERT_BITACORA MB
+      JOIN MERT_RECIBIDO MR ON MB.IDDOCUMENTO = MR.IDDOCUMENTO
+      WHERE MB.IDDOCUMENTO = @idDocumento
+
+      ORDER BY IDDOCUMENTO;
+    `;
+
     const result = await pool
       .request()
       .input("idDocumento", sql.VarChar, idDocumento)
-      .query(`
-        SELECT MR.IDDOCUMENTO, MR.IDUSUARIO_RAD, MR.FECDOCUMENTO, MR.FECDOCUMENTO, 'RADICACION' AS Tipo, 0 AS VALPASO, 'E' AS ESTDOCUMENTO
-        FROM MERT_RECIBIDO MR 
-        WHERE MR.IDDOCUMENTO = @idDocumento
-
-        UNION 
-
-        SELECT MFR.IDDOCUMENTO, MFR.IDUBICACION, MFR.FECENTRADA, MFR.FECSALIDA, MFR.IDRUTA, MFR.VALPASO, MFR.ESTDOCUMENTO
-        FROM MERT_FLUJO_RUTA MFR
-        JOIN MERT_RECIBIDO MR ON MFR.IDDOCUMENTO = MR.IDDOCUMENTO
-        WHERE MFR.IDDOCUMENTO = @idDocumento
-
-        UNION  
-
-        SELECT MB.IDDOCUMENTO, MB.IDUBICACION, MB.FECENTRADA, MB.FECSALIDA, 'DESTINATARIO' AS Tipo, '' AS VALPASO, MB.ESTDOCUMENTO
-        FROM MERT_BITACORA MB
-        JOIN MERT_RECIBIDO MR ON MB.IDDOCUMENTO = MR.IDDOCUMENTO
-        WHERE MB.IDDOCUMENTO = @idDocumento
-
-        ORDER BY 3, 6;
-      `);
+      .query(query);
 
     // Responder con los resultados
     res.status(200).json({

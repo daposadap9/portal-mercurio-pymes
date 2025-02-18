@@ -1,4 +1,3 @@
-// components/FormularioPQRSDF.js
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 
@@ -18,15 +17,35 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
     entidad: '',
     anexo: null,
     observacion: '',
-    aceptaNotificaciones: false,
-    aceptaTerminos: false,
+    aceptaNotificaciones: false, // Debe estar marcado
+    aceptaTerminos: false,        // Debe estar marcado (se selecciona en la modal)
   });
+
+  const [showModal, setShowModal] = useState(false);
 
   // Actualizamos el campo tipoSolicitud si cambian la prop o la query.
   useEffect(() => {
-    setFormData(prev => ({ ...prev, tipoSolicitud: tipoSolicitudProp || tipoSolicitudQuery || "" }));
+    setFormData(prev => ({
+      ...prev,
+      tipoSolicitud: tipoSolicitudProp || tipoSolicitudQuery || "",
+    }));
   }, [tipoSolicitudProp, tipoSolicitudQuery]);
 
+  // Función para validar que todos los datos obligatorios estén llenos
+  const isFormValid = () => {
+    return (
+      formData.nombres.trim() !== '' &&
+      formData.apellidos.trim() !== '' &&
+      formData.identificacion.trim() !== '' &&
+      formData.email.trim() !== '' &&
+      formData.telefono.trim() !== '' &&
+      formData.entidad.trim() !== '' &&
+      formData.aceptaNotificaciones === true &&
+      formData.aceptaTerminos === true
+    );
+  };
+
+  // Manejo de cambios en los inputs
   const handleChange = (e) => {
     const { name, value, type, checked, files } = e.target;
     if (type === 'checkbox') {
@@ -38,15 +57,16 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
     }
   };
 
+  // Manejo del envío del formulario
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Aquí implementar la lógica de envío
+    // Aquí se implementa la lógica de envío (por ejemplo, llamar a una API)
     console.log(formData);
     alert('¡Formulario enviado!');
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-8 bg-white shadow-2xl rounded-xl">
+    <div className="max-w-4xl mx-auto p-8 bg-white shadow-2xl rounded-xl relative">
       <h1 className="text-2xl font-bold text-center text-teal-600 mb-8">PQRSDF</h1>
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Tipo de solicitud (solo lectura) */}
@@ -60,7 +80,7 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
             name="tipoSolicitud"
             value={formData.tipoSolicitud}
             readOnly
-            className="mt-1 block w-full rounded-md border-gray-300 bg-gray-100 text-gray-700 shadow-inset-sm p-1"
+            className="mt-1 block w-full rounded-md border-gray-300 bg-gray-100 text-gray-700 shadow-inset-sm p-2"
           />
         </div>
 
@@ -78,7 +98,7 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
               onChange={handleChange}
               required
               placeholder="Ingrese sus nombres"
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-1"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-2"
             />
           </div>
           <div>
@@ -93,7 +113,7 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
               onChange={handleChange}
               required
               placeholder="Ingrese sus apellidos"
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-1"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-2"
             />
           </div>
         </div>
@@ -112,7 +132,7 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
               onChange={handleChange}
               required
               placeholder="Ingrese su número de identificación"
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-1"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-2"
             />
           </div>
           <div>
@@ -127,7 +147,7 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
               onChange={handleChange}
               required
               placeholder="Ingrese el nombre de la entidad"
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-1"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-2"
             />
           </div>
         </div>
@@ -146,7 +166,7 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
               onChange={handleChange}
               required
               placeholder="Ingrese su correo electrónico"
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-1"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-2"
             />
           </div>
           <div>
@@ -161,7 +181,7 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
               onChange={handleChange}
               required
               placeholder="Ingrese su número de teléfono celular"
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-1"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-2"
             />
           </div>
         </div>
@@ -192,7 +212,7 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
             onChange={handleChange}
             rows="4"
             placeholder="Escriba aquí sus comentarios o dudas..."
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-1"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-2"
           ></textarea>
         </div>
 
@@ -218,31 +238,81 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
           </label>
         </div>
 
-        {/* Checkbox de aceptación de política y términos */}
-        <div className="flex items-start">
-          <input
-            type="checkbox"
-            id="aceptaTerminos"
-            name="aceptaTerminos"
-            checked={formData.aceptaTerminos}
-            onChange={handleChange}
-            className="h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-300 rounded mt-1"
-          />
-          <label htmlFor="aceptaTerminos" className="ml-2 block text-md font-bold text-gray-700">
-            Acepto la política de privacidad y los términos y condiciones.
-          </label>
+        {/* Hipervínculo para ver la política (la aceptación se hará en la modal) */}
+        <div className="text-md">
+          <p>
+            Al presentar esta PQRSDF, acepto la{" "}
+            <a
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                setShowModal(true);
+              }}
+              className="text-blue-500 font-semibold hover:underline"
+            >
+              Política de Tratamientos Personales
+            </a>.
+          </p>
         </div>
 
-        {/* Botón de continuar */}
+        {/* Botón de continuar: solo se habilita cuando TODOS los datos requeridos están llenos */}
         <div>
           <button
             type="submit"
-            className="w-full bg-teal-500 text-white font-bold py-3 rounded-md transition-colors duration-300 hover:bg-teal-600"
+            disabled={!isFormValid()}
+            className="w-full bg-teal-500 text-white font-bold py-3 rounded-md transition-colors duration-300 hover:bg-teal-600 disabled:opacity-50"
           >
             Continuar
           </button>
         </div>
       </form>
+
+      {/* Modal para visualizar el PDF y aceptar la política */}
+      {showModal && (
+        <div className="fixed inset-0 flex items-center justify-center z-50">
+          {/* Fondo semitransparente */}
+          <div className="fixed inset-0 bg-black opacity-50" onClick={() => setShowModal(false)}></div>
+          {/* Contenedor de la modal */}
+          <div className="bg-white rounded-lg p-6 z-10 w-11/12 md:w-4/5 lg:w-1/2">
+            <div className="flex justify-between items-center">
+              <h2 className="text-xl font-bold">Política de Tratamientos Personales</h2>
+              <button onClick={() => setShowModal(false)} className="text-gray-600 hover:text-gray-800">
+                X
+              </button>
+            </div>
+            <div className="mt-4" style={{ overflow: 'hidden' }}>
+              <iframe
+                src="/politicaDeTratamientosPersonales.pdf"
+                className="w-full h-[500px]"
+                title="Política de Tratamientos Personales"
+              ></iframe>
+            </div>
+            <div className="mt-4 flex items-center">
+              <input
+                type="checkbox"
+                id="modalAceptaTerminos"
+                className="h-4 w-4 text-teal-600"
+                checked={formData.aceptaTerminos}
+                onChange={(e) =>
+                  setFormData(prev => ({ ...prev, aceptaTerminos: e.target.checked }))
+                }
+              />
+              <label htmlFor="modalAceptaTerminos" className="ml-2 text-gray-700">
+                Acepto la Política de Tratamientos Personales
+              </label>
+            </div>
+            <div className="mt-4 flex justify-end">
+              <button
+                onClick={() => setShowModal(false)}
+                disabled={!formData.aceptaTerminos}
+                className="bg-teal-500 text-white px-4 py-2 rounded disabled:opacity-50"
+              >
+                Aceptar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

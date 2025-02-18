@@ -6,14 +6,14 @@ import Layout from "../components/layout";
 import VerticalBarTransition from "../components/VerticalBarTransition";
 import { ApolloProvider } from '@apollo/client';
 import client from '../lib/apolloClient';
+import WhatsAppButton from "../components/WhatsAppButton";
 
 export default function App({ Component, pageProps }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
-  // Función para determinar si se debe animar.
+  // Función para determinar si se debe animar
   const shouldAnimate = (url) => {
-    // Si se ha marcado para omitir la animación, la desactivamos y retornamos false.
     if (typeof window !== 'undefined' && window.skipAnimation) {
       window.skipAnimation = false;
       return false;
@@ -22,7 +22,7 @@ export default function App({ Component, pageProps }) {
     return !(segments[0] === 'paginas' && segments.length > 2);
   };
 
-  // Función para navegar con retardo (1000ms) si corresponde.
+  // Navegación con retardo si corresponde
   const handleDelayedNavigation = async (href) => {
     if (loading || !shouldAnimate(href)) {
       router.push(href);
@@ -37,9 +37,7 @@ export default function App({ Component, pageProps }) {
     const handleRouteStart = (url) => {
       if (shouldAnimate(url)) setLoading(true);
     };
-    const handleRouteComplete = () => {
-      // Aquí podrías reiniciar otros estados si es necesario.
-    };
+    const handleRouteComplete = () => {};
     router.events.on('routeChangeStart', handleRouteStart);
     router.events.on('routeChangeComplete', handleRouteComplete);
     return () => {
@@ -54,6 +52,11 @@ export default function App({ Component, pageProps }) {
         {loading && <VerticalBarTransition onComplete={() => setLoading(false)} />}
         <Component {...pageProps} />
       </Layout>
+      {/* El botón se coloca fuera del Layout para que sea fixed y se muestre siempre */}
+      <WhatsAppButton 
+        phoneNumber="3008676122" 
+        message="¡Hola! Quiero más información." 
+      />
     </ApolloProvider>
   );
 }
