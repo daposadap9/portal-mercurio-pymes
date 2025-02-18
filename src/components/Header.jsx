@@ -27,6 +27,10 @@ const Header = ({ handleNavigation, loading }) => {
   const [isMobileServicesModalOpen, setMobileServicesModalOpen] = useState(false);
   const [isMobileTramitesModalOpen, setMobileTramitesModalOpen] = useState(false);
 
+  // Estados para controlar el dropdown en Desktop mediante hover
+  const [showServicesDropdown, setShowServicesDropdown] = useState(false);
+  const [showTramitesDropdown, setShowTramitesDropdown] = useState(false);
+
   const toggleMobileMenu = () => {
     if (loading) return; // Bloquea la acción si hay transición
     setMobileMenuOpen(!isMobileMenuOpen);
@@ -72,12 +76,11 @@ const Header = ({ handleNavigation, loading }) => {
   ];
 
   // Determina si el enlace corresponde a la ruta actual (o está en esa sección)
+  // Solo retorna true si la ruta actual es exactamente igual al href
   const isActive = (href) => {
-    if (href === '/') {
-      return router.pathname === '/';
-    }
-    return router.pathname.startsWith(href) && href !== '/';
+  return router.pathname === href;
   };
+
 
   // Clases base para los enlaces
   const baseLinkClass =
@@ -123,8 +126,12 @@ const Header = ({ handleNavigation, loading }) => {
             </a>
           </Link>
 
-          {/* Dropdown de SERVICIOS */}
-          <div className="relative group">
+          {/* Dropdown de SERVICIOS: solo se muestra al hacer hover sobre el texto */}
+          <div 
+            className="relative inline-block"
+            onMouseEnter={() => setShowServicesDropdown(true)}
+            onMouseLeave={() => setShowServicesDropdown(false)}
+          >
             <Link href="/paginas/servicios" legacyBehavior>
               <a 
                 onClick={handleLinkClick('/paginas/servicios')}
@@ -133,44 +140,13 @@ const Header = ({ handleNavigation, loading }) => {
                 <FaConciergeBell className="mr-2" /> SERVICIOS
               </a>
             </Link>
-            <div
-              className="absolute left-0 top-full w-72 bg-white/80 shadow-2xl rounded-lg backdrop-blur-sm transform transition-all duration-300 delay-75 z-50 scale-95 opacity-0 group-hover:scale-100 group-hover:opacity-100"
-            >
-              <ul>
-                {desktopServicesDropdownItems.map((item, index) => (
-                  <li key={index}>
-                    <Link href={item.href} legacyBehavior>
-                      <a 
-                        onClick={handleLinkClick(item.href)}
-                        className="flex items-center justify-start text-left px-4 py-2 text-teal-600 hover:bg-teal-600 hover:text-white transition-colors duration-300"
-                      >
-                        {item.icon}
-                        {item.label}
-                      </a>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-
-          {/* Dropdown de TRÁMITES */}
-          <div className="relative group">
-            <Link href="/paginas/tramites" legacyBehavior>
-              <a 
-                onClick={handleLinkClick('/paginas/tramites')}
-                className={`${baseLinkClass} ${isActive('/paginas/tramites') ? activeClass : inactiveClass}`}
+            {showServicesDropdown && (
+              <div
+                className="absolute left-0 top-full w-72 bg-white/80 shadow-2xl rounded-lg backdrop-blur-sm transition-opacity duration-300 ease-in-out opacity-100 z-50"
               >
-                <FaFileAlt className="mr-2" /> TRÁMITES
-              </a>
-            </Link>
-            <div
-              className="absolute left-0 top-full w-72 bg-white/80 shadow-2xl rounded-lg backdrop-blur-sm transform transition-all duration-300 delay-75 z-50 scale-95 opacity-0 group-hover:scale-100 group-hover:opacity-100"
-            >
-              <ul>
-                {desktopTramitesDropdownItems.map((item, index) => (
-                  <li key={index}>
-                    {item.href ? (
+                <ul>
+                  {desktopServicesDropdownItems.map((item, index) => (
+                    <li key={index}>
                       <Link href={item.href} legacyBehavior>
                         <a 
                           onClick={handleLinkClick(item.href)}
@@ -180,19 +156,58 @@ const Header = ({ handleNavigation, loading }) => {
                           {item.label}
                         </a>
                       </Link>
-                    ) : (
-                      <button 
-                        onClick={item.action}
-                        className="flex items-center justify-start text-left w-full px-4 py-2 text-teal-600 hover:bg-teal-600 hover:text-white transition-colors duration-300"
-                      >
-                        {item.icon}
-                        {item.label}
-                      </button>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+
+          {/* Dropdown de TRÁMITES: solo se muestra al hacer hover sobre el texto */}
+          <div 
+            className="relative inline-block"
+            onMouseEnter={() => setShowTramitesDropdown(true)}
+            onMouseLeave={() => setShowTramitesDropdown(false)}
+          >
+            <Link href="/paginas/tramites" legacyBehavior>
+              <a 
+                onClick={handleLinkClick('/paginas/tramites')}
+                className={`${baseLinkClass} ${isActive('/paginas/tramites') ? activeClass : inactiveClass}`}
+              >
+                <FaFileAlt className="mr-2" /> TRÁMITES
+              </a>
+            </Link>
+            {showTramitesDropdown && (
+              <div
+                className="absolute left-0 top-full w-72 bg-white/80 shadow-2xl rounded-lg backdrop-blur-sm transition-opacity duration-300 ease-in-out opacity-100 z-50"
+              >
+                <ul>
+                  {desktopTramitesDropdownItems.map((item, index) => (
+                    <li key={index}>
+                      {item.href ? (
+                        <Link href={item.href} legacyBehavior>
+                          <a 
+                            onClick={handleLinkClick(item.href)}
+                            className="flex items-center justify-start text-left px-4 py-2 text-teal-600 hover:bg-teal-600 hover:text-white transition-colors duration-300"
+                          >
+                            {item.icon}
+                            {item.label}
+                          </a>
+                        </Link>
+                      ) : (
+                        <button 
+                          onClick={() => { item.action && item.action(); }}
+                          className="flex items-center justify-start text-left w-full px-4 py-2 text-teal-600 hover:bg-teal-600 hover:text-white transition-colors duration-300"
+                        >
+                          {item.icon}
+                          {item.label}
+                        </button>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
 
           <Link href="/paginas/contactanos" legacyBehavior>
