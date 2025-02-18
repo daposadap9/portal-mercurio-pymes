@@ -22,7 +22,7 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
     aceptaTerminos: false,
   });
 
-  // Si el valor de la prop o el query cambian, actualizamos el campo tipoSolicitud.
+  // Actualizamos el campo tipoSolicitud si cambian la prop o la query.
   useEffect(() => {
     setFormData(prev => ({ ...prev, tipoSolicitud: tipoSolicitudProp || tipoSolicitudQuery || "" }));
   }, [tipoSolicitudProp, tipoSolicitudQuery]);
@@ -49,7 +49,7 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
     <div className="max-w-4xl mx-auto p-8 bg-white shadow-2xl rounded-xl">
       <h1 className="text-2xl font-bold text-center text-teal-600 mb-8">PQRSDF</h1>
       <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Campo readonly para el Tipo de solicitud */}
+        {/* Tipo de solicitud (solo lectura) */}
         <div>
           <label htmlFor="tipoSolicitud" className="block text-md font-bold text-gray-700">
             Tipo de solicitud
@@ -60,7 +60,7 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
             name="tipoSolicitud"
             value={formData.tipoSolicitud}
             readOnly
-            className="mt-1 block w-full rounded-md border-gray-300 bg-gray-100 text-gray-700 shadow-sm focus:border-teal-500 focus:ring-teal-500"
+            className="mt-1 block w-full rounded-md border-gray-300 bg-gray-100 text-gray-700 shadow-inset-sm p-1"
           />
         </div>
 
@@ -77,7 +77,8 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
               value={formData.nombres}
               onChange={handleChange}
               required
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500"
+              placeholder="Ingrese sus nombres"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-1"
             />
           </div>
           <div>
@@ -91,7 +92,8 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
               value={formData.apellidos}
               onChange={handleChange}
               required
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500"
+              placeholder="Ingrese sus apellidos"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-1"
             />
           </div>
         </div>
@@ -109,7 +111,8 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
               value={formData.identificacion}
               onChange={handleChange}
               required
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500"
+              placeholder="Ingrese su número de identificación"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-1"
             />
           </div>
           <div>
@@ -123,7 +126,8 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
               value={formData.entidad}
               onChange={handleChange}
               required
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500"
+              placeholder="Ingrese el nombre de la entidad"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-1"
             />
           </div>
         </div>
@@ -141,7 +145,8 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
               value={formData.email}
               onChange={handleChange}
               required
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500"
+              placeholder="Ingrese su correo electrónico"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-1"
             />
           </div>
           <div>
@@ -155,7 +160,8 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
               value={formData.telefono}
               onChange={handleChange}
               required
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500"
+              placeholder="Ingrese su número de teléfono celular"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-1"
             />
           </div>
         </div>
@@ -185,8 +191,8 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
             value={formData.observacion}
             onChange={handleChange}
             rows="4"
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500"
-            placeholder="Escribe aquí tus comentarios o dudas..."
+            placeholder="Escriba aquí sus comentarios o dudas..."
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-1"
           ></textarea>
         </div>
 

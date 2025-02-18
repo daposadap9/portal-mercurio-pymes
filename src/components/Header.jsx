@@ -1,4 +1,3 @@
-// components/Header.jsx
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
@@ -14,13 +13,18 @@ import {
   FaShieldAlt,
   FaGavel,
   FaBoxes,
-  FaAngleRight
+  FaAngleRight,
+  FaFileInvoiceDollar,
+  FaCommentAlt,
+  FaListAlt,
+  FaInfoCircle
 } from 'react-icons/fa';
 
 const Header = ({ handleNavigation, loading }) => {
   const router = useRouter();
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isMobileServicesModalOpen, setMobileServicesModalOpen] = useState(false);
+  const [isMobileTramitesModalOpen, setMobileTramitesModalOpen] = useState(false);
 
   const toggleMobileMenu = () => {
     if (loading) return; // Bloquea la acción si hay transición
@@ -31,8 +35,47 @@ const Header = ({ handleNavigation, loading }) => {
     setMobileServicesModalOpen(false);
   };
 
-  // Determina si el enlace corresponde a la ruta actual
-  const isActive = (href) => router.pathname === href;
+  // Opciones para el dropdown de SERVICIOS en Desktop
+  const desktopServicesDropdownItems = [
+    { label: "MERCURIO SGDEA", href: "/paginas/servicios/mercurioSGDEA", icon: <FaSearch className="mr-2" /> },
+    { label: "MERCURIO PYMES", href: "/paginas/servicios/mercurioPYMES", icon: <FaFileAlt className="mr-2" /> },
+    { label: "CUSTODIA", href: "/paginas/servicios/mercurioCustodia", icon: <FaShieldAlt className="mr-2" /> },
+    { label: "DIGITALIZACIÓN", href: "/paginas/servicios/mercurioDigitalizacion", icon: <FaGavel className="mr-2" /> },
+    { label: "SERVICIOS ADICIONALES", href: "/paginas/servicios/serviciosAdicionales", icon: <FaBoxes className="mr-2" /> }
+  ];
+
+  // Opciones para el menú de SERVICIOS en Mobile
+  const mobileServicesDropdownItems = [
+    { label: "TODOS LOS PLANES", href: "/paginas/servicios", icon: <FaAngleRight className="mr-2" /> },
+    ...desktopServicesDropdownItems.map(item => ({
+      ...item,
+      icon: <FaAngleRight className="mr-2" />
+    }))
+  ];
+
+  // Opciones para el dropdown de TRÁMITES en Desktop
+  const desktopTramitesDropdownItems = [
+    { label: "PAGA TU FACTURA", action: () => alert("Pagar factura"), icon: <FaFileInvoiceDollar className="mr-2" /> },
+    { label: "PQRSDF", href: "/paginas/tramites/pqrsdf", icon: <FaCommentAlt className="mr-2" /> },
+    { label: "SOLICITUDES MERCURIO CLIENTES", action: () => alert("Ver solicitudes"), icon: <FaListAlt className="mr-2" /> },
+    { label: "CONSULTA ESTADO DE SOLICITUD", href: "/paginas/tramites/estadoSolicitud", icon: <FaInfoCircle className="mr-2" /> }
+  ];
+
+  // Opciones para el menú de TRÁMITES en Mobile
+  const mobileTramitesDropdownItems = [
+    { label: "PAGA TU FACTURA", action: () => alert("Pagar factura"), icon: <FaAngleRight className="mr-2" /> },
+    { label: "PQRSDF", href: "/paginas/tramites/pqrsdf", icon: <FaAngleRight className="mr-2" /> },
+    { label: "SOLICITUDES MERCURIO CLIENTES", action: () => alert("Ver solicitudes"), icon: <FaAngleRight className="mr-2" /> },
+    { label: "CONSULTA ESTADO DE SOLICITUD", href: "/paginas/tramites/estadoSolicitud", icon: <FaAngleRight className="mr-2" /> }
+  ];
+
+  // Determina si el enlace corresponde a la ruta actual (o está en esa sección)
+  const isActive = (href) => {
+    if (href === '/') {
+      return router.pathname === '/';
+    }
+    return router.pathname.startsWith(href) && href !== '/';
+  };
 
   // Clases base para los enlaces
   const baseLinkClass =
@@ -54,24 +97,6 @@ const Header = ({ handleNavigation, loading }) => {
       router.push(href);
     }
   };
-
-  // Opciones para el dropdown de Servicios en Desktop (agregamos iconos)
-  const desktopServicesDropdownItems = [
-    { label: "MERCURIO SGDEA", href: "/paginas/servicios/mercurioSGDEA", icon: <FaSearch className="mr-2" /> },
-    { label: "MERCURIO PYMES", href: "/paginas/servicios/mercurioPYMES", icon: <FaFileAlt className="mr-2" /> },
-    { label: "CUSTODIA", href: "/paginas/servicios/mercurioCustodia", icon: <FaShieldAlt className="mr-2" /> },
-    { label: "DIGITALIZACIÓN", href: "/paginas/servicios/mercurioDigitalizacion", icon: <FaGavel className="mr-2" /> },
-    { label: "SERVICIOS ADICIONALES", href: "/paginas/servicios/serviciosAdicionales", icon: <FaBoxes className="mr-2" /> }
-  ];
-
-  // Opciones para el menú de Servicios en Mobile (incluye "TODOS LOS PLANES")
-  const mobileServicesDropdownItems = [
-    { label: "TODOS LOS PLANES", href: "/paginas/servicios", icon: <FaAngleRight className="mr-2" /> },
-    ...desktopServicesDropdownItems.map(item => ({
-      ...item,
-      icon: <FaAngleRight className="mr-2" />
-    }))
-  ];
 
   return (
     <header className="sticky top-0 w-full bg-slate-100 shadow-lg z-50">
@@ -106,15 +131,16 @@ const Header = ({ handleNavigation, loading }) => {
                 <FaConciergeBell className="mr-2" /> SERVICIOS
               </a>
             </Link>
-            {/* Menú desplegable pegado al header con efecto flotante */}
-            <div className="absolute left-0 top-full w-72 bg-white/80 shadow-2xl rounded-lg backdrop-blur-sm transform scale-95 opacity-0 group-hover:scale-100 group-hover:opacity-100 transition-all duration-300 z-50">
+            <div
+              className="absolute left-0 top-full w-72 bg-white/80 shadow-2xl rounded-lg backdrop-blur-sm transform transition-all duration-300 z-50 scale-95 opacity-0 group-hover:scale-100 group-hover:opacity-100"
+            >
               <ul>
                 {desktopServicesDropdownItems.map((item, index) => (
                   <li key={index}>
                     <Link href={item.href} legacyBehavior>
                       <a 
                         onClick={handleLinkClick(item.href)}
-                        className="flex items-center px-4 py-2 text-teal-600 hover:bg-teal-600 hover:text-white transition-colors duration-300"
+                        className="flex items-center justify-start text-left px-4 py-2 text-teal-600 hover:bg-teal-600 hover:text-white transition-colors duration-300"
                       >
                         {item.icon}
                         {item.label}
@@ -126,14 +152,47 @@ const Header = ({ handleNavigation, loading }) => {
             </div>
           </div>
 
-          <Link href="/paginas/tramites" legacyBehavior>
-            <a 
-              onClick={handleLinkClick('/paginas/tramites')}
-              className={`${baseLinkClass} ${isActive('/paginas/tramites') ? activeClass : inactiveClass}`}
+          {/* Dropdown de TRÁMITES */}
+          <div className="relative group">
+            <Link href="/paginas/tramites" legacyBehavior>
+              <a 
+                onClick={handleLinkClick('/paginas/tramites')}
+                className={`${baseLinkClass} ${isActive('/paginas/tramites') ? activeClass : inactiveClass}`}
+              >
+                <FaFileAlt className="mr-2" /> TRÁMITES
+              </a>
+            </Link>
+            <div
+              className="absolute left-0 top-full w-72 bg-white/80 shadow-2xl rounded-lg backdrop-blur-sm transform transition-all duration-300 z-50 scale-95 opacity-0 group-hover:scale-100 group-hover:opacity-100"
             >
-              <FaFileAlt className="mr-2" /> TRÁMITES
-            </a>
-          </Link>
+              <ul>
+                {desktopTramitesDropdownItems.map((item, index) => (
+                  <li key={index}>
+                    {item.href ? (
+                      <Link href={item.href} legacyBehavior>
+                        <a 
+                          onClick={handleLinkClick(item.href)}
+                          className="flex items-center justify-start text-left px-4 py-2 text-teal-600 hover:bg-teal-600 hover:text-white transition-colors duration-300"
+                        >
+                          {item.icon}
+                          {item.label}
+                        </a>
+                      </Link>
+                    ) : (
+                      <button 
+                        onClick={item.action}
+                        className="flex items-center justify-start text-left w-full px-4 py-2 text-teal-600 hover:bg-teal-600 hover:text-white transition-colors duration-300"
+                      >
+                        {item.icon}
+                        {item.label}
+                      </button>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
           <Link href="/paginas/contactanos" legacyBehavior>
             <a 
               onClick={handleLinkClick('/paginas/contactanos')}
@@ -188,14 +247,15 @@ const Header = ({ handleNavigation, loading }) => {
             >
               <FaConciergeBell className="mr-2" /> SERVICIOS
             </button>
-            <Link href="/paginas/tramites" legacyBehavior>
-              <a 
-                onClick={handleLinkClick('/paginas/tramites', toggleMobileMenu)}
-                className={`${baseLinkClass2} ${isActive('/paginas/tramites') ? activeClass : inactiveClass}`}
-              >
-                <FaFileAlt className="mr-2" /> TRÁMITES
-              </a>
-            </Link>
+            <button 
+              onClick={() => {
+                setMobileTramitesModalOpen(true);
+                setMobileMenuOpen(false);
+              }}
+              className={`${baseLinkClass2} text-left ${isActive('/paginas/tramites') ? activeClass : inactiveClass}`}
+            >
+              <FaFileAlt className="mr-2" /> TRÁMITES
+            </button>
             <Link href="/paginas/contactanos" legacyBehavior>
               <a 
                 onClick={handleLinkClick('/paginas/contactanos', toggleMobileMenu)}
@@ -232,13 +292,53 @@ const Header = ({ handleNavigation, loading }) => {
                 <li key={index}>
                   <Link href={item.href} legacyBehavior>
                     <a 
-                      onClick={handleLinkClick(item.href, closeMobileServicesModal)}
-                      className="flex items-center px-4 py-2 rounded-md text-teal-600 hover:bg-teal-600 hover:text-white transition-colors duration-300"
+                      onClick={handleLinkClick(item.href, () => setMobileServicesModalOpen(false))}
+                      className="flex items-center justify-start text-left px-4 py-2 rounded-md text-teal-600 hover:bg-teal-600 hover:text-white transition-colors duration-300"
                     >
                       {item.icon}
                       {item.label}
                     </a>
                   </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      )}
+
+      {/* Modal para Trámites en Mobile */}
+      {isMobileTramitesModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white rounded-lg shadow-xl w-11/12 max-w-md p-6 relative animate-fadeIn">
+            <button 
+              onClick={() => setMobileTramitesModalOpen(false)}
+              className="absolute top-2 right-2 text-teal-600 hover:text-teal-800 transition-colors duration-300"
+            >
+              <FaTimes size={24} />
+            </button>
+            <h2 className="text-2xl font-bold text-teal-600 mb-4 text-center">TRÁMITES</h2>
+            <ul className="space-y-3">
+              {mobileTramitesDropdownItems.map((item, index) => (
+                <li key={index}>
+                  {item.href ? (
+                    <Link href={item.href} legacyBehavior>
+                      <a 
+                        onClick={handleLinkClick(item.href, () => setMobileTramitesModalOpen(false))}
+                        className="flex items-center justify-start text-left px-4 py-2 rounded-md text-teal-600 hover:bg-teal-600 hover:text-white transition-colors duration-300"
+                      >
+                        {item.icon}
+                        {item.label}
+                      </a>
+                    </Link>
+                  ) : (
+                    <button 
+                      onClick={() => { item.action && item.action(); setMobileTramitesModalOpen(false); }}
+                      className="flex items-center justify-start text-left w-full px-4 py-2 rounded-md text-teal-600 hover:bg-teal-600 hover:text-white transition-colors duration-300"
+                    >
+                      {item.icon}
+                      {item.label}
+                    </button>
+                  )}
                 </li>
               ))}
             </ul>

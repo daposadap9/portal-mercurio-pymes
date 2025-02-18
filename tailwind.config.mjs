@@ -11,6 +11,9 @@ export default {
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
+      boxShadow: {
+        'inset-sm': 'inset 0px 0px 2px 1px rgba(0, 0, 0, 0.13)',
+      },
     },
   },
   plugins: [],
