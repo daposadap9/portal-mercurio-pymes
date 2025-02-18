@@ -253,9 +253,7 @@ const FormularioArmaTuPlan = () => {
             onClick={() => setShowModal(false)}
           ></div>
           {/* Contenedor de la modal: 50vh en mobile, 70vh en desktop */}
-          <div
-            className="relative bg-white rounded-lg shadow-2xl p-6 w-full max-w-4xl mx-auto my-4 overflow-auto h-[50vh] md:h-[70vh]"
-          >
+          <div className="relative bg-white rounded-lg shadow-2xl p-6 w-full max-w-4xl mx-auto my-4 overflow-auto h-[50vh] md:h-[70vh]">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-bold text-center flex-1">
                 Política de Seguridad de la Información y Tratamiento de Datos
@@ -267,7 +265,7 @@ const FormularioArmaTuPlan = () => {
                 &times;
               </button>
             </div>
-            {/* Contenedor para el iframe: descontamos el espacio ocupado por el header y controles */}
+            {/* Contenedor para el iframe: descontamos el espacio del header y controles */}
             <div className="w-full" style={{ height: 'calc(100% - 120px)' }}>
               <iframe
                 src="/politicaDeTratamientosPersonales.pdf"
