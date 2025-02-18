@@ -12,22 +12,22 @@ const Login = () => {
         <form>
           <div className="mb-4">
             <label htmlFor="email" className="block text-gray-700 font-semibold mb-2">
-              Correo electrónico
+              Usuario
             </label>
             <input 
               type="email" 
               id="email" 
-              placeholder="correo@ejemplo.com" 
+              placeholder="Tu usuario" 
               className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
             />
           </div>
           <div className="mb-6">
-            <label htmlFor="password" className="block text-gray-700 font-semibold mb-2">
+            <label htmlFor="contraseña" className="block text-gray-700 font-semibold mb-2">
               Contraseña
             </label>
             <input 
-              type="password" 
-              id="password" 
+              type="contraseña" 
+              id="contraseña" 
               placeholder="********" 
               className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
             />

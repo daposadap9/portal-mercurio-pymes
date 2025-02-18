@@ -78,18 +78,24 @@ const Footer = () => {
       
       {/* Modal para mostrar el PDF de Información Legal */}
       {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-75 z-50">
-          <div 
-            className="bg-white rounded-lg shadow-2xl p-6 relative w-full max-w-4xl h-[90%] overflow-hidden"
-          >
-            <button 
-              onClick={closeModal}
-              className="absolute top-4 right-4 text-gray-700 hover:text-gray-900 font-bold text-3xl"
-            >
-              &times;
-            </button>
-            <h2 className="text-2xl font-bold mb-4 text-center">Información Legal</h2>
-            <div className="w-full h-full">
+        <div className="fixed inset-0 flex items-center justify-center z-50 px-4">
+          {/* Fondo semitransparente */}
+          <div
+            className="fixed inset-0 bg-black opacity-75"
+            onClick={closeModal}
+          ></div>
+          {/* Contenedor de la modal con altura dinámica */}
+          <div className="bg-white rounded-lg shadow-2xl p-6 z-10 w-11/12 md:w-4/5 lg:w-1/2 max-h-[calc(100vh-100px)] overflow-auto">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-2xl font-bold text-center flex-1">Información Legal</h2>
+              <button 
+                onClick={closeModal}
+                className="text-gray-600 hover:text-gray-900 font-bold text-3xl"
+              >
+                &times;
+              </button>
+            </div>
+            <div className="w-full" style={{ height: 'calc(100vh - 400px)' }}>
               <iframe 
                 src="/InformaciónLegal.pdf" 
                 title="Información Legal" 

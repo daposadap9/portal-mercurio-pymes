@@ -17,8 +17,8 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
     entidad: '',
     anexo: null,
     observacion: '',
-    aceptaNotificaciones: false, // Debe estar marcado
-    aceptaTerminos: false,        // Debe estar marcado (se selecciona en la modal)
+    aceptaNotificaciones: false,
+    aceptaTerminos: false,
   });
 
   const [showModal, setShowModal] = useState(false);
@@ -186,7 +186,7 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
           </div>
         </div>
 
-        {/* Anexo */}
+        {/* Anexo (input file) */}
         <div>
           <label htmlFor="anexo" className="block text-md font-bold text-gray-700">
             Anexo
@@ -196,11 +196,11 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
             id="anexo"
             name="anexo"
             onChange={handleChange}
-            className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100"
+            className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100 shadow-inset-sm"
           />
         </div>
 
-        {/* Observación */}
+        {/* Observación (textarea) */}
         <div>
           <label htmlFor="observacion" className="block text-md font-bold text-gray-700">
             Observación
@@ -216,32 +216,32 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
           ></textarea>
         </div>
 
-        {/* Texto informativo de horario */}
-        <div className="bg-gray-100 p-4 rounded-md">
-          <p className="text-md text-gray-700">
-            La solicitud de PQRSDF funciona únicamente los días hábiles de lunes a viernes entre las 6 am y las 6 pm.
-          </p>
-        </div>
-
-        {/* Checkbox de autorización para notificaciones */}
-        <div className="flex items-start">
-          <input
-            type="checkbox"
-            id="aceptaNotificaciones"
-            name="aceptaNotificaciones"
-            checked={formData.aceptaNotificaciones}
-            onChange={handleChange}
-            className="h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-300 rounded mt-1"
-          />
-          <label htmlFor="aceptaNotificaciones" className="ml-2 block text-md font-bold text-gray-700">
-            Al presentar esta PQRSDF por este medio, acepto y autorizo a XXXXXXXXX para que todas las notificaciones sean enviadas al correo electrónico registrado, esto con base en el artículo 56 de la ley 143 de 2011.
+        {/* Medio de contacto preferido */}
+        <div>
+          <label htmlFor="medioContacto" className="block text-md font-bold text-gray-700">
+            Medio por el cual prefieres que te contactemos
           </label>
+          <select
+            id="medioContacto"
+            name="medioContacto"
+            value={formData.medioContacto}
+            onChange={handleChange}
+            required
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-2"
+          >
+            <option value="">Seleccione un medio</option>
+            {mediosContactoOptions.map((option, idx) => (
+              <option key={idx} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
         </div>
 
-        {/* Hipervínculo para ver la política (la aceptación se hará en la modal) */}
+        {/* Enlace para ver la política */}
         <div className="text-md">
           <p>
-            Al presentar esta PQRSDF, acepto la{" "}
+            Al enviar este formulario, acepto la{' '}
             <a
               href="#"
               onClick={(e) => {
@@ -251,36 +251,44 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
               className="text-blue-500 font-semibold hover:underline"
             >
               Política de Seguridad de la Información y Tratamiento de Datos
-            </a>.
+            </a>
           </p>
         </div>
 
-        {/* Botón de continuar: solo se habilita cuando TODOS los datos requeridos están llenos */}
+        {/* Botón de enviar */}
         <div>
           <button
             type="submit"
             disabled={!isFormValid()}
             className="w-full bg-teal-500 text-white font-bold py-3 rounded-md transition-colors duration-300 hover:bg-teal-600 disabled:opacity-50"
           >
-            Continuar
+            Enviar
           </button>
         </div>
       </form>
 
-      {/* Modal para visualizar el PDF y aceptar la política */}
+      {/* Modal para visualizar la política */}
       {showModal && (
-        <div className="fixed inset-0 flex items-center justify-center z-50">
+        <div className="fixed inset-0 flex items-center justify-center z-50 px-4">
           {/* Fondo semitransparente */}
-          <div className="fixed inset-0 bg-black opacity-50" onClick={() => setShowModal(false)}></div>
-          {/* Contenedor de la modal */}
-          <div className="bg-white rounded-lg p-6 z-10 w-11/12 md:w-4/5 lg:w-1/2">
+          <div
+            className="fixed inset-0 bg-black opacity-50"
+            onClick={() => setShowModal(false)}
+          ></div>
+          {/* Contenedor de la modal con ajuste dinámico de altura */}
+          <div className="bg-white rounded-lg p-6 z-10 w-11/12 md:w-4/5 lg:w-1/2 max-h-[calc(100vh-100px)] overflow-auto">
             <div className="flex justify-between items-center">
-              <h2 className="text-xl font-bold">Política de Seguridad de la Información y Tratamiento de Datos</h2>
-              <button onClick={() => setShowModal(false)} className="text-gray-600 hover:text-gray-800">
+              <h2 className="text-xl font-bold">
+                Política de Seguridad de la Información y Tratamiento de Datos
+              </h2>
+              <button
+                onClick={() => setShowModal(false)}
+                className="text-gray-600 hover:text-gray-800"
+              >
                 X
               </button>
             </div>
-            <div className="mt-4" style={{ overflow: 'hidden' }}>
+            <div className="mt-4">
               <iframe
                 src="/politicaDeTratamientosPersonales.pdf"
                 className="w-full h-[500px]"
