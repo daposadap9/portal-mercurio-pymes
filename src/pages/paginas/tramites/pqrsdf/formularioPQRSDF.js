@@ -7,6 +7,9 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
   const { tipoSolicitud: tipoSolicitudQuery } = router.query;
   const tipoInicial = tipoSolicitudProp || tipoSolicitudQuery || "";
 
+  // Definición de opciones para medios de contacto
+  const mediosContactoOptions = ['Whatsapp', 'Correo electrónico', 'Llamada'];
+
   const [formData, setFormData] = useState({
     tipoSolicitud: tipoInicial,
     nombres: '',
@@ -19,6 +22,7 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
     observacion: '',
     aceptaNotificaciones: false,
     aceptaTerminos: false,
+    medioContacto: '',
   });
 
   const [showModal, setShowModal] = useState(false);
@@ -41,7 +45,8 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
       formData.telefono.trim() !== '' &&
       formData.entidad.trim() !== '' &&
       formData.aceptaNotificaciones === true &&
-      formData.aceptaTerminos === true
+      formData.aceptaTerminos === true &&
+      formData.medioContacto.trim() !== ''
     );
   };
 
