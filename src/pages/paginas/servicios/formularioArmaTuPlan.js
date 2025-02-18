@@ -22,7 +22,6 @@ const FormularioArmaTuPlan = () => {
   // Opciones para la lista desplegable de medios de contacto
   const mediosContactoOptions = ['Whatsapp', 'Correo electrónico', 'Llamada'];
 
-  // Manejo de cambios en los inputs
   const handleChange = (e) => {
     const { name, value, type, checked, files } = e.target;
     if (type === 'checkbox') {
@@ -34,7 +33,6 @@ const FormularioArmaTuPlan = () => {
     }
   };
 
-  // Función para validar que todos los datos obligatorios estén llenos
   const isFormValid = () => {
     return (
       formData.nombres.trim() !== '' &&
@@ -50,7 +48,6 @@ const FormularioArmaTuPlan = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Aquí puedes agregar la lógica para enviar el formulario
     console.log(formData);
     alert('¡Formulario enviado!');
   };
@@ -73,7 +70,7 @@ const FormularioArmaTuPlan = () => {
               onChange={handleChange}
               required
               placeholder="Ingrese sus nombres"
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-2"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-inner p-2"
             />
           </div>
           <div>
@@ -88,7 +85,7 @@ const FormularioArmaTuPlan = () => {
               onChange={handleChange}
               required
               placeholder="Ingrese sus apellidos"
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-2"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-inner p-2"
             />
           </div>
         </div>
@@ -106,7 +103,7 @@ const FormularioArmaTuPlan = () => {
             onChange={handleChange}
             required
             placeholder="Ingrese el nombre de la entidad o empresa"
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-2"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-inner p-2"
           />
         </div>
 
@@ -121,7 +118,7 @@ const FormularioArmaTuPlan = () => {
             value={formData.servicio}
             onChange={handleChange}
             required
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-2"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-inner p-2"
           >
             <option value="">Seleccione un servicio</option>
             {serviciosOptions.map((option, idx) => (
@@ -146,7 +143,7 @@ const FormularioArmaTuPlan = () => {
               onChange={handleChange}
               required
               placeholder="Ingrese su correo electrónico"
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-2"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-inner p-2"
             />
           </div>
           <div>
@@ -161,7 +158,7 @@ const FormularioArmaTuPlan = () => {
               onChange={handleChange}
               required
               placeholder="Ingrese su número de teléfono celular"
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-2"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-inner p-2"
             />
           </div>
         </div>
@@ -176,7 +173,7 @@ const FormularioArmaTuPlan = () => {
             id="anexo"
             name="anexo"
             onChange={handleChange}
-            className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100 shadow-inset-sm"
+            className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100 shadow-inner"
           />
         </div>
 
@@ -192,11 +189,11 @@ const FormularioArmaTuPlan = () => {
             onChange={handleChange}
             rows="4"
             placeholder="Escribe aquí tus comentarios o dudas..."
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-2"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-inner p-2"
           ></textarea>
         </div>
 
-        {/* Fila 7: Medio de contacto preferido (lista desplegable) */}
+        {/* Fila 7: Medio de contacto preferido */}
         <div>
           <label htmlFor="medioContacto" className="block text-md font-bold text-gray-700">
             Medio por el cual prefieres que te contactemos
@@ -207,7 +204,7 @@ const FormularioArmaTuPlan = () => {
             value={formData.medioContacto}
             onChange={handleChange}
             required
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-2"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-inner p-2"
           >
             <option value="">Seleccione un medio</option>
             {mediosContactoOptions.map((option, idx) => (
@@ -218,7 +215,7 @@ const FormularioArmaTuPlan = () => {
           </select>
         </div>
 
-        {/* Fila 8: Enlace para ver la política y aceptarla */}
+        {/* Fila 8: Enlace para ver la política */}
         <div className="text-md">
           <p>
             Al enviar este formulario, acepto la{' '}
@@ -247,31 +244,34 @@ const FormularioArmaTuPlan = () => {
         </div>
       </form>
 
-      {/* Modal para visualizar la política y aceptarla */}
+      {/* Modal para visualizar la política */}
       {showModal && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 px-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
           {/* Fondo semitransparente */}
           <div
-            className="fixed inset-0 bg-black opacity-50"
+            className="absolute inset-0 bg-black opacity-50"
             onClick={() => setShowModal(false)}
           ></div>
-          <div className="bg-white rounded-lg p-6 z-10 w-11/12 md:w-4/5 lg:w-1/2 max-h-[calc(100vh-100px)] overflow-auto">
-            <div className="flex justify-between items-center">
-              <h2 className="text-xl font-bold">
+          {/* Contenedor de la modal: altura fija al 50% de la pantalla */}
+          <div className="relative bg-white rounded-lg shadow-2xl p-6 w-full max-w-4xl mx-auto my-4" style={{ height: '50vh' }}>
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold text-center flex-1">
                 Política de Seguridad de la Información y Tratamiento de Datos
               </h2>
               <button
                 onClick={() => setShowModal(false)}
-                className="text-gray-600 hover:text-gray-800"
+                className="text-gray-600 hover:text-gray-800 font-bold text-3xl"
               >
-                X
+                &times;
               </button>
             </div>
-            <div className="mt-4">
+            {/* Contenedor para el iframe con altura dinámica: restamos el espacio ocupado por encabezado y controles */}
+            <div className="w-full" style={{ height: 'calc(50vh - 120px)' }}>
               <iframe
                 src="/politicaDeTratamientosPersonales.pdf"
-                className="w-full h-[500px]"
+                className="w-full h-full"
                 title="Política de Seguridad de la Información y Tratamiento de Datos"
+                style={{ border: 'none' }}
               ></iframe>
             </div>
             <div className="mt-4 flex items-center">

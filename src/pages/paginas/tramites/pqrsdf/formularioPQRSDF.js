@@ -23,6 +23,7 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
     aceptaNotificaciones: false,
     aceptaTerminos: false,
     medioContacto: '',
+    aceptaPolitica: false,
   });
 
   const [showModal, setShowModal] = useState(false);
@@ -85,7 +86,7 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
             name="tipoSolicitud"
             value={formData.tipoSolicitud}
             readOnly
-            className="mt-1 block w-full rounded-md border-gray-300 bg-gray-100 text-gray-700 shadow-inset-sm p-2"
+            className="mt-1 block w-full rounded-md border-gray-300 bg-gray-100 text-gray-700 shadow-inner p-2"
           />
         </div>
 
@@ -103,7 +104,7 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
               onChange={handleChange}
               required
               placeholder="Ingrese sus nombres"
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-2"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-inner p-2"
             />
           </div>
           <div>
@@ -118,7 +119,7 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
               onChange={handleChange}
               required
               placeholder="Ingrese sus apellidos"
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-2"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-inner p-2"
             />
           </div>
         </div>
@@ -137,7 +138,7 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
               onChange={handleChange}
               required
               placeholder="Ingrese su número de identificación"
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-2"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-inner p-2"
             />
           </div>
           <div>
@@ -152,7 +153,7 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
               onChange={handleChange}
               required
               placeholder="Ingrese el nombre de la entidad"
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-2"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-inner p-2"
             />
           </div>
         </div>
@@ -171,7 +172,7 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
               onChange={handleChange}
               required
               placeholder="Ingrese su correo electrónico"
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-2"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-inner p-2"
             />
           </div>
           <div>
@@ -186,7 +187,7 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
               onChange={handleChange}
               required
               placeholder="Ingrese su número de teléfono celular"
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-2"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-inner p-2"
             />
           </div>
         </div>
@@ -201,7 +202,7 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
             id="anexo"
             name="anexo"
             onChange={handleChange}
-            className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100 shadow-inset-sm"
+            className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100 shadow-inner"
           />
         </div>
 
@@ -216,8 +217,8 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
             value={formData.observacion}
             onChange={handleChange}
             rows="4"
-            placeholder="Escriba aquí sus comentarios o dudas..."
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-2"
+            placeholder="Escribe aquí tus comentarios o dudas..."
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-inner p-2"
           ></textarea>
         </div>
 
@@ -232,7 +233,7 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
             value={formData.medioContacto}
             onChange={handleChange}
             required
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-2"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-inner p-2"
           >
             <option value="">Seleccione un medio</option>
             {mediosContactoOptions.map((option, idx) => (
@@ -274,50 +275,55 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
 
       {/* Modal para visualizar la política */}
       {showModal && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 px-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
           {/* Fondo semitransparente */}
           <div
-            className="fixed inset-0 bg-black opacity-50"
+            className="absolute inset-0 bg-black opacity-50"
             onClick={() => setShowModal(false)}
           ></div>
-          {/* Contenedor de la modal con ajuste dinámico de altura */}
-          <div className="bg-white rounded-lg p-6 z-10 w-11/12 md:w-4/5 lg:w-1/2 max-h-[calc(100vh-100px)] overflow-auto">
-            <div className="flex justify-between items-center">
-              <h2 className="text-xl font-bold">
+          {/* Contenedor de la modal: altura fija al 50% del viewport */}
+          <div
+            className="relative bg-white rounded-lg shadow-2xl p-6 w-full max-w-4xl mx-auto my-4 overflow-auto"
+            style={{ height: '50vh' }}
+          >
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold text-center flex-1">
                 Política de Seguridad de la Información y Tratamiento de Datos
               </h2>
               <button
                 onClick={() => setShowModal(false)}
-                className="text-gray-600 hover:text-gray-800"
+                className="text-gray-600 hover:text-gray-800 font-bold text-3xl"
               >
-                X
+                &times;
               </button>
             </div>
-            <div className="mt-4">
+            {/* Contenedor para el iframe: se descuenta el espacio del header y controles */}
+            <div className="w-full" style={{ height: 'calc(50vh - 120px)' }}>
               <iframe
                 src="/politicaDeTratamientosPersonales.pdf"
-                className="w-full h-[500px]"
+                className="w-full h-full"
                 title="Política de Seguridad de la Información y Tratamiento de Datos"
+                style={{ border: 'none' }}
               ></iframe>
             </div>
             <div className="mt-4 flex items-center">
               <input
                 type="checkbox"
-                id="modalAceptaTerminos"
+                id="modalAceptaPolitica"
                 className="h-4 w-4 text-teal-600"
-                checked={formData.aceptaTerminos}
+                checked={formData.aceptaPolitica}
                 onChange={(e) =>
-                  setFormData(prev => ({ ...prev, aceptaTerminos: e.target.checked }))
+                  setFormData({ ...formData, aceptaPolitica: e.target.checked })
                 }
               />
-              <label htmlFor="modalAceptaTerminos" className="ml-2 text-gray-700">
+              <label htmlFor="modalAceptaPolitica" className="ml-2 text-gray-700">
                 Acepto la Política de Seguridad de la Información y Tratamiento de Datos
               </label>
             </div>
             <div className="mt-4 flex justify-end">
               <button
                 onClick={() => setShowModal(false)}
-                disabled={!formData.aceptaTerminos}
+                disabled={!formData.aceptaPolitica}
                 className="bg-teal-500 text-white px-4 py-2 rounded disabled:opacity-50"
               >
                 Aceptar

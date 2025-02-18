@@ -64,7 +64,7 @@ const PQRSDFPage = () => {
   return (
     <div className="min-h-full bg-white p-4 flex flex-col items-center">
       {/* Alineamos el texto a la derecha y lo hacemos más notorio */}
-      <div className="mb-9 text-right">
+      <div className="mb-9">
         <p className="text-lg font-medium text-gray-800">
           Aquí podrás registrar tus peticiones, quejas, reclamos o recursos, 
           los cuales gestionaremos en días hábiles y de lunes a viernes de 6 a. m. a 6:00 p. m.
