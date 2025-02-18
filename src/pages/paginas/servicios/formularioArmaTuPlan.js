@@ -225,6 +225,10 @@ const FormularioArmaTuPlan = () => {
                 e.preventDefault();
                 setShowModal(true);
               }}
+              onTouchStart={(e) => {
+                e.preventDefault();
+                setShowModal(true);
+              }}
               className="text-blue-500 font-semibold hover:underline"
             >
               Política de Seguridad de la Información y Tratamiento de Datos
