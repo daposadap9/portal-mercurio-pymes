@@ -66,7 +66,6 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
   // Manejo del envío del formulario
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Aquí se implementa la lógica de envío (por ejemplo, llamar a una API)
     console.log(formData);
     alert('¡Formulario enviado!');
   };
@@ -281,10 +280,9 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
             className="absolute inset-0 bg-black opacity-50"
             onClick={() => setShowModal(false)}
           ></div>
-          {/* Contenedor de la modal: altura fija al 50% del viewport */}
+          {/* Contenedor de la modal: 50vh en mobile y 70vh en desktop */}
           <div
-            className="relative bg-white rounded-lg shadow-2xl p-6 w-full max-w-4xl mx-auto my-4 overflow-auto"
-            style={{ height: '50vh' }}
+            className="relative bg-white rounded-lg shadow-2xl p-6 w-full max-w-4xl mx-auto my-4 overflow-auto h-[50vh] md:h-[70vh]"
           >
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-bold text-center flex-1">
@@ -298,7 +296,7 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
               </button>
             </div>
             {/* Contenedor para el iframe: se descuenta el espacio del header y controles */}
-            <div className="w-full" style={{ height: 'calc(50vh - 120px)' }}>
+            <div className="w-full" style={{ height: 'calc(100% - 120px)' }}>
               <iframe
                 src="/politicaDeTratamientosPersonales.pdf"
                 className="w-full h-full"
