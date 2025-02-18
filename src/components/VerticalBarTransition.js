@@ -40,6 +40,21 @@ const VerticalBarTransition = ({ onComplete }) => {
           from { width: var(--enter-width); }
           to { width: 0; }
         }
+        /* Estilos para la sombra solo en el lado derecho de la barra 3 */
+        .bar-shadow {
+          position: relative;
+        }
+        .bar-shadow::after {
+          content: "";
+          position: absolute;
+          top: 0;
+          right: -5px; /* Ajusta este valor para posicionar la sombra */
+          width: 5px;  /* Ancho de la sombra */
+          height: 100%;
+          /* Sombra solo en el lado derecho */
+          box-shadow: -5px 0 5px rgba(0, 0, 0, 0.3);
+          pointer-events: none;
+        }
       `}</style>
       <div className="flex h-full">
         {/* Barra 1 */}
@@ -48,7 +63,6 @@ const VerticalBarTransition = ({ onComplete }) => {
           className="bg-white h-full transition-all ease-in-out"
           style={{
             '--enter-width': '25%',
-            // Aumentamos la duración de la animación y el retraso para un efecto más lento
             animation: 'enterAnim 1.2s ease-in-out forwards, exitAnim 1.2s ease-in-out forwards 1.2s'
           }}
         ></div>
@@ -67,14 +81,13 @@ const VerticalBarTransition = ({ onComplete }) => {
             className="w-[40rem] h-[40rem] object-contain"
           />
         </div>
-        {/* Barra 3 */}
+        {/* Barra 3: Con sombra solo a la derecha */}
         <div 
           ref={bar3Ref}
-          className="bg-white h-full transition-all ease-in-out"
+          className="bg-white h-full transition-all ease-in-out bar-shadow"
           style={{
             '--enter-width': '25%',
-            animation: 'enterAnim 1.2s ease-in-out forwards, exitAnim 1.2s ease-in-out forwards 1.2s',
-            boxShadow: '2px 0 5px rgba(0, 0, 0, 0.3)' // Sombra en el lado derecho
+            animation: 'enterAnim 1.2s ease-in-out forwards, exitAnim 1.2s ease-in-out forwards 1.2s'
           }}
         ></div>
       </div>

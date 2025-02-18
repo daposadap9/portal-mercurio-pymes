@@ -29,7 +29,7 @@ export default function App({ Component, pageProps }) {
       return;
     }
     setLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 800));
+    await new Promise((resolve) => setTimeout(resolve, 900));
     router.push(href);
   };
 
