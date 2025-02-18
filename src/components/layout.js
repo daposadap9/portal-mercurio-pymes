@@ -26,7 +26,7 @@ const Layout = ({ children, handleNavigation, loading }) => {
         {showSubNav && <SubNavigation />}
 
         <main className="pt-10 pb-20">
-          <div className="max-w-7xl mx-auto px-4 pb-20">
+          <div className="mx-auto max-w-full px-4 pb-20">
             {children}
           </div>
         </main>

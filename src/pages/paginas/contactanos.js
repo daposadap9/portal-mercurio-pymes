@@ -39,7 +39,7 @@ const contacts = [
 
 const Contactanos = () => {
   return (
-    <div className="min-h-full flex flex-col items-center justify-center p-6">
+    <div className="min-h-full max-w-6xl mx-auto flex flex-col items-center justify-center p-6">
       <h1 className="text-3xl font-bold text-teal-600 text-center mb-8">Contáctanos</h1>
       <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {contacts.map((contact, index) => (
