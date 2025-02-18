@@ -70,7 +70,7 @@ const FormularioArmaTuPlan = () => {
               onChange={handleChange}
               required
               placeholder="Ingrese sus nombres"
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-inner p-2"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-2"
             />
           </div>
           <div>
@@ -85,7 +85,7 @@ const FormularioArmaTuPlan = () => {
               onChange={handleChange}
               required
               placeholder="Ingrese sus apellidos"
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-inner p-2"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-2"
             />
           </div>
         </div>
@@ -103,7 +103,7 @@ const FormularioArmaTuPlan = () => {
             onChange={handleChange}
             required
             placeholder="Ingrese el nombre de la entidad o empresa"
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-inner p-2"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-2"
           />
         </div>
 
@@ -118,7 +118,7 @@ const FormularioArmaTuPlan = () => {
             value={formData.servicio}
             onChange={handleChange}
             required
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-inner p-2"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-2"
           >
             <option value="">Seleccione un servicio</option>
             {serviciosOptions.map((option, idx) => (
@@ -143,7 +143,7 @@ const FormularioArmaTuPlan = () => {
               onChange={handleChange}
               required
               placeholder="Ingrese su correo electrónico"
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-inner p-2"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-2"
             />
           </div>
           <div>
@@ -158,7 +158,7 @@ const FormularioArmaTuPlan = () => {
               onChange={handleChange}
               required
               placeholder="Ingrese su número de teléfono celular"
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-inner p-2"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-2"
             />
           </div>
         </div>
@@ -173,7 +173,7 @@ const FormularioArmaTuPlan = () => {
             id="anexo"
             name="anexo"
             onChange={handleChange}
-            className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100 shadow-inner"
+            className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100 shadow-inset-sm"
           />
         </div>
 
@@ -189,7 +189,7 @@ const FormularioArmaTuPlan = () => {
             onChange={handleChange}
             rows="4"
             placeholder="Escribe aquí tus comentarios o dudas..."
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-inner p-2"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-2"
           ></textarea>
         </div>
 
@@ -204,7 +204,7 @@ const FormularioArmaTuPlan = () => {
             value={formData.medioContacto}
             onChange={handleChange}
             required
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-inner p-2"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-2"
           >
             <option value="">Seleccione un medio</option>
             {mediosContactoOptions.map((option, idx) => (
