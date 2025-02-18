@@ -7,9 +7,6 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
   const { tipoSolicitud: tipoSolicitudQuery } = router.query;
   const tipoInicial = tipoSolicitudProp || tipoSolicitudQuery || "";
 
-  // Definición de opciones para medios de contacto
-  const mediosContactoOptions = ['Whatsapp', 'Correo electrónico', 'Llamada'];
-
   const [formData, setFormData] = useState({
     tipoSolicitud: tipoInicial,
     nombres: '',
@@ -20,10 +17,8 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
     entidad: '',
     anexo: null,
     observacion: '',
-    aceptaNotificaciones: false,
-    aceptaTerminos: false,
-    medioContacto: '',
-    aceptaPolitica: false,
+    aceptaNotificaciones: false, // Debe estar marcado
+    aceptaTerminos: false,        // Debe estar marcado (se selecciona en la modal)
   });
 
   const [showModal, setShowModal] = useState(false);
@@ -46,8 +41,7 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
       formData.telefono.trim() !== '' &&
       formData.entidad.trim() !== '' &&
       formData.aceptaNotificaciones === true &&
-      formData.aceptaTerminos === true &&
-      formData.medioContacto.trim() !== ''
+      formData.aceptaTerminos === true
     );
   };
 
@@ -66,7 +60,6 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
   // Manejo del envío del formulario
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Aquí se implementa la lógica de envío (por ejemplo, llamar a una API)
     console.log(formData);
     alert('¡Formulario enviado!');
   };
@@ -222,53 +215,57 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
           ></textarea>
         </div>
 
-        {/* Medio de contacto preferido */}
-        <div>
-          <label htmlFor="medioContacto" className="block text-md font-bold text-gray-700">
-            Medio por el cual prefieres que te contactemos
-          </label>
-          <select
-            id="medioContacto"
-            name="medioContacto"
-            value={formData.medioContacto}
-            onChange={handleChange}
-            required
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-inner p-2"
-          >
-            <option value="">Seleccione un medio</option>
-            {mediosContactoOptions.map((option, idx) => (
-              <option key={idx} value={option}>
-                {option}
-              </option>
-            ))}
-          </select>
+        {/* Texto informativo de horario */}
+        <div className="bg-gray-100 p-4 rounded-md">
+          <p className="text-md text-gray-700">
+            La solicitud de PQRSDF funciona únicamente los días hábiles de lunes a viernes entre las 6 am y las 6 pm.
+          </p>
         </div>
 
-        {/* Enlace para ver la política */}
+        {/* Checkbox de autorización para notificaciones */}
+        <div className="flex items-start">
+          <input
+            type="checkbox"
+            id="aceptaNotificaciones"
+            name="aceptaNotificaciones"
+            checked={formData.aceptaNotificaciones}
+            onChange={handleChange}
+            className="h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-300 rounded mt-1"
+          />
+          <label htmlFor="aceptaNotificaciones" className="ml-2 block text-md font-bold text-gray-700">
+            Al presentar esta PQRSDF por este medio, acepto y autorizo a XXXXXXXXX para que todas las notificaciones sean enviadas al correo electrónico registrado, esto con base en el artículo 56 de la ley 143 de 2011.
+          </label>
+        </div>
+
+        {/* Hipervínculo para ver la política (la aceptación se hará en la modal) */}
         <div className="text-md">
           <p>
-            Al enviar este formulario, acepto la{' '}
+            Al presentar esta PQRSDF, acepto la{" "}
             <a
-              href="#"
+              href="javascript:void(0)"
               onClick={(e) => {
+                e.preventDefault();
+                setShowModal(true);
+              }}
+              onTouchStart={(e) => {
                 e.preventDefault();
                 setShowModal(true);
               }}
               className="text-blue-500 font-semibold hover:underline"
             >
               Política de Seguridad de la Información y Tratamiento de Datos
-            </a>
+            </a>.
           </p>
         </div>
 
-        {/* Botón de enviar */}
+        {/* Botón de continuar */}
         <div>
           <button
             type="submit"
             disabled={!isFormValid()}
             className="w-full bg-teal-500 text-white font-bold py-3 rounded-md transition-colors duration-300 hover:bg-teal-600 disabled:opacity-50"
           >
-            Enviar
+            Continuar
           </button>
         </div>
       </form>
@@ -281,11 +278,8 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
             className="absolute inset-0 bg-black opacity-50"
             onClick={() => setShowModal(false)}
           ></div>
-          {/* Contenedor de la modal: altura fija al 50% del viewport */}
-          <div
-            className="relative bg-white rounded-lg shadow-2xl p-6 w-full max-w-4xl mx-auto my-4 overflow-auto"
-            style={{ height: '50vh' }}
-          >
+          {/* Contenedor de la modal: 50vh en mobile, 70vh en desktop */}
+          <div className="relative bg-white rounded-lg shadow-2xl p-6 w-full max-w-4xl mx-auto my-4 overflow-auto h-[50vh] md:h-[70vh]">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-bold text-center flex-1">
                 Política de Seguridad de la Información y Tratamiento de Datos
@@ -297,8 +291,8 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
                 &times;
               </button>
             </div>
-            {/* Contenedor para el iframe: se descuenta el espacio del header y controles */}
-            <div className="w-full" style={{ height: 'calc(50vh - 120px)' }}>
+            {/* Contenedor para el iframe: descontamos el espacio del header y controles */}
+            <div className="w-full" style={{ height: 'calc(100% - 120px)' }}>
               <iframe
                 src="/politicaDeTratamientosPersonales.pdf"
                 className="w-full h-full"
