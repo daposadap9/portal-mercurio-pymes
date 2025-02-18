@@ -220,7 +220,7 @@ const FormularioArmaTuPlan = () => {
           <p>
             Al enviar este formulario, acepto la{' '}
             <a
-              href="#"
+              href="javascript:void(0)"
               onClick={(e) => {
                 e.preventDefault();
                 setShowModal(true);
