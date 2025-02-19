@@ -25,7 +25,7 @@ const Tramites = () => {
       title: "SOLICITUDES MERCURIO CLIENTES", 
       icon: <FaListAlt className="text-6xl text-blue-400" />, 
       buttonText: "Ver solicitudes",
-      action: () => alert("Ver solicitudes")
+      href: "/paginas/tramites/solicitudesMercurio"
     },
     { 
       title: "CONSULTA ESTADO DE SOLICITUD", 
