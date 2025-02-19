@@ -75,12 +75,21 @@ const Header = ({ handleNavigation, loading }) => {
     }))
   ];
 
-  // Determina si el enlace corresponde a la ruta actual (o está en esa sección)
-  // Solo retorna true si la ruta actual es exactamente igual al href
-  const isActive = (href) => {
-  return router.pathname === href;
-  };
+  // Filtrar los items en mobile según la ruta actual:
+  // Si ya estás en '/paginas/servicios', no mostrar "TODOS LOS PLANES"
+  const filteredMobileServicesItems = mobileServicesDropdownItems.filter(
+    (item) => !(item.label === "TODOS LOS PLANES" && router.pathname === "/paginas/servicios")
+  );
 
+  // Si ya estás en '/paginas/tramites', no mostrar "TODOS LOS TRÁMITES"
+  const filteredMobileTramitesItems = mobileTramitesDropdownItems.filter(
+    (item) => !(item.label === "TODOS LOS TRÁMITES" && router.pathname === "/paginas/tramites")
+  );
+
+  // Determina si el enlace corresponde a la ruta actual (se compara de forma exacta)
+  const isActive = (href) => {
+    return router.pathname === href;
+  };
 
   // Clases base para los enlaces
   const baseLinkClass =
@@ -126,7 +135,7 @@ const Header = ({ handleNavigation, loading }) => {
             </a>
           </Link>
 
-          {/* Dropdown de SERVICIOS: solo se muestra al hacer hover sobre el texto */}
+          {/* Dropdown de SERVICIOS (Desktop) */}
           <div 
             className="relative inline-block"
             onMouseEnter={() => setShowServicesDropdown(true)}
@@ -163,7 +172,7 @@ const Header = ({ handleNavigation, loading }) => {
             )}
           </div>
 
-          {/* Dropdown de TRÁMITES: solo se muestra al hacer hover sobre el texto */}
+          {/* Dropdown de TRÁMITES (Desktop) */}
           <div 
             className="relative inline-block"
             onMouseEnter={() => setShowTramitesDropdown(true)}
@@ -305,7 +314,7 @@ const Header = ({ handleNavigation, loading }) => {
             </button>
             <h2 className="text-2xl font-bold text-teal-600 mb-4 text-center">SERVICIOS</h2>
             <ul className="space-y-3">
-              {mobileServicesDropdownItems.map((item, index) => (
+              {filteredMobileServicesItems.map((item, index) => (
                 <li key={index}>
                   <Link href={item.href} legacyBehavior>
                     <a 
@@ -335,7 +344,7 @@ const Header = ({ handleNavigation, loading }) => {
             </button>
             <h2 className="text-2xl font-bold text-teal-600 mb-4 text-center">TRÁMITES</h2>
             <ul className="space-y-3">
-              {mobileTramitesDropdownItems.map((item, index) => (
+              {filteredMobileTramitesItems.map((item, index) => (
                 <li key={index}>
                   {item.href ? (
                     <Link href={item.href} legacyBehavior>
