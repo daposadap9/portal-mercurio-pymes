@@ -1,4 +1,3 @@
-// components/Layout.js
 import React from 'react';
 import { useRouter } from 'next/router';
 import Header from './Header';
@@ -12,26 +11,26 @@ const Layout = ({ children, handleNavigation, loading }) => {
   const showSubNav = pathSegments.length > 1;
 
   return (
-    <div className="min-h-screen relative bg-white text-black">
+    <div className="relative min-h-screen bg-white text-black">
       {/* Capa de fondo */}
       <div 
         className="absolute inset-0 bg-[url('/monocromo.webp')] bg-fixed bg-center bg-cover opacity-20"
       ></div>
 
-      {/* Contenedor interno: usamos flex para empujar el footer hacia abajo */}
+      {/* Contenedor interno: flex-col para que el main crezca y empuje el footer */}
       <div className="relative z-10 flex flex-col min-h-screen">
         <Header handleNavigation={handleNavigation} loading={loading} />
 
-        {/* Mostrar subnavegación si la ruta es anidada */}
         {showSubNav && <SubNavigation />}
 
-        {/* Contenido principal que crece y empuja el footer al final */}
+        {/* Contenido principal que crece */}
         <main className="flex-grow pt-10 pb-20">
-          <div className="mx-auto max-w-full px-4 pb-20">
+          <div className="mx-auto max-w-full px-4">
             {children}
           </div>
         </main>
 
+        {/* Footer: en mobile se posiciona en el flujo y se empuja al fondo */}
         <Footer />
       </div>
     </div>

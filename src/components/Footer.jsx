@@ -15,7 +15,11 @@ const Footer = () => {
 
   return (
     <>
-      <footer className="relative md:fixed md:bottom-0 md:left-0 w-full bg-gradient-to-r from-teal-600 via-blue-800 to-teal-600 text-white py-4 shadow-xl z-50">
+      {/* 
+          En mobile (por defecto) usamos 'relative' y 'mt-auto' para empujar el footer
+          al fondo del contenedor; en md se vuelve fixed y con z-index mayor.
+      */}
+      <footer className="mt-auto relative md:fixed md:bottom-0 md:left-0 w-full bg-gradient-to-r from-teal-600 via-blue-800 to-teal-600 text-white py-4 shadow-xl z-10 md:z-50">
         <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center justify-center">
           {/* Sección izquierda */}
           <div className="flex-1 text-center">
@@ -51,7 +55,7 @@ const Footer = () => {
               >
                 <FaInstagram size={24} />
               </a>
-              {/* Servisoft: redirecciona a servisoft.co y muestra la imagen /servisoft.webp */}
+              {/* Servisoft */}
               <a 
                 href="https://servisoft.co/" 
                 target="_blank" 
@@ -61,7 +65,7 @@ const Footer = () => {
               >
                 <img src="/servisoft.webp" alt="Servisoft" className="w-6 h-6" />
               </a>
-              {/* Información Legal: abre modal con el PDF */}
+              {/* Información Legal: abre modal */}
               <a 
                 href="#"
                 onClick={openModal}
@@ -84,7 +88,7 @@ const Footer = () => {
             className="fixed inset-0 bg-black opacity-75"
             onClick={closeModal}
           ></div>
-          {/* Contenedor de la modal con altura dinámica */}
+          {/* Contenedor de la modal */}
           <div className="bg-white rounded-lg shadow-2xl p-6 z-10 w-11/12 md:w-4/5 lg:w-1/2 max-h-[calc(100vh-100px)] overflow-auto">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-2xl font-bold text-center flex-1">Información Legal</h2>
