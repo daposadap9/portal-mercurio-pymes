@@ -24,8 +24,8 @@ const Layout = ({ children, handleNavigation, loading }) => {
         {showSubNav && <SubNavigation />}
 
         {/* Contenido principal que crece */}
-        <main className="flex-grow pt-10 pb-20">
-          <div className="mx-auto max-w-full px-4 p-10">
+        <main className="flex-grow pt-2 md:pb-20 pb-2">
+          <div className="mx-auto max-w-full px-4 md:p-10 pb-2">
             {children}
           </div>
         </main>
