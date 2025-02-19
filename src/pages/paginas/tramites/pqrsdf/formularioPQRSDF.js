@@ -22,6 +22,7 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
   });
 
   const [showModal, setShowModal] = useState(false);
+  const [pdfLoaded, setPdfLoaded] = useState(false);
 
   // Actualizamos el campo tipoSolicitud si cambian la prop o la query.
   useEffect(() => {
@@ -243,7 +244,10 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
             Al presentar esta PQRSDF, acepto la{' '}
             <button
               type="button"
-              onClick={() => setShowModal(true)}
+              onClick={() => {
+                setPdfLoaded(false);
+                setShowModal(true);
+              }}
               className="text-blue-500 font-semibold hover:underline"
             >
               Política de Seguridad de la Información y Tratamiento de Datos
@@ -267,11 +271,8 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
           {/* Fondo semitransparente */}
-          <div
-            className="absolute inset-0 bg-black opacity-50"
-            onClick={() => setShowModal(false)}
-          ></div>
-          {/* Contenedor de la modal: 50vh en mobile, 70vh en desktop */}
+          <div className="absolute inset-0 bg-black opacity-50" onClick={() => setShowModal(false)}></div>
+          {/* Contenedor de la modal */}
           <div className="relative bg-white rounded-lg shadow-2xl p-6 w-full max-w-4xl mx-auto my-4 overflow-auto h-[50vh] md:h-[70vh]">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-bold text-center flex-1">
@@ -284,11 +285,17 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
                 &times;
               </button>
             </div>
-            {/* Contenedor para el iframe: descontamos el espacio del header y controles */}
+            {/* Contenedor para el iframe con loading */}
             <div className="w-full" style={{ height: 'calc(100% - 120px)' }}>
+              {!pdfLoaded && (
+                <div className="flex items-center justify-center h-full">
+                  <div className="animate-spin rounded-full h-12 w-12 border-4 border-t-teal-500 border-gray-200"></div>
+                </div>
+              )}
               <iframe
+                onLoad={() => setPdfLoaded(true)}
                 src="/politicaDeTratamientosPersonales.pdf"
-                className="w-full h-full"
+                className={`w-full h-full ${!pdfLoaded ? 'hidden' : ''}`}
                 title="Política de Seguridad de la Información y Tratamiento de Datos"
                 style={{ border: 'none' }}
               ></iframe>
