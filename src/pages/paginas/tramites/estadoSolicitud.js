@@ -9,7 +9,7 @@ const EstadoSolicitud = () => {
   // Manejar la consulta a la API
   const consultarEstado = async () => {
     if (!idDocumento) {
-      alert('Por favor, introduce un ID de documento válido.');
+      alert('Por favor, introduce un Radicado válido.');
       return;
     }
 
@@ -43,7 +43,7 @@ const EstadoSolicitud = () => {
           type="text"
           value={idDocumento}
           onChange={(e) => setIdDocumento(e.target.value)}
-          placeholder="Ingresa el ID del documento"
+          placeholder="Ingresa el numero de radicado"
           className="flex-1 p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
         />
         <button
@@ -70,7 +70,7 @@ const EstadoSolicitud = () => {
               <thead className="bg-teal-600 text-white">
                 <tr>
                   <th className="px-6 py-3 text-left text-sm font-medium uppercase tracking-wider">
-                    ID Documento
+                    Radicado
                   </th>
                   <th className="px-6 py-3 text-left text-sm font-medium uppercase tracking-wider">
                     Estado

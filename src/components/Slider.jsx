@@ -34,7 +34,7 @@ const Slider = ({ images = defaultImages, autoPlay = false, autoPlayTime = 3000 
   }, [autoPlay, autoPlayTime, images.length]);
 
   return (
-    <div className="relative w-full max-w-5xl mx-auto rounded-xl overflow-hidden shadow-md">
+    <div className="relative w-full max-w-5xl mx-auto rounded-xl overflow-hidden shadow-md bg-white">
       {/* Contenedor de slides */}
       <div
         className="flex transition-transform duration-500 ease-in-out"
@@ -45,7 +45,7 @@ const Slider = ({ images = defaultImages, autoPlay = false, autoPlayTime = 3000 
             key={index}
             src={src}
             alt={`Slide ${index}`}
-            className="w-full flex-shrink-0 h-80 sm:h-96 md:h-[32rem] object-contain sm:object-cover"
+            className="w-full flex-shrink-0 h-80 sm:h-96 lg:h-[32rem] object-contain sm:object-cover"
           />
         ))}
       </div>

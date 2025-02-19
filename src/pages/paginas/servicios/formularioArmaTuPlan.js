@@ -15,6 +15,7 @@ const FormularioArmaTuPlan = () => {
   });
 
   const [showModal, setShowModal] = useState(false);
+  const [pdfLoaded, setPdfLoaded] = useState(false);
 
   // Opciones para la lista desplegable de servicios
   const serviciosOptions = ['Servicio A', 'Servicio B', 'Servicio C'];
@@ -221,7 +222,10 @@ const FormularioArmaTuPlan = () => {
             Al enviar este formulario, acepto la{' '}
             <button
               type="button"
-              onClick={() => setShowModal(true)}
+              onClick={() => {
+                setPdfLoaded(false); // Reiniciamos el estado de carga
+                setShowModal(true);
+              }}
               className="text-blue-500 font-semibold hover:underline"
             >
               Política de Seguridad de la Información y Tratamiento de Datos
@@ -262,11 +266,17 @@ const FormularioArmaTuPlan = () => {
                 &times;
               </button>
             </div>
-            {/* Contenedor para el iframe: descontamos el espacio del header y controles */}
+            {/* Contenedor para el iframe con loading */}
             <div className="w-full" style={{ height: 'calc(100% - 120px)' }}>
+              {!pdfLoaded && (
+                <div className="flex items-center justify-center h-full">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-500"></div>
+                </div>
+              )}
               <iframe
+                onLoad={() => setPdfLoaded(true)}
                 src="/politicaDeTratamientosPersonales.pdf"
-                className="w-full h-full"
+                className={`w-full h-full ${!pdfLoaded ? 'hidden' : ''}`}
                 title="Política de Seguridad de la Información y Tratamiento de Datos"
                 style={{ border: 'none' }}
               ></iframe>
