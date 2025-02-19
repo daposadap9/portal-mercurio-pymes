@@ -25,7 +25,7 @@ const Layout = ({ children, handleNavigation, loading }) => {
 
         {/* Contenido principal que crece */}
         <main className="flex-grow pt-10 pb-20">
-          <div className="mx-auto max-w-full px-4">
+          <div className="mx-auto max-w-full px-4 p-10">
             {children}
           </div>
         </main>
