@@ -67,7 +67,7 @@ const PQRSDFPage = () => {
       <div className="mb-9">
         <p className="text-lg font-medium text-gray-800">
           Aquí podrás registrar tus peticiones, quejas, reclamos o recursos, 
-          los cuales gestionaremos en días hábiles y de lunes a viernes de 6 a. m. a 6:00 p. m.
+          los cuales gestionaremos en días hábiles y de lunes a viernes de 7 a. m. a 5:00 p. m.
         </p>
       </div>
       <h1 className="text-3xl font-bold text-teal-600 mb-8 text-center">
@@ -92,6 +92,11 @@ const PQRSDFPage = () => {
             </span>
           </div>
         ))}
+      </div>
+      <div className="mb-9 mt-12">
+        <p className="text-lg font-medium text-gray-800">
+          Si estás conectado(a) desde una red corporativa conexión VPN, deshabilita el proxy para que este formulario funcione de manera correcta.
+        </p>
       </div>
     </div>
   );
