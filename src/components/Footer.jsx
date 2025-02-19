@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { FaInstagram, FaInfoCircle } from 'react-icons/fa';
+import Loading from './loading';
 
 const Footer = () => {
   const [isModalOpen, setModalOpen] = useState(false);
@@ -89,9 +90,7 @@ const Footer = () => {
             <div className="w-full" style={{ height: 'calc(100% - 120px)' }}>
               {/* Spinner de carga */}
               {!pdfLoaded && (
-                <div className="flex items-center justify-center h-full">
-                  <div className="animate-spin rounded-full h-12 w-12 border-4 border-t-teal-500 border-gray-200"></div>
-                </div>
+                <Loading/>
               )}
               <iframe
                 onLoad={() => setPdfLoaded(true)}

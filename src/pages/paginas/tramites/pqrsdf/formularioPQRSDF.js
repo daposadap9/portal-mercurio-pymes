@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import Loading from '@/components/loading';
 
 const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
   const router = useRouter();
@@ -288,9 +289,7 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
             {/* Contenedor para el iframe con loading */}
             <div className="w-full" style={{ height: 'calc(100% - 120px)' }}>
               {!pdfLoaded && (
-                <div className="flex items-center justify-center h-full">
-                  <div className="animate-spin rounded-full h-12 w-12 border-4 border-t-teal-500 border-gray-200"></div>
-                </div>
+                <Loading/>
               )}
               <iframe
                 onLoad={() => setPdfLoaded(true)}

@@ -1,3 +1,4 @@
+import Loading from '@/components/loading';
 import React, { useState } from 'react';
 
 const FormularioArmaTuPlan = () => {
@@ -269,9 +270,7 @@ const FormularioArmaTuPlan = () => {
             {/* Contenedor para el iframe con loading */}
             <div className="w-full" style={{ height: 'calc(100% - 120px)' }}>
               {!pdfLoaded && (
-                <div className="flex items-center justify-center h-full">
-                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-500"></div>
-                </div>
+                <Loading/>
               )}
               <iframe
                 onLoad={() => setPdfLoaded(true)}
