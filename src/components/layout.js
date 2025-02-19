@@ -18,18 +18,20 @@ const Layout = ({ children, handleNavigation, loading }) => {
         className="absolute inset-0 bg-[url('/monocromo.webp')] bg-fixed bg-center bg-cover opacity-20"
       ></div>
 
-      {/* Contenido principal */}
-      <div className="relative z-10">
+      {/* Contenedor interno: usamos flex para empujar el footer hacia abajo */}
+      <div className="relative z-10 flex flex-col min-h-screen">
         <Header handleNavigation={handleNavigation} loading={loading} />
 
         {/* Mostrar subnavegación si la ruta es anidada */}
         {showSubNav && <SubNavigation />}
 
-        <main className="pt-10 pb-20">
+        {/* Contenido principal que crece y empuja el footer al final */}
+        <main className="flex-grow pt-10 pb-20">
           <div className="mx-auto max-w-full px-4 pb-20">
             {children}
           </div>
         </main>
+
         <Footer />
       </div>
     </div>

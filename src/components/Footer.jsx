@@ -15,7 +15,7 @@ const Footer = () => {
 
   return (
     <>
-      <footer className="fixed bottom-0 left-0 w-full bg-gradient-to-r from-teal-600 via-blue-800 to-teal-600 text-white py-4 shadow-xl z-50">
+      <footer className="relative md:fixed md:bottom-0 md:left-0 w-full bg-gradient-to-r from-teal-600 via-blue-800 to-teal-600 text-white py-4 shadow-xl z-50">
         <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center justify-center">
           {/* Sección izquierda */}
           <div className="flex-1 text-center">
