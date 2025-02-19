@@ -237,24 +237,17 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
           </label>
         </div>
 
-        {/* Hipervínculo para ver la política (la aceptación se hará en la modal) */}
+        {/* Botón para ver la política (la aceptación se hará en la modal) */}
         <div className="text-md">
           <p>
-            Al presentar esta PQRSDF, acepto la{" "}
-            <a
-              href="javascript:void(0)"
-              onClick={(e) => {
-                e.preventDefault();
-                setShowModal(true);
-              }}
-              onTouchStart={(e) => {
-                e.preventDefault();
-                setShowModal(true);
-              }}
+            Al presentar esta PQRSDF, acepto la{' '}
+            <button
+              type="button"
+              onClick={() => setShowModal(true)}
               className="text-blue-500 font-semibold hover:underline"
             >
               Política de Seguridad de la Información y Tratamiento de Datos
-            </a>.
+            </button>.
           </p>
         </div>
 
@@ -303,21 +296,21 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
             <div className="mt-4 flex items-center">
               <input
                 type="checkbox"
-                id="modalAceptaPolitica"
+                id="modalAceptaTerminos"
                 className="h-4 w-4 text-teal-600"
-                checked={formData.aceptaPolitica}
+                checked={formData.aceptaTerminos}
                 onChange={(e) =>
-                  setFormData({ ...formData, aceptaPolitica: e.target.checked })
+                  setFormData({ ...formData, aceptaTerminos: e.target.checked })
                 }
               />
-              <label htmlFor="modalAceptaPolitica" className="ml-2 text-gray-700">
+              <label htmlFor="modalAceptaTerminos" className="ml-2 text-gray-700">
                 Acepto la Política de Seguridad de la Información y Tratamiento de Datos
               </label>
             </div>
             <div className="mt-4 flex justify-end">
               <button
                 onClick={() => setShowModal(false)}
-                disabled={!formData.aceptaPolitica}
+                disabled={!formData.aceptaTerminos}
                 className="bg-teal-500 text-white px-4 py-2 rounded disabled:opacity-50"
               >
                 Aceptar

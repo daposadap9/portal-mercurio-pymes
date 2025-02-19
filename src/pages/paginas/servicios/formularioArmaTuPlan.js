@@ -215,24 +215,17 @@ const FormularioArmaTuPlan = () => {
           </select>
         </div>
 
-        {/* Fila 8: Enlace para ver la política */}
+        {/* Fila 8: Botón para ver la política */}
         <div className="text-md">
           <p>
             Al enviar este formulario, acepto la{' '}
-            <a
-              href="javascript:void(0)"
-              onClick={(e) => {
-                e.preventDefault();
-                setShowModal(true);
-              }}
-              onTouchStart={(e) => {
-                e.preventDefault();
-                setShowModal(true);
-              }}
+            <button
+              type="button"
+              onClick={() => setShowModal(true)}
               className="text-blue-500 font-semibold hover:underline"
             >
               Política de Seguridad de la Información y Tratamiento de Datos
-            </a>
+            </button>
           </p>
         </div>
 
