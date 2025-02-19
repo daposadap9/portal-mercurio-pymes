@@ -15,7 +15,7 @@ const Layout = ({ children, handleNavigation, loading }) => {
     <div className="min-h-screen relative bg-white text-black">
       {/* Capa de fondo */}
       <div 
-        className="absolute inset-0 bg-[url('/monocromo.png')] bg-fixed bg-center bg-cover opacity-20"
+        className="absolute inset-0 bg-[url('/monocromo.webp')] bg-fixed bg-center bg-cover opacity-20"
       ></div>
 
       {/* Contenido principal */}

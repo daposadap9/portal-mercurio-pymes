@@ -109,7 +109,7 @@ const Header = ({ handleNavigation, loading }) => {
         {/* Logo */}
         <div className="flex items-center">
           <img 
-            src="/logo-servisoft-30years.png" 
+            src="/logo-servisoft-30years.webp" 
             alt="Logo Servisoft" 
             className="w-56" 
           />

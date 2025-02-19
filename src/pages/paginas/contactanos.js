@@ -9,7 +9,7 @@ const contacts = [
     city: "BOGOTÁ D.C",
     phone: "3002187751",
     email: "SPEÑA@SERVISOFT.COM.CO",
-    photo: "/sandra.jpg" // Asegúrate de tener esta imagen en public
+    photo: "/sandra.webp" // Asegúrate de tener esta imagen en public
   },
   {
     name: "FREDY PEÑA",
@@ -17,7 +17,7 @@ const contacts = [
     city: "BOGOTÁ D.C",
     phone: "3008676350",
     email: "FPEÑA@SERVISOFT.COM.CO",
-    photo: "/fredy.jpg"
+    photo: "/fredy.webp"
   },
   {
     name: "ERIKA CORTÉS",
@@ -25,7 +25,7 @@ const contacts = [
     city: "BOGOTÁ D.C",
     phone: "3134850593",
     email: "ECORTES@SERVISOFT.COM.CO",
-    photo: "/erika.jpg"
+    photo: "/erika.webp"
   },
   {
     name: "SIMÓN ESCOBAR",
@@ -33,7 +33,7 @@ const contacts = [
     city: "MEDELLÍN",
     phone: "3008676122",
     email: "SESCOBAR@SERVISOFT.COM.CO",
-    photo: "/simon.jpg"
+    photo: "/simon.webp"
   }
 ];
 

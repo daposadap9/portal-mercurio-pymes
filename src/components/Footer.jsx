@@ -51,7 +51,7 @@ const Footer = () => {
               >
                 <FaInstagram size={24} />
               </a>
-              {/* Servisoft: redirecciona a servisoft.co y muestra la imagen /servisoft.png */}
+              {/* Servisoft: redirecciona a servisoft.co y muestra la imagen /servisoft.webp */}
               <a 
                 href="https://servisoft.co/" 
                 target="_blank" 
@@ -59,7 +59,7 @@ const Footer = () => {
                 className="hover:text-gray-300"
                 style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}
               >
-                <img src="/servisoft.png" alt="Servisoft" className="w-6 h-6" />
+                <img src="/servisoft.webp" alt="Servisoft" className="w-6 h-6" />
               </a>
               {/* Información Legal: abre modal con el PDF */}
               <a 

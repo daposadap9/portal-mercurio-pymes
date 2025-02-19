@@ -37,7 +37,7 @@ const PaymentFormPSE = () => {
     <div className="max-w-lg mx-auto p-8 bg-white shadow-xl rounded-lg">
       {/* Logo de PSE */}
       <div className="flex justify-center mb-6">
-        <img src="/pse.png" alt="Logo PSE" className="h-32" />
+        <img src="/pse.webp" alt="Logo PSE" className="h-32" />
       </div>
       <h2 className="text-2xl font-bold text-center text-teal-600 mb-6">Pago por PSE - (concepto)</h2>
       <form onSubmit={handleSubmit} className="space-y-4">

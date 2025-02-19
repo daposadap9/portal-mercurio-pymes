@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
-// Ahora las imágenes por defecto son imagen1.jpg e imagen2.jpg
-const defaultImages = ["/imagen1.jpg", "/imagen2.jpg"];
+// Ahora las imágenes por defecto son imagen1.webp e imagen2.webp
+const defaultImages = ["/imagen1.webp", "/imagen2.webp"];
 
 const Slider = ({ images = defaultImages, autoPlay = false, autoPlayTime = 3000 }) => {
   // Si se pasa un array vacío, se utiliza el array por defecto
