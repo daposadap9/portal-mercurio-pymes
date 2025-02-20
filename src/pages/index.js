@@ -7,10 +7,9 @@ export default function Home() {
   return (
     <>
       <Slider autoPlay={true} autoPlayTime={10000} />
-      {/*
       <div className='mt-16'>
       <Servicios/>
-      </div>*/}
+      </div>
     </>
   );
 }

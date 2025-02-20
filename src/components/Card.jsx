@@ -22,13 +22,13 @@ const Card = ({
 
   return (
     <div className={`
-      md:self-stretch relative bg-slate-50 text-black rounded-xl shadow-2xl p-6 m-2
-      min-w-[320px] max-w-[320px]
+      md:self-stretch relative bg-slate-50 text-black rounded-xl shadow-2xl p-6
+      min-w-[300px] max-w-[300px]
       flex flex-col items-center transition-transform duration-500 hover:scale-105 border-2 ${borderColorClass}
     `}>
       {/* Badge opcional */}
       {badgeText && (
-        <div className="absolute -top-2 -right-2 bg-black text-white text-xs font-bold px-2 py-1 rounded-full">
+        <div className="absolute -top-2 -right-0 bg-black text-white text-xs font-bold px-2 py-1 rounded-full">
           {badgeText}
         </div>
       )}

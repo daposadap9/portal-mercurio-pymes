@@ -94,12 +94,12 @@ export default function Servicios() {
 
   return (
     <>
-      <div className="flex justify-center text-4xl font-bold text-orange-500">
+      <div className="flex justify-center text-4xl font-bold text-teal-600 text-center" style={{ textShadow: '1px 2px 5px rgba(0,0,0,0.1)' }}>
         <h1>¡Cotiza tu servicio!</h1>
       </div>
 
       {/* Contenedor de servicios */}
-      <div className="flex flex-col md:flex-row flex-wrap items-center justify-center pt-5 gap-4">
+      <div className="flex flex-col md:flex-row flex-wrap items-center justify-center pt-5 gap-4 p-2">
         <Card 
           title={cardData.title} 
           lines={cardData.lines} 
@@ -145,22 +145,10 @@ export default function Servicios() {
           onViewMore={() => router.push("/paginas/servicios/mercurioDigitalizacion")}
           viewMoreText="Descubre más" 
         />
-        <Card 
-          title={cardData5.title} 
-          lines={cardData5.lines} 
-          maxLines={cardData5.maxLines} 
-          borderColorClass="hover:border-green-500"
-          badgeText="¡Oferta recomendada!"
-          titleColorClass="text-green-700"
-          iconColorClass="text-green-500"
-          showViewMore={true}
-          onViewMore={() => alert('¡Mostrando más detalles!')}
-          viewMoreText="Descubre más" 
-        />
       </div>
 
-      <div className="flex justify-center pt-10 text-4xl font-bold text-orange-500">
-        <h1>¡Nuestros planes!</h1>
+      <div className="flex justify-center pt-10 text-4xl font-bold text-teal-600" style={{ textShadow: '1px 2px 5px rgba(0,0,0,0.1)' }}>
+        <h1>¡Nuestros paquetes!</h1>
       </div>
 
       {/* Contenedor de planes */}
@@ -198,6 +186,23 @@ export default function Servicios() {
           showViewMore={true}
           onViewMore={() => router.push("/paginas/servicios/formularioArmaTuPlan")}
           viewMoreText="¡Adquierelo ahora!"  
+        />
+      </div>
+      <div className="flex justify-center pt-10 text-4xl font-bold text-teal-600" style={{ textShadow: '1px 2px 5px rgba(0,0,0,0.1)' }}>
+        <h1>Servicios Adicionales</h1>
+      </div>
+      <div className="flex flex-col md:flex-row flex-wrap items-center justify-center pt-5 gap-4">
+      <Card 
+          title={cardData5.title} 
+          lines={cardData5.lines} 
+          maxLines={cardData5.maxLines} 
+          borderColorClass="hover:border-green-500"
+          badgeText="¡Oferta recomendada!"
+          titleColorClass="text-green-700"
+          iconColorClass="text-green-500"
+          showViewMore={true}
+          onViewMore={() => alert('¡Mostrando más detalles!')}
+          viewMoreText="Descubre más" 
         />
       </div>
     </>

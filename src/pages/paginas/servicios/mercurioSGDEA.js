@@ -87,16 +87,7 @@ const MercurioSGDEA = () => {
 
               {/* Bloque para Ubicación y Botón */}
               <div className="mt-6 flex flex-col">
-                <h3 className="text-lg font-bold text-teal-600 mb-2">
-                  ¿Estás ubicado en?
-                </h3>
                 <div className="flex flex-col gap-4">
-                  <select 
-                    className="border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
-                  >
-                    <option value="Bogotá">Bogotá</option>
-                    <option value="Medellín">Medellín</option>
-                  </select>
                   <button className="w-full bg-teal-500 text-white font-bold py-2 rounded-md transition-colors duration-300 hover:bg-teal-600">
                     Enviar
                   </button>

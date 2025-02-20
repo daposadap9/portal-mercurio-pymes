@@ -31,7 +31,7 @@ const Layout = ({ children, handleNavigation, loading }) => {
         </main>
 
         {/* Footer: en mobile se posiciona en el flujo y se empuja al fondo */}
-        <Footer />
+        {/*<Footer />*/}
       </div>
     </div>
   );

@@ -1,4 +1,3 @@
-// components/Header.jsx
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
@@ -32,7 +31,7 @@ const Header = ({ handleNavigation, loading }) => {
   const [showTramitesDropdown, setShowTramitesDropdown] = useState(false);
 
   const toggleMobileMenu = () => {
-    if (loading) return; // Bloquea la acción si hay transición
+    if (loading) return;
     setMobileMenuOpen(!isMobileMenuOpen);
   };
 
@@ -75,31 +74,26 @@ const Header = ({ handleNavigation, loading }) => {
     }))
   ];
 
-  // Filtrar los items en mobile según la ruta actual:
-  // Si ya estás en '/paginas/servicios', no mostrar "TODOS LOS PLANES"
+  // Filtrar los items en mobile según la ruta actual
   const filteredMobileServicesItems = mobileServicesDropdownItems.filter(
     (item) => !(item.label === "TODOS LOS PLANES" && router.pathname === "/paginas/servicios")
   );
 
-  // Si ya estás en '/paginas/tramites', no mostrar "TODOS LOS TRÁMITES"
   const filteredMobileTramitesItems = mobileTramitesDropdownItems.filter(
     (item) => !(item.label === "TODOS LOS TRÁMITES" && router.pathname === "/paginas/tramites")
   );
 
-  // Determina si el enlace corresponde a la ruta actual (se compara de forma exacta)
-  const isActive = (href) => {
-    return router.pathname === href;
-  };
+  // Determina si el enlace corresponde a la ruta actual
+  const isActive = (href) => router.pathname === href;
 
-  // Clases base para los enlaces
+  // Clases base para los enlaces (estilo sutil con blanco y teal-600)
   const baseLinkClass =
-    "flex items-center font-bold p-2 transition-transform duration-300 ease-in-out hover:scale-105";
+    "flex items-center font-semibold p-1 transition-transform duration-300 ease-in-out text-teal-600";
   const baseLinkClass2 =
-    "flex items-center font-bold p-2 transition-colors duration-300 ease-in-out";
-  const activeClass = "bg-teal-600 text-white rounded-md";
-  const inactiveClass = "text-teal-600 hover:bg-teal-600 hover:text-white hover:rounded-md";
+    "flex items-center font-semibold p-1 transition-colors duration-300 ease-in-out text-teal-600";
+  const activeLinkClass = "bg-teal-600 text-white rounded";
+  const inactiveLinkClass = "hover:bg-teal-100 hover:text-teal-600 rounded";
 
-  // Maneja el clic en el enlace (con callback opcional)
   const handleLinkClick = (href, callback) => (e) => {
     e.preventDefault();
     if (isActive(href)) return;
@@ -113,25 +107,29 @@ const Header = ({ handleNavigation, loading }) => {
   };
 
   return (
-    <header className="sticky top-0 w-full bg-slate-100 shadow-lg z-50">
-      <nav className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-        {/* Logo */}
-        <div className="flex items-center">
-          <img 
-            src="/logo-servisoft-30years.webp" 
-            alt="Logo Servisoft" 
-            className="w-56" 
-          />
+    // Header con fondo blanco, sombra sutil y altura reducida (h-14)
+    <header className="sticky top-0 w-full bg-white shadow-sm z-50 h-14">
+      {/* nav relativo para dropdowns */}
+      <nav className="max-w-7xl mx-auto px-4 h-full flex justify-between items-center relative">
+        {/* Contenedor del logo con ancho fijo y overflow-hidden */}
+        <div className="flex items-center" style={{ minWidth: '180px', height: '100%' }}>
+          <div className="w-48 h-full overflow-hidden">
+            <img 
+              src="/logo-servisoft-30years.webp" 
+              alt="Logo Servisoft" 
+              className="w-full h-full object-contain"
+            />
+          </div>
         </div>
 
         {/* Menú Desktop */}
-        <div className="hidden lg:flex space-x-6 items-center">
+        <div className="hidden lg:flex space-x-4 items-center">
           <Link href="/" legacyBehavior>
             <a 
               onClick={handleLinkClick('/')}
-              className={`${baseLinkClass} ${isActive('/') ? activeClass : inactiveClass}`}
+              className={`${baseLinkClass} ${isActive('/') ? activeLinkClass : inactiveLinkClass} text-sm`}
             >
-              <FaHome className="mr-2" /> INICIO
+              <FaHome className="mr-1 text-base" /> INICIO
             </a>
           </Link>
 
@@ -144,14 +142,14 @@ const Header = ({ handleNavigation, loading }) => {
             <Link href="/paginas/servicios" legacyBehavior>
               <a 
                 onClick={handleLinkClick('/paginas/servicios')}
-                className={`${baseLinkClass} ${isActive('/paginas/servicios') ? activeClass : inactiveClass}`}
+                className={`${baseLinkClass} ${isActive('/paginas/servicios') ? activeLinkClass : inactiveLinkClass} text-sm`}
               >
-                <FaConciergeBell className="mr-2" /> SERVICIOS
+                <FaConciergeBell className="mr-1 text-base" /> SERVICIOS
               </a>
             </Link>
             {showServicesDropdown && (
               <div
-                className="absolute left-0 top-full w-72 bg-white/80 shadow-2xl rounded-lg backdrop-blur-sm transition-opacity duration-300 ease-in-out opacity-100 z-50"
+                className="absolute left-0 top-full w-64 bg-white shadow rounded border border-teal-50 transition-opacity duration-300 ease-in-out opacity-100 z-50"
               >
                 <ul>
                   {desktopServicesDropdownItems.map((item, index) => (
@@ -159,7 +157,7 @@ const Header = ({ handleNavigation, loading }) => {
                       <Link href={item.href} legacyBehavior>
                         <a 
                           onClick={handleLinkClick(item.href)}
-                          className="flex items-center justify-start text-left px-4 py-2 text-teal-600 hover:bg-teal-600 hover:text-white transition-colors duration-300"
+                          className="flex items-center justify-start text-left px-3 py-1 text-teal-600 hover:bg-teal-100 hover:text-teal-700 transition-colors duration-300 text-sm"
                         >
                           {item.icon}
                           {item.label}
@@ -181,14 +179,14 @@ const Header = ({ handleNavigation, loading }) => {
             <Link href="/paginas/tramites" legacyBehavior>
               <a 
                 onClick={handleLinkClick('/paginas/tramites')}
-                className={`${baseLinkClass} ${isActive('/paginas/tramites') ? activeClass : inactiveClass}`}
+                className={`${baseLinkClass} ${isActive('/paginas/tramites') ? activeLinkClass : inactiveLinkClass} text-sm`}
               >
-                <FaFileAlt className="mr-2" /> TRÁMITES
+                <FaFileAlt className="mr-1 text-base" /> TRÁMITES
               </a>
             </Link>
             {showTramitesDropdown && (
               <div
-                className="absolute left-0 top-full w-72 bg-white/80 shadow-2xl rounded-lg backdrop-blur-sm transition-opacity duration-300 ease-in-out opacity-100 z-50"
+                className="absolute left-0 top-full w-64 bg-white shadow rounded border border-teal-50 transition-opacity duration-300 ease-in-out opacity-100 z-50"
               >
                 <ul>
                   {desktopTramitesDropdownItems.map((item, index) => (
@@ -197,7 +195,7 @@ const Header = ({ handleNavigation, loading }) => {
                         <Link href={item.href} legacyBehavior>
                           <a 
                             onClick={handleLinkClick(item.href)}
-                            className="flex items-center justify-start text-left px-4 py-2 text-teal-600 hover:bg-teal-600 hover:text-white transition-colors duration-300"
+                            className="flex items-center justify-start text-left px-3 py-1 text-teal-600 hover:bg-teal-100 hover:text-teal-700 transition-colors duration-300 text-sm"
                           >
                             {item.icon}
                             {item.label}
@@ -206,7 +204,7 @@ const Header = ({ handleNavigation, loading }) => {
                       ) : (
                         <button 
                           onClick={() => { item.action && item.action(); }}
-                          className="flex items-center justify-start text-left w-full px-4 py-2 text-teal-600 hover:bg-teal-600 hover:text-white transition-colors duration-300"
+                          className="flex items-center justify-start text-left w-full px-3 py-1 text-teal-600 hover:bg-teal-100 hover:text-teal-700 transition-colors duration-300 text-sm"
                         >
                           {item.icon}
                           {item.label}
@@ -222,9 +220,9 @@ const Header = ({ handleNavigation, loading }) => {
           <Link href="/paginas/contactanos" legacyBehavior>
             <a 
               onClick={handleLinkClick('/paginas/contactanos')}
-              className={`${baseLinkClass} ${isActive('/paginas/contactanos') ? activeClass : inactiveClass}`}
+              className={`${baseLinkClass} ${isActive('/paginas/contactanos') ? activeLinkClass : inactiveLinkClass} text-sm`}
             >
-              <FaEnvelope className="mr-2" /> CONTÁCTENOS
+              <FaEnvelope className="mr-1 text-base" /> CONTÁCTENOS
             </a>
           </Link>
         </div>
@@ -234,9 +232,9 @@ const Header = ({ handleNavigation, loading }) => {
           <Link href="/paginas/login" legacyBehavior>
             <a 
               onClick={handleLinkClick('/paginas/login')}
-              className={`${baseLinkClass} ${isActive('/paginas/login') ? activeClass : "text-white bg-teal-500 hover:bg-teal-600"} rounded-md`}
+              className={`${baseLinkClass} ${isActive('/paginas/login') ? activeLinkClass : "bg-teal-600 text-white hover:bg-teal-700"} rounded text-sm`}
             >
-              <FaSignInAlt className="mr-2" /> INGRESAR
+              <FaSignInAlt className="mr-1 text-base" /> INGRESAR
             </a>
           </Link>
         </div>
@@ -247,21 +245,22 @@ const Header = ({ handleNavigation, loading }) => {
             onClick={toggleMobileMenu} 
             className="text-teal-600 transition-transform duration-300 ease-in-out hover:scale-105"
           >
-            {isMobileMenuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
+            {isMobileMenuOpen ? <FaTimes size={20} /> : <FaBars size={20} />}
           </button>
         </div>
       </nav>
 
       {/* Menú móvil desplegable */}
       {isMobileMenuOpen && (
-        <div className="lg:hidden absolute top-full left-0 w-full bg-slate-100 shadow-md">
-          <div className="flex flex-col space-y-2 px-4 py-3">
+        <div className="lg:hidden absolute top-full left-0 w-full bg-white shadow border-t border-teal-50 z-50">
+          <div className="flex flex-col space-y-1 px-3 py-2">
             <Link href="/" legacyBehavior>
               <a 
                 onClick={handleLinkClick('/', toggleMobileMenu)}
-                className={`${baseLinkClass2} ${isActive('/') ? activeClass : inactiveClass}`}
+                className={`${baseLinkClass2} ${isActive('/') ? activeLinkClass : inactiveLinkClass} text-sm`
+                }
               >
-                <FaHome className="mr-2" /> INICIO
+                <FaHome className="mr-1 text-base" /> INICIO
               </a>
             </Link>
             <button 
@@ -269,33 +268,33 @@ const Header = ({ handleNavigation, loading }) => {
                 setMobileServicesModalOpen(true);
                 setMobileMenuOpen(false);
               }}
-              className={`${baseLinkClass2} text-left ${isActive('/paginas/servicios') ? activeClass : inactiveClass}`}
+              className={`${baseLinkClass2} text-left ${isActive('/paginas/servicios') ? activeLinkClass : inactiveLinkClass} text-sm`}
             >
-              <FaConciergeBell className="mr-2" /> SERVICIOS
+              <FaConciergeBell className="mr-1 text-base" /> SERVICIOS
             </button>
             <button 
               onClick={() => {
                 setMobileTramitesModalOpen(true);
                 setMobileMenuOpen(false);
               }}
-              className={`${baseLinkClass2} text-left ${isActive('/paginas/tramites') ? activeClass : inactiveClass}`}
+              className={`${baseLinkClass2} text-left ${isActive('/paginas/tramites') ? activeLinkClass : inactiveLinkClass} text-sm`}
             >
-              <FaFileAlt className="mr-2" /> TRÁMITES
+              <FaFileAlt className="mr-1 text-base" /> TRÁMITES
             </button>
             <Link href="/paginas/contactanos" legacyBehavior>
               <a 
                 onClick={handleLinkClick('/paginas/contactanos', toggleMobileMenu)}
-                className={`${baseLinkClass2} ${isActive('/paginas/contactanos') ? activeClass : inactiveClass}`}
+                className={`${baseLinkClass2} ${isActive('/paginas/contactanos') ? activeLinkClass : inactiveLinkClass} text-sm`}
               >
-                <FaEnvelope className="mr-2" /> CONTÁCTENOS
+                <FaEnvelope className="mr-1 text-base" /> CONTÁCTENOS
               </a>
             </Link>
             <Link href="/paginas/login" legacyBehavior>
               <a 
                 onClick={handleLinkClick('/paginas/login', toggleMobileMenu)}
-                className={`${baseLinkClass2} ${isActive('/paginas/login') ? activeClass : "text-teal-600 hover:bg-teal-600 hover:text-white hover:rounded-md"}`}
+                className={`${baseLinkClass2} ${isActive('/paginas/login') ? activeLinkClass : inactiveLinkClass} rounded text-sm`}
               >
-                <FaSignInAlt className="mr-2" /> INGRESAR
+                <FaSignInAlt className="mr-1 text-base" /> INGRESAR
               </a>
             </Link>
           </div>
@@ -305,21 +304,21 @@ const Header = ({ handleNavigation, loading }) => {
       {/* Modal para Servicios en Mobile */}
       {isMobileServicesModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white rounded-lg shadow-xl w-11/12 max-w-md p-6 relative animate-fadeIn">
+          <div className="bg-white rounded shadow w-11/12 max-w-md p-4 relative animate-fadeIn border border-teal-50">
             <button 
               onClick={closeMobileServicesModal}
-              className="absolute top-2 right-2 text-teal-600 hover:text-teal-800 transition-colors duration-300"
+              className="absolute top-2 right-2 text-teal-600 hover:text-teal-700 transition-colors duration-300"
             >
-              <FaTimes size={24} />
+              <FaTimes size={20} />
             </button>
-            <h2 className="text-2xl font-bold text-teal-600 mb-4 text-center">SERVICIOS</h2>
-            <ul className="space-y-3">
+            <h2 className="text-xl font-bold text-teal-600 mb-3 text-center">SERVICIOS</h2>
+            <ul className="space-y-1">
               {filteredMobileServicesItems.map((item, index) => (
                 <li key={index}>
                   <Link href={item.href} legacyBehavior>
                     <a 
                       onClick={handleLinkClick(item.href, () => setMobileServicesModalOpen(false))}
-                      className="flex items-center justify-start text-left px-4 py-2 rounded-md text-teal-600 hover:bg-teal-600 hover:text-white transition-colors duration-300"
+                      className="flex items-center justify-start text-left px-3 py-1 rounded text-teal-600 hover:bg-teal-100 hover:text-teal-700 transition-colors duration-300 text-sm"
                     >
                       {item.icon}
                       {item.label}
@@ -335,22 +334,22 @@ const Header = ({ handleNavigation, loading }) => {
       {/* Modal para Trámites en Mobile */}
       {isMobileTramitesModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white rounded-lg shadow-xl w-11/12 max-w-md p-6 relative animate-fadeIn">
+          <div className="bg-white rounded shadow w-11/12 max-w-md p-4 relative animate-fadeIn border border-teal-50">
             <button 
               onClick={() => setMobileTramitesModalOpen(false)}
-              className="absolute top-2 right-2 text-teal-600 hover:text-teal-800 transition-colors duration-300"
+              className="absolute top-2 right-2 text-teal-600 hover:text-teal-700 transition-colors duration-300"
             >
-              <FaTimes size={24} />
+              <FaTimes size={20} />
             </button>
-            <h2 className="text-2xl font-bold text-teal-600 mb-4 text-center">TRÁMITES</h2>
-            <ul className="space-y-3">
+            <h2 className="text-xl font-bold text-teal-600 mb-3 text-center">TRÁMITES</h2>
+            <ul className="space-y-1">
               {filteredMobileTramitesItems.map((item, index) => (
                 <li key={index}>
                   {item.href ? (
                     <Link href={item.href} legacyBehavior>
                       <a 
                         onClick={handleLinkClick(item.href, () => setMobileTramitesModalOpen(false))}
-                        className="flex items-center justify-start text-left px-4 py-2 rounded-md text-teal-600 hover:bg-teal-600 hover:text-white transition-colors duration-300"
+                        className="flex items-center justify-start text-left px-3 py-1 rounded text-teal-600 hover:bg-teal-100 hover:text-teal-700 transition-colors duration-300 text-sm"
                       >
                         {item.icon}
                         {item.label}
@@ -359,7 +358,7 @@ const Header = ({ handleNavigation, loading }) => {
                   ) : (
                     <button 
                       onClick={() => { item.action && item.action(); setMobileTramitesModalOpen(false); }}
-                      className="flex items-center justify-start text-left w-full px-4 py-2 rounded-md text-teal-600 hover:bg-teal-600 hover:text-white transition-colors duration-300"
+                      className="flex items-center justify-start text-left w-full px-3 py-1 rounded text-teal-600 hover:bg-teal-100 hover:text-teal-700 transition-colors duration-300 text-sm"
                     >
                       {item.icon}
                       {item.label}
