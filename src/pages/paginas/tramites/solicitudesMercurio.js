@@ -36,10 +36,8 @@ const SolicitudesMercurio = ({ tipoSolicitud: tipoSolicitudProp, showTabs = true
     asunto: '',
     descripcion: '',
     pasoRequerimiento: '',
-    // Se elimina aceptaTerminos de formData ya que se maneja en modalPolicyAccepted
   });
 
-  // Actualiza el campo tipoSolicitud si cambian props o query
   useEffect(() => {
     setFormData(prev => ({
       ...prev,
@@ -56,7 +54,6 @@ const SolicitudesMercurio = ({ tipoSolicitud: tipoSolicitudProp, showTabs = true
   };
 
   const isFormValid = () => {
-    // Se valida solo si la política ya fue aceptada
     if (!policyAccepted) return false;
     return (
       formData.cliente.trim() !== '' &&
@@ -95,7 +92,6 @@ const SolicitudesMercurio = ({ tipoSolicitud: tipoSolicitudProp, showTabs = true
 
   return (
     <div className="max-w-4xl mx-auto p-8 bg-white shadow-2xl rounded-xl relative">
-      {/* Tabs Header */}
       {showTabs && (
         <div className="mb-6 border-b border-gray-200">
           <nav className="-mb-px flex space-x-8">
@@ -115,10 +111,8 @@ const SolicitudesMercurio = ({ tipoSolicitud: tipoSolicitudProp, showTabs = true
         </div>
       )}
 
-      {/* Tabs Content */}
       {activeTab === 0 && (
         <div>
-          {/* Texto inicial de política */}
           <p className="mb-4 text-gray-700">
             Autoriza a SERVISOFT S.A. a utilizar los datos personales proporcionados de acuerdo con sus políticas de tratamiento de información. Se invita a consultar estas políticas en un enlace web proporcionado y se ofrece la opción de presentar consultas, reclamos o solicitudes de información relacionadas con la protección de datos personales a través de la página web de SERVISOFT S.A.
           </p>
@@ -134,9 +128,6 @@ const SolicitudesMercurio = ({ tipoSolicitud: tipoSolicitudProp, showTabs = true
               Política de tratamiento de datos personales
             </button>
           </div>
-          {/* Se eliminó el checkbox de aceptación de la política desde el formulario */}
-          
-          {/* Formulario */}
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label htmlFor="cliente" className="block text-md font-bold text-gray-700">Cliente</label>
@@ -289,27 +280,38 @@ const SolicitudesMercurio = ({ tipoSolicitud: tipoSolicitudProp, showTabs = true
           </form>
         </div>
       )}
+
       {activeTab === 1 && (
-        <div className="w-full">
-          {/* Contenedor responsive para el iframe (aspect ratio 16:9) */}
-          <div className="relative" style={{ paddingBottom: '56.25%', height: 0, overflow: 'hidden' }}>
+        <div className="w-full" style={{ height: '600px' }}>
+          {/* Contenedor principal con altura fija */}
+          <div className="relative w-full h-full">
             {!mercurioLoaded && (
               <div className="absolute inset-0 flex items-center justify-center bg-white z-10">
                 <Loading />
               </div>
             )}
-            <iframe 
-              src="https://mercurio.servisoft.com.co/mercurio/IndiceServlet?operacion=9&codIndice=00001&idAsunto=PQRSDW&indicador=1" 
-              title="Mercurio"
-              onLoad={() => setMercurioLoaded(true)}
-              className="absolute top-0 left-0 w-full h-full"
-              style={{ border: 'none' }}
-            ></iframe>
+            {/* Contenedor para centrar y escalar el iframe */}
+            <div 
+              className="absolute top-0 left-1/2 transform -translate-x-1/2"
+              style={{
+                width: '125%', 
+                height: '125%',
+                transformOrigin: 'top center',
+                transform: 'translateX(-50%) scale(0.8)'
+              }}
+            >
+              <iframe 
+                src="https://mercurio.servisoft.com.co/mercurio/IndiceServlet?operacion=9&codIndice=00001&idAsunto=PQRSDW&indicador=1" 
+                title="Mercurio"
+                onLoad={() => setMercurioLoaded(true)}
+                className="w-full h-full"
+                style={{ border: 'none' }}
+              ></iframe>
+            </div>
           </div>
         </div>
       )}
 
-      {/* Modal para visualizar la política */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
           <div className="absolute inset-0 bg-black opacity-50" onClick={closeModal}></div>
