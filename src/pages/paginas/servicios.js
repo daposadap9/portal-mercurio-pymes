@@ -147,7 +147,7 @@ export default function Servicios() {
         />
       </div>
 
-      <div className="flex justify-center pt-10 text-4xl font-bold text-teal-600" style={{ textShadow: '1px 2px 5px rgba(0,0,0,0.1)' }}>
+      <div className="flex justify-center pt-10 text-4xl font-bold text-teal-600 text-center" style={{ textShadow: '1px 2px 5px rgba(0,0,0,0.1)' }}>
         <h1>¡Nuestros paquetes!</h1>
       </div>
 
@@ -188,7 +188,7 @@ export default function Servicios() {
           viewMoreText="¡Adquierelo ahora!"  
         />
       </div>
-      <div className="flex justify-center pt-10 text-4xl font-bold text-teal-600" style={{ textShadow: '1px 2px 5px rgba(0,0,0,0.1)' }}>
+      <div className="flex justify-center pt-10 text-4xl font-bold text-teal-600 text-center" style={{ textShadow: '1px 2px 5px rgba(0,0,0,0.1)' }}>
         <h1>Servicios Adicionales</h1>
       </div>
       <div className="flex flex-col md:flex-row flex-wrap items-center justify-center pt-5 gap-4">
