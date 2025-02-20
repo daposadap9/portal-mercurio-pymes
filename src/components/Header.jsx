@@ -62,7 +62,7 @@ const Header = ({ handleNavigation, loading }) => {
   const desktopTramitesDropdownItems = [
     { label: "PAGA TU FACTURA", action: () => alert("Pagar factura"), icon: <FaFileInvoiceDollar className="mr-2" /> },
     { label: "PQRSDF", href: "/paginas/tramites/pqrsdf", icon: <FaCommentAlt className="mr-2" /> },
-    { label: "SOLICITUDES MERCURIO CLIENTES", action: () => alert("Ver solicitudes"), icon: <FaListAlt className="mr-2" /> },
+    { label: "SOLICITUDES MERCURIO CLIENTES",  href: "/paginas/tramites/solicitudesMercurio", icon: <FaListAlt className="mr-2" /> },
     { label: "CONSULTA ESTADO DE SOLICITUD", href: "/paginas/tramites/estadoSolicitud", icon: <FaInfoCircle className="mr-2" /> }
   ];
 
