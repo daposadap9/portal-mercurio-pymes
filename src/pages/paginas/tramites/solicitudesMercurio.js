@@ -2,14 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Loading from '../../../components/loading';
 
-const SolicitudesMercurio = ({ tipoSolicitud: tipoSolicitudProp, showTabs = true }) => {
+const SolicitudesMercurio = ({ tipoSolicitud: tipoSolicitudProp }) => {
   const router = useRouter();
   const { tipoSolicitud: tipoSolicitudQuery } = router.query;
   const tipoInicial = tipoSolicitudProp || tipoSolicitudQuery || "";
 
-  // Estado para manejar la pestaña activa: 0 = Formulario, 1 = Mercurio
-  const [activeTab, setActiveTab] = useState(0);
-  
   // Estado para la política: inicialmente los campos estarán bloqueados
   const [policyAccepted, setPolicyAccepted] = useState(false);
   
@@ -17,9 +14,6 @@ const SolicitudesMercurio = ({ tipoSolicitud: tipoSolicitudProp, showTabs = true
   const [showModal, setShowModal] = useState(false);
   const [pdfLoaded, setPdfLoaded] = useState(false);
   
-  // Estado para el iframe de Mercurio
-  const [mercurioLoaded, setMercurioLoaded] = useState(false);
-
   // Estado para el checkbox de la modal de política
   const [modalPolicyAccepted, setModalPolicyAccepted] = useState(false);
 
@@ -92,230 +86,182 @@ const SolicitudesMercurio = ({ tipoSolicitud: tipoSolicitudProp, showTabs = true
 
   return (
     <div className="max-w-4xl mx-auto p-8 bg-white shadow-2xl rounded-xl relative">
-      {showTabs && (
-        <div className="mb-6 border-b border-gray-200">
-          <nav className="-mb-px flex space-x-8">
-            <button 
-              onClick={() => setActiveTab(0)}
-              className={`whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm ${activeTab === 0 ? 'border-teal-500 text-teal-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}
-            >
-              Formulario
-            </button>
-            <button 
-              onClick={() => setActiveTab(1)}
-              className={`whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm ${activeTab === 1 ? 'border-teal-500 text-teal-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}
-            >
-              Mercurio
-            </button>
-          </nav>
-        </div>
-      )}
+      {/* Información y enlace para la política */}
+      <p className="mb-4 text-gray-700">
+        Autoriza a SERVISOFT S.A. a utilizar los datos personales proporcionados de acuerdo con sus políticas de tratamiento de información. Consulta la política haciendo clic en el siguiente enlace.
+      </p>
+      <p className="mb-4 text-gray-700">
+        Para iniciar, es necesario que leas y apruebes la política de tratamiento de datos personales.
+      </p>
+      <div className="mb-4">
+        <button 
+          type="button"
+          onClick={openModal}
+          className="text-blue-500 font-semibold hover:underline"
+        >
+          Política de tratamiento de datos personales
+        </button>
+      </div>
 
-      {activeTab === 0 && (
-        <div>
-          <p className="mb-4 text-gray-700">
-            Autoriza a SERVISOFT S.A. a utilizar los datos personales proporcionados de acuerdo con sus políticas de tratamiento de información. Se invita a consultar estas políticas en un enlace web proporcionado y se ofrece la opción de presentar consultas, reclamos o solicitudes de información relacionadas con la protección de datos personales a través de la página web de SERVISOFT S.A.
-          </p>
-          <p className="mb-4 text-gray-700">
-            Para iniciar el diligenciamiento es necesario que lea y apruebe la política de tratamiento de datos personales. Haga clic en el link que se encuentra a continuación:
-          </p>
-          <div className="mb-4">
-            <button 
-              type="button"
-              onClick={openModal}
-              className="text-blue-500 font-semibold hover:underline"
+      {/* Formulario sin overflow para mostrarse completo */}
+      <div>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label htmlFor="cliente" className="block text-md font-bold text-gray-700">Cliente</label>
+            <input 
+              type="text"
+              id="cliente"
+              name="cliente"
+              value={formData.cliente}
+              onChange={handleChange}
+              placeholder="Ingrese el cliente"
+              disabled={!policyAccepted}
+              className="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
+            />
+          </div>
+          <div>
+            <label htmlFor="nombreRadicador" className="block text-md font-bold text-gray-700">Nombre del radicador</label>
+            <input 
+              type="text"
+              id="nombreRadicador"
+              name="nombreRadicador"
+              value={formData.nombreRadicador}
+              onChange={handleChange}
+              placeholder="Ingrese el nombre del radicador"
+              disabled={!policyAccepted}
+              className="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
+            />
+          </div>
+          <div>
+            <label htmlFor="rolRadicador" className="block text-md font-bold text-gray-700">Rol radicador</label>
+            <select 
+              id="rolRadicador"
+              name="rolRadicador"
+              value={formData.rolRadicador}
+              onChange={handleChange}
+              disabled={!policyAccepted}
+              className="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
             >
-              Política de tratamiento de datos personales
+              <option value="Supervisor del Contrato - Cliente">Supervisor del Contrato - Cliente</option>
+            </select>
+          </div>
+          <div>
+            <label htmlFor="email" className="block text-md font-bold text-gray-700">EMAIL</label>
+            <input 
+              type="email"
+              id="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="Ingrese el email"
+              disabled={!policyAccepted}
+              className="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
+            />
+          </div>
+          <div>
+            <label htmlFor="telefono" className="block text-md font-bold text-gray-700">Teléfono</label>
+            <input 
+              type="tel"
+              id="telefono"
+              name="telefono"
+              value={formData.telefono}
+              onChange={handleChange}
+              placeholder="Ingrese el teléfono"
+              disabled={!policyAccepted}
+              className="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
+            />
+          </div>
+          <div>
+            <label htmlFor="clasificacion" className="block text-md font-bold text-gray-700">Clasificación</label>
+            <select 
+              id="clasificacion"
+              name="clasificacion"
+              value={formData.clasificacion}
+              onChange={handleChange}
+              disabled={!policyAccepted}
+              className="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
+            >
+              <option value="">Seleccione una clasificación</option>
+              <option value="Incidente">Incidente</option>
+              <option value="Consultoria">Consultoria</option>
+              <option value="Requerimiento Nuevo">Requerimiento Nuevo</option>
+              <option value="Producto o Servicio">Producto o Servicio</option>
+            </select>
+          </div>
+          <div>
+            <label htmlFor="versionProducto" className="block text-md font-bold text-gray-700">Versión Producto</label>
+            <select 
+              id="versionProducto"
+              name="versionProducto"
+              value={formData.versionProducto}
+              onChange={handleChange}
+              disabled={!policyAccepted}
+              className="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
+            >
+              <option value="">Seleccione la versión</option>
+              <option value="5.5">5.5</option>
+              <option value="6.0">6.0</option>
+              <option value="6.5">6.5</option>
+              <option value="7.0">7.0</option>
+              <option value="8.0">8.0</option>
+            </select>
+          </div>
+          <div>
+            <label htmlFor="asunto" className="block text-md font-bold text-gray-700">Asunto de la solicitud</label>
+            <input 
+              type="text"
+              id="asunto"
+              name="asunto"
+              value={formData.asunto}
+              onChange={handleChange}
+              placeholder="Ingrese el asunto de la solicitud"
+              disabled={!policyAccepted}
+              className="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
+            />
+          </div>
+          <div>
+            <label htmlFor="descripcion" className="block text-md font-bold text-gray-700">Descripción (opcional)</label>
+            <textarea 
+              id="descripcion"
+              name="descripcion"
+              value={formData.descripcion}
+              onChange={handleChange}
+              placeholder="Ingrese una descripción (opcional)"
+              disabled={!policyAccepted}
+              className="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
+              rows="3"
+            ></textarea>
+          </div>
+          <div>
+            <label htmlFor="pasoRequerimiento" className="block text-md font-bold text-gray-700">Paso a paso del requerimiento</label>
+            <textarea 
+              id="pasoRequerimiento"
+              name="pasoRequerimiento"
+              value={formData.pasoRequerimiento}
+              onChange={handleChange}
+              placeholder="Describa el paso a paso del requerimiento"
+              disabled={!policyAccepted}
+              className="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
+              rows="3"
+            ></textarea>
+          </div>
+          <div>
+            <button
+              type="submit"
+              disabled={!isFormValid()}
+              className="w-full bg-teal-600 text-white font-bold py-2 rounded-md transition-colors duration-300 hover:bg-teal-700 disabled:opacity-50"
+            >
+              Continuar
             </button>
           </div>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label htmlFor="cliente" className="block text-md font-bold text-gray-700">Cliente</label>
-              <input 
-                type="text"
-                id="cliente"
-                name="cliente"
-                value={formData.cliente}
-                onChange={handleChange}
-                placeholder="Ingrese el cliente"
-                disabled={!policyAccepted}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2"
-              />
-            </div>
-            <div>
-              <label htmlFor="nombreRadicador" className="block text-md font-bold text-gray-700">Nombre del radicador</label>
-              <input 
-                type="text"
-                id="nombreRadicador"
-                name="nombreRadicador"
-                value={formData.nombreRadicador}
-                onChange={handleChange}
-                placeholder="Ingrese el nombre del radicador"
-                disabled={!policyAccepted}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2"
-              />
-            </div>
-            <div>
-              <label htmlFor="rolRadicador" className="block text-md font-bold text-gray-700">Rol radicador</label>
-              <select 
-                id="rolRadicador"
-                name="rolRadicador"
-                value={formData.rolRadicador}
-                onChange={handleChange}
-                disabled={!policyAccepted}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2"
-              >
-                <option value="Supervisor del Contrato - Cliente">Supervisor del Contrato - Cliente</option>
-              </select>
-            </div>
-            <div>
-              <label htmlFor="email" className="block text-md font-bold text-gray-700">EMAIL</label>
-              <input 
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="Ingrese el email"
-                disabled={!policyAccepted}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2"
-              />
-            </div>
-            <div>
-              <label htmlFor="telefono" className="block text-md font-bold text-gray-700">Teléfono</label>
-              <input 
-                type="tel"
-                id="telefono"
-                name="telefono"
-                value={formData.telefono}
-                onChange={handleChange}
-                placeholder="Ingrese el teléfono"
-                disabled={!policyAccepted}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2"
-              />
-            </div>
-            <div>
-              <label htmlFor="clasificacion" className="block text-md font-bold text-gray-700">Clasificación</label>
-              <select 
-                id="clasificacion"
-                name="clasificacion"
-                value={formData.clasificacion}
-                onChange={handleChange}
-                disabled={!policyAccepted}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2"
-              >
-                <option value="">Seleccione una clasificación</option>
-                <option value="Incidente">Incidente</option>
-                <option value="Consultoria">Consultoria</option>
-                <option value="Requerimiento Nuevo">Requerimiento Nuevo</option>
-                <option value="Producto o Servicio">Producto o Servicio</option>
-              </select>
-            </div>
-            <div>
-              <label htmlFor="versionProducto" className="block text-md font-bold text-gray-700">Versión Producto</label>
-              <select 
-                id="versionProducto"
-                name="versionProducto"
-                value={formData.versionProducto}
-                onChange={handleChange}
-                disabled={!policyAccepted}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2"
-              >
-                <option value="">Seleccione la versión</option>
-                <option value="5.5">5.5</option>
-                <option value="6.0">6.0</option>
-                <option value="6.5">6.5</option>
-                <option value="7.0">7.0</option>
-                <option value="8.0">8.0</option>
-              </select>
-            </div>
-            <div>
-              <label htmlFor="asunto" className="block text-md font-bold text-gray-700">Asunto de la solicitud</label>
-              <input 
-                type="text"
-                id="asunto"
-                name="asunto"
-                value={formData.asunto}
-                onChange={handleChange}
-                placeholder="Ingrese el asunto de la solicitud"
-                disabled={!policyAccepted}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2"
-              />
-            </div>
-            <div>
-              <label htmlFor="descripcion" className="block text-md font-bold text-gray-700">Descripción (opcional)</label>
-              <textarea 
-                id="descripcion"
-                name="descripcion"
-                value={formData.descripcion}
-                onChange={handleChange}
-                placeholder="Ingrese una descripción (opcional)"
-                disabled={!policyAccepted}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2"
-                rows="4"
-              ></textarea>
-            </div>
-            <div>
-              <label htmlFor="pasoRequerimiento" className="block text-md font-bold text-gray-700">Paso a paso del requerimiento</label>
-              <textarea 
-                id="pasoRequerimiento"
-                name="pasoRequerimiento"
-                value={formData.pasoRequerimiento}
-                onChange={handleChange}
-                placeholder="Describa el paso a paso del requerimiento"
-                disabled={!policyAccepted}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2"
-                rows="4"
-              ></textarea>
-            </div>
-            <div>
-              <button
-                type="submit"
-                disabled={!isFormValid()}
-                className="w-full bg-teal-500 text-white font-bold py-3 rounded-md transition-colors duration-300 hover:bg-teal-600 disabled:opacity-50"
-              >
-                Continuar
-              </button>
-            </div>
-          </form>
-        </div>
-      )}
+        </form>
+      </div>
 
-      {activeTab === 1 && (
-        <div className="w-full" style={{ height: '600px' }}>
-          {/* Contenedor principal con altura fija */}
-          <div className="relative w-full h-full">
-            {!mercurioLoaded && (
-              <div className="absolute inset-0 flex items-center justify-center bg-white z-10">
-                <Loading />
-              </div>
-            )}
-            {/* Contenedor para centrar y escalar el iframe */}
-            <div 
-              className="absolute top-0 left-1/2 transform -translate-x-1/2"
-              style={{
-                width: '125%', 
-                height: '125%',
-                transformOrigin: 'top center',
-                transform: 'translateX(-50%) scale(0.8)'
-              }}
-            >
-              <iframe 
-                src="https://mercurio.servisoft.com.co/mercurio/IndiceServlet?operacion=9&codIndice=00001&idAsunto=PQRSDW&indicador=1" 
-                title="Mercurio"
-                onLoad={() => setMercurioLoaded(true)}
-                className="w-full h-full"
-                style={{ border: 'none' }}
-              ></iframe>
-            </div>
-          </div>
-        </div>
-      )}
-
+      {/* Modal para la política */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
           <div className="absolute inset-0 bg-black opacity-50" onClick={closeModal}></div>
-          <div className="relative bg-white rounded-lg shadow-2xl p-6 w-full max-w-4xl mx-auto my-4 overflow-auto h-[50vh] md:h-[70vh]">
+          <div className="relative bg-white rounded-lg shadow-2xl p-6 w-full max-w-4xl mx-auto my-4 overflow-auto h-[60vh] md:h-[90vh]">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-bold text-center flex-1">
                 Política de Tratamiento de Datos Personales
@@ -357,7 +303,7 @@ const SolicitudesMercurio = ({ tipoSolicitud: tipoSolicitudProp, showTabs = true
               <button
                 onClick={handlePolicyAccept}
                 disabled={!modalPolicyAccepted}
-                className="bg-teal-500 text-white px-4 py-2 rounded disabled:opacity-50"
+                className="bg-teal-600 text-white px-4 py-2 rounded disabled:opacity-50 transition-colors duration-300 hover:bg-teal-700"
               >
                 Aceptar
               </button>
