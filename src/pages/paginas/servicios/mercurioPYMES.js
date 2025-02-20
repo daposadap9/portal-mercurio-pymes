@@ -2,11 +2,11 @@ import React from 'react';
 
 const MercurioPYMES = () => {
   return (
-    <div className="min-h-full bg-white flex items-center justify-center p-4">
+    <div className="min-h-full flex items-center justify-center p-4">
       <div className="w-full max-w-6xl flex flex-col md:flex-row justify-around gap-4">
         {/* Sección Izquierda: Párrafos */}
         <div className="w-full md:w-[35%]">
-          <div className="text-center md:text-left">
+          <div className="text-center md:text-left bg-white bg-opacity-0 backdrop-blur-xl p-6 rounded-xl border border-white/30">
             <p className="mb-4 leading-relaxed text-gray-700 text-base font-normal">
               Mercurio pymes es un software de gestión electrónica de documentos diseñado para estructurar y almacenar la información de pequeñas y medianas empresas, disminuyendo costos y propiciando un ambiente intuitivo y amigable que garantice el éxito en la gestión documental.
             </p>

@@ -2,11 +2,11 @@ import React from 'react';
 
 const MercurioCustodia = () => {
   return (
-    <div className="min-h-full bg-white flex items-center justify-center p-4">
+    <div className="min-h-full flex items-center justify-center p-4">
       <div className="w-full max-w-6xl flex flex-col md:flex-row justify-around gap-4">
         {/* Sección Izquierda: Párrafos */}
         <div className="w-full md:w-[35%]">
-          <div className="text-center md:text-left">
+          <div className="text-center md:text-left bg-white bg-opacity-0 backdrop-blur-xl p-6 rounded-xl border border-white/30">
             <p className="mb-4 text-md font-medium text-gray-800">
               Nuestro servicio de custodia está diseñado para que olvides la preocupación por la gestión de documentos físicos; nosotros nos encargamos de todo mientras tú te concentras en hacer crecer tu negocio.
             </p>

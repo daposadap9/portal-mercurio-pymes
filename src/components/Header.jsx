@@ -108,8 +108,7 @@ const Header = ({ handleNavigation, loading }) => {
 
   return (
     // Header con fondo blanco, sombra sutil y altura reducida (h-14)
-    <header className="sticky top-0 w-full bg-white shadow-sm z-50 h-14">
-      {/* nav relativo para dropdowns */}
+    <header className="sticky top-0 w-full bg-white shadow-sm border-b border-teal-100 z-50 h-14">
       <nav className="max-w-7xl mx-auto px-4 h-full flex justify-between items-center relative">
         {/* Contenedor del logo con ancho fijo y overflow-hidden */}
         <div className="flex items-center" style={{ minWidth: '180px', height: '100%' }}>
@@ -257,8 +256,7 @@ const Header = ({ handleNavigation, loading }) => {
             <Link href="/" legacyBehavior>
               <a 
                 onClick={handleLinkClick('/', toggleMobileMenu)}
-                className={`${baseLinkClass2} ${isActive('/') ? activeLinkClass : inactiveLinkClass} text-sm`
-                }
+                className={`${baseLinkClass2} ${isActive('/') ? activeLinkClass : inactiveLinkClass} text-sm`}
               >
                 <FaHome className="mr-1 text-base" /> INICIO
               </a>

@@ -3,25 +3,28 @@ import { FaCalendarAlt, FaRegCalendarAlt } from 'react-icons/fa';
 
 const MercurioSGDEA = () => {
   return (
-    <div className="min-h-full bg-white flex items-center justify-center p-4">
+    <div className="min-h-full flex items-center justify-center p-4">
       <div className="w-full max-w-6xl flex flex-col md:flex-row justify-around gap-4">
         {/* Sección Izquierda: Párrafos */}
         <div className="w-full md:w-[35%]">
-          <div className="text-center md:text-left">
-            <p className="mb-4 leading-relaxed text-gray-700 text-base font-normal">
-              El sgdea mercurio permite a la entidad el cumplimiento de las regulaciones establecidas en la ley 594 de 2000, impidiendo sanciones y asegurando prácticas idóneas de archivo.
-            </p>
-            <p className="mb-4 leading-relaxed text-gray-700 text-base font-normal">
-              Facilita la clasificación, la ordenación y un acceso eficiente a los documentos, garantizando una gestión documental estructurada y sin pérdida de información.
-            </p>
-            <p className="mb-4 leading-relaxed text-gray-700 text-base font-normal">
-              En compañía de nuestros partners en almacenamiento en la nube, estamos comprometidos con los más altos estándares de calidad en cuanto al resguardo de documentos físicos y digitales, evitando así cualquier tipo de alteración en la información de todos nuestros clientes.
-            </p>
-            <p className="mb-4 leading-relaxed text-gray-700 text-base font-normal">
-              Del mismo modo, con el sgdea mercurio la entidad facilita la transcripción del archivo físico a formato digital, asegurando su preservación y la consulta a largo plazo mediante altos estándares de gestión electrónica documental.
-            </p>
+            <div className="text-center md:text-left bg-white bg-opacity-0 backdrop-blur-xl p-6 rounded-xl border border-white/30">
+              <p className="mb-4 leading-relaxed text-black text-base font-medium">
+                El sgdea mercurio permite a la entidad el cumplimiento de las regulaciones establecidas en la ley 594 de 2000, impidiendo sanciones y asegurando prácticas idóneas de archivo.
+              </p>
+              <p className="mb-4 leading-relaxed text-black text-base font-medium">
+                Facilita la clasificación, la ordenación y un acceso eficiente a los documentos, garantizando una gestión documental estructurada y sin pérdida de información.
+              </p>
+              <p className="mb-4 leading-relaxed text-black text-base font-medium">
+                En compañía de nuestros partners en almacenamiento en la nube, estamos comprometidos con los más altos estándares de calidad en cuanto al resguardo de documentos físicos y digitales, evitando así cualquier tipo de alteración en la información de todos nuestros clientes.
+              </p>
+              <p className="mb-4 leading-relaxed text-black text-base font-medium">
+                Del mismo modo, con el sgdea mercurio la entidad facilita la transcripción del archivo físico a formato digital, asegurando su preservación y la consulta a largo plazo mediante altos estándares de gestión electrónica documental.
+              </p>
+            </div>
           </div>
-        </div>
+
+
+
 
         {/* Sección Derecha: Formulario */}
         <div className="w-full md:w-[35%]">

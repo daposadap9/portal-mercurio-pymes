@@ -3,7 +3,7 @@ import Card from '@/components/Card';
 import { 
   FaBoxes, FaBoxOpen, FaChartLine, FaDatabase, FaFileAlt, 
   FaGavel, FaHandshake, FaHdd, FaLock, FaMoneyBillWave, 
-  FaRobot, FaSearch, FaShieldAlt, FaTrashAlt, FaTruck 
+  FaRobot, FaSearch, FaShieldAlt, FaTrashAlt, FaTruck, FaInstagram 
 } from 'react-icons/fa';
 import { useRouter } from 'next/router';
 
@@ -94,7 +94,8 @@ export default function Servicios() {
 
   return (
     <>
-      <div className="flex justify-center text-4xl font-bold text-teal-600 text-center" style={{ textShadow: '1px 2px 5px rgba(0,0,0,0.1)' }}>
+      {/* Título principal, responsivo */}
+      <div className="flex justify-center text-2xl md:text-4xl font-bold text-teal-600 text-center" style={{ textShadow: '1px 2px 5px rgba(0,0,0,0.1)' }}>
         <h1>¡Cotiza tu servicio!</h1>
       </div>
 
@@ -147,7 +148,8 @@ export default function Servicios() {
         />
       </div>
 
-      <div className="flex justify-center pt-10 text-4xl font-bold text-teal-600 text-center" style={{ textShadow: '1px 2px 5px rgba(0,0,0,0.1)' }}>
+      {/* Título de paquetes */}
+      <div className="flex justify-center pt-10 text-2xl md:text-4xl font-bold text-teal-600 text-center" style={{ textShadow: '1px 2px 5px rgba(0,0,0,0.1)' }}>
         <h1>¡Nuestros paquetes!</h1>
       </div>
 
@@ -162,7 +164,7 @@ export default function Servicios() {
           iconColorClass="text-blue-600"
           showViewMore={true}
           onViewMore={() => router.push("/paginas/servicios/PaymentFormPSE")}
-          viewMoreText="¡Adquierelo ahora!"                        
+          viewMoreText="¡Adquiérelo ahora!"                        
         />
         <Card 
           title={cardData7.title}
@@ -173,7 +175,7 @@ export default function Servicios() {
           iconColorClass="text-yellow-600"
           showViewMore={true}
           onViewMore={() => router.push("/paginas/servicios/PaymentFormPSE")}
-          viewMoreText="¡Adquierelo ahora!"
+          viewMoreText="¡Adquiérelo ahora!"
           badgeText="¡Oferta recomendada!"
         />
         <Card 
@@ -185,14 +187,18 @@ export default function Servicios() {
           iconColorClass="text-orange-600"
           showViewMore={true}
           onViewMore={() => router.push("/paginas/servicios/formularioArmaTuPlan")}
-          viewMoreText="¡Adquierelo ahora!"  
+          viewMoreText="¡Adquiérelo ahora!"  
         />
       </div>
-      <div className="flex justify-center pt-10 text-4xl font-bold text-teal-600 text-center" style={{ textShadow: '1px 2px 5px rgba(0,0,0,0.1)' }}>
+      
+      {/* Título de Servicios Adicionales */}
+      <div className="flex justify-center pt-10 text-2xl md:text-4xl font-bold text-teal-600 text-center" style={{ textShadow: '1px 2px 5px rgba(0,0,0,0.1)' }}>
         <h1>Servicios Adicionales</h1>
       </div>
+      
+      {/* Contenedor de Servicios Adicionales */}
       <div className="flex flex-col md:flex-row flex-wrap items-center justify-center pt-5 gap-4">
-      <Card 
+        <Card 
           title={cardData5.title} 
           lines={cardData5.lines} 
           maxLines={cardData5.maxLines} 

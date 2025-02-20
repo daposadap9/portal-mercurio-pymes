@@ -62,7 +62,7 @@ const PQRSDFPage = () => {
   };
 
   return (
-    <div className="min-h-full bg-white p-4 flex flex-col items-center">
+    <div className="min-h-full p-4 flex flex-col items-center">
       {/* Alineamos el texto a la derecha y lo hacemos más notorio */}
       <div className="mb-9">
         <p className="text-lg font-medium text-gray-800">

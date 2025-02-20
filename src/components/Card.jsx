@@ -22,9 +22,9 @@ const Card = ({
 
   return (
     <div className={`
-      md:self-stretch relative bg-slate-50 text-black rounded-xl shadow-2xl p-6
-      min-w-[300px] max-w-[300px]
-      flex flex-col items-center transition-transform duration-500 hover:scale-105 border-2 ${borderColorClass}
+      md:self-stretch relative rounded-xl shadow-2xl p-6
+      min-w-[300px] max-w-[300px] flex flex-col items-center transition-transform duration-500 hover:scale-105 border-2 ${borderColorClass}
+      bg-white bg-opacity-40 backdrop-blur-md border border-white/30
     `}>
       {/* Badge opcional */}
       {badgeText && (

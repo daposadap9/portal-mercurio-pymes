@@ -14,6 +14,9 @@ export default {
       boxShadow: {
         'inset-sm': 'inset 0px 0px 2px 1px rgba(0, 0, 0, 0.13)',
       },
+      backgroundColor:{
+        'background': '#6b9cba'
+      }
     },
   },
   plugins: [],

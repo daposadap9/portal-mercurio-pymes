@@ -2,11 +2,11 @@ import React from 'react';
 
 const ServiciosAdicionales = () => {
   return (
-    <div className="min-h-full bg-white flex items-center justify-center p-4">
+    <div className="min-h-full flex items-center justify-center p-4">
       <div className="w-full max-w-6xl flex flex-col md:flex-row justify-around gap-4">
         {/* Sección Izquierda: Párrafos */}
         <div className="w-full md:w-[35%]">
-          <div className="text-center md:text-left">
+          <div className="text-center md:text-left bg-white bg-opacity-0 backdrop-blur-xl p-6 rounded-xl border border-white/30">
             <p className="mb-4 leading-relaxed text-gray-700 text-base font-normal">
               Con Servisoft S.A. dile adiós al papel desordenado y al riesgo de pérdida. Con nuestra digitalización documental, toda tu información estará organizada y protegida.
             </p>
