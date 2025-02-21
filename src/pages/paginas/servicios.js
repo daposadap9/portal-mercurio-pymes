@@ -95,7 +95,7 @@ export default function Servicios() {
   return (
     <>
       {/* Título principal, responsivo */}
-      <div className="flex justify-center text-2xl md:text-4xl font-bold text-teal-600 text-center" style={{ textShadow: '1px 2px 5px rgba(0,0,0,0.1)' }}>
+      <div className="flex justify-center text-2xl md:text-4xl font-bold text-teal-600 text-center titulo-shadow">
         <h1>¡Cotiza tu servicio!</h1>
       </div>
 
@@ -137,7 +137,7 @@ export default function Servicios() {
         <Card 
           title={cardData4.title} 
           lines={cardData4.lines} 
-          maxLines={cardData4.maxLines} 
+          maxLines={cardData4.maxLines}
           borderColorClass="hover:border-red-500"
           badgeText="¡Oferta recomendada!"
           titleColorClass="text-red-600"
@@ -149,7 +149,7 @@ export default function Servicios() {
       </div>
 
       {/* Título de paquetes */}
-      <div className="flex justify-center pt-10 text-2xl md:text-4xl font-bold text-teal-600 text-center" style={{ textShadow: '1px 2px 5px rgba(0,0,0,0.1)' }}>
+      <div className="flex justify-center pt-10 text-2xl md:text-4xl font-bold text-teal-600 text-center titulo-shadow">
         <h1>¡Nuestros paquetes!</h1>
       </div>
 
@@ -192,7 +192,7 @@ export default function Servicios() {
       </div>
       
       {/* Título de Servicios Adicionales */}
-      <div className="flex justify-center pt-10 text-2xl md:text-4xl font-bold text-teal-600 text-center" style={{ textShadow: '1px 2px 5px rgba(0,0,0,0.1)' }}>
+      <div className="flex justify-center pt-10 text-2xl md:text-4xl font-bold text-teal-600 text-center titulo-shadow">
         <h1>Servicios Adicionales</h1>
       </div>
       
