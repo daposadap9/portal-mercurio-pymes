@@ -9,10 +9,6 @@ const Layout = ({ children, handleNavigation, loading }) => {
   const pathSegments = router.asPath.split('/').filter(seg => seg !== '');
   const showSubNav = pathSegments.length > 1;
 
-  // Para dispositivos pequeños, mostramos menos elementos
-  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
-  const numElements = isMobile ? 20 : 50;
-
   // Función para generar un delay aleatorio negativo
   const randomDelay = () => `-${Math.random() * 15}s`;
 
@@ -23,23 +19,12 @@ const Layout = ({ children, handleNavigation, loading }) => {
         className="absolute inset-0 bg-gradient-to-tl from-teal-500 via-white to-white opacity-95 bg-fixed"
       ></div>
       
-      {/* Capa de figuras animadas (se muestra solo en desktop o con menos elementos en mobile) */}
-      {!isMobile && (
-        <ul className="circles fixed inset-0 pointer-events-none">
-          {Array.from({ length: numElements }).map((_, index) => (
-            <li key={index} style={{ animationDelay: randomDelay() }}></li>
-          ))}
-        </ul>
-      )}
-
-      {/* Opcional: En mobile, puedes optar por una versión menos pesada */}
-      {isMobile && (
-        <ul className="circles fixed inset-0 pointer-events-none">
-          {Array.from({ length: numElements }).map((_, index) => (
-            <li key={index} style={{ animationDelay: randomDelay(), animationDuration: '20s' }}></li>
-          ))}
-        </ul>
-      )}
+      {/* Capa de cuadros animados fijos: 50 elementos en desktop, 15 en mobile */}
+      <ul className="circles fixed inset-0 pointer-events-none">
+        {Array.from({ length: 50 }).map((_, index) => (
+          <li key={index} style={{ animationDelay: randomDelay() }}></li>
+        ))}
+      </ul>
 
       {/* Capa de imagen superpuesta (opcional) */}
       <div 
@@ -58,15 +43,12 @@ const Layout = ({ children, handleNavigation, loading }) => {
         {/* <Footer /> */}
       </div>
 
+      {/* Estilos globales */}
       <style jsx global>{`
         @import url('https://fonts.googleapis.com/css?family=Exo:400,700');
-        * {
-          margin: 0;
-          padding: 0;
-        }
-        body {
-          font-family: 'Exo', sans-serif;
-        }
+        * { margin: 0; padding: 0; }
+        body { font-family: 'Exo', sans-serif; }
+        
         .circles {
           width: 100%;
           height: 100%;
@@ -83,7 +65,7 @@ const Layout = ({ children, handleNavigation, loading }) => {
           bottom: -150px;
           border-radius: 8px;
         }
-        /* Ejemplo de distribución (se mantiene igual, pero podrías reducir algunos en mobile) */
+        /* Distribución para desktop (50 elementos) */
         .circles li:nth-child(1) { left: 2%;  width: 70px; height: 70px; }
         .circles li:nth-child(2) { left: 8%;  width: 80px; height: 80px; }
         .circles li:nth-child(3) { left: 14%; width: 65px; height: 65px; }
@@ -143,6 +125,16 @@ const Layout = ({ children, handleNavigation, loading }) => {
           100% {
             transform: translateY(-1200px) rotate(720deg);
             opacity: 0;
+          }
+        }
+
+        /* En mobile, se muestran solo los primeros 15 elementos */
+        @media (max-width: 768px) {
+          .circles li {
+            display: none;
+          }
+          .circles li:nth-child(-n+15) {
+            display: block;
           }
         }
       `}</style>
