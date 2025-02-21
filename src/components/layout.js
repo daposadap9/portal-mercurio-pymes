@@ -133,7 +133,7 @@ const Layout = ({ children, handleNavigation, loading }) => {
           .circles li {
             display: none;
           }
-          .circles li:nth-child(-n+15) {
+          .circles li:nth-child(-n+0) {
             display: block;
           }
         }
