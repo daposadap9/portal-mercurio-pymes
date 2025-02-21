@@ -1,4 +1,5 @@
-import React from 'react';
+// pages/Servicios.jsx
+import React, { useEffect, useState } from 'react';
 import Card from '@/components/Card';
 import { 
   FaBoxes, FaBoxOpen, FaChartLine, FaDatabase, FaFileAlt, 
@@ -9,7 +10,19 @@ import { useRouter } from 'next/router';
 
 export default function Servicios() {
   const router = useRouter();
+  const [animateCards, setAnimateCards] = useState(true);
 
+  useEffect(() => {
+    const hasAnimated = sessionStorage.getItem('cardsAnimated');
+    if (hasAnimated) {
+      setAnimateCards(false);
+    } else {
+      setAnimateCards(true);
+      sessionStorage.setItem('cardsAnimated', 'true');
+    }
+  }, []);
+
+  // Datos para las tarjetas
   const cardData = {
     title: 'MERCURIO SGDEA',
     lines: [
@@ -94,7 +107,7 @@ export default function Servicios() {
 
   return (
     <>
-      {/* Título principal, responsivo */}
+      {/* Título principal */}
       <div className="flex justify-center text-2xl md:text-4xl font-bold text-teal-600 text-center titulo-shadow">
         <h1>¡Cotiza tu servicio!</h1>
       </div>
@@ -110,7 +123,8 @@ export default function Servicios() {
           iconColorClass="text-yellow-600"
           showViewMore={true}
           onViewMore={() => router.push("/paginas/servicios/mercurioSGDEA")}
-          viewMoreText="Descubre más"                 
+          viewMoreText="Descubre más"
+          animateOnEntry={animateCards}                 
         />
         <Card 
           title={cardData2.title} 
@@ -121,7 +135,8 @@ export default function Servicios() {
           iconColorClass="text-blue-600"
           showViewMore={true}
           onViewMore={() => router.push("/paginas/servicios/mercurioPYMES")}
-          viewMoreText="Descubre más" 
+          viewMoreText="Descubre más"
+          animateOnEntry={animateCards}
         />
         <Card 
           title={cardData3.title} 
@@ -132,7 +147,8 @@ export default function Servicios() {
           iconColorClass="text-orange-600"
           showViewMore={true}
           onViewMore={() => router.push("/paginas/servicios/mercurioCustodia")}
-          viewMoreText="Descubre más" 
+          viewMoreText="Descubre más"
+          animateOnEntry={animateCards}
         />
         <Card 
           title={cardData4.title} 
@@ -144,7 +160,8 @@ export default function Servicios() {
           iconColorClass="text-red-600"
           showViewMore={true}
           onViewMore={() => router.push("/paginas/servicios/mercurioDigitalizacion")}
-          viewMoreText="Descubre más" 
+          viewMoreText="Descubre más"
+          animateOnEntry={animateCards}
         />
       </div>
 
@@ -164,7 +181,8 @@ export default function Servicios() {
           iconColorClass="text-blue-600"
           showViewMore={true}
           onViewMore={() => router.push("/paginas/servicios/PaymentFormPSE")}
-          viewMoreText="¡Adquiérelo ahora!"                        
+          viewMoreText="¡Adquiérelo ahora!"
+          animateOnEntry={animateCards}                        
         />
         <Card 
           title={cardData7.title}
@@ -177,6 +195,7 @@ export default function Servicios() {
           onViewMore={() => router.push("/paginas/servicios/PaymentFormPSE")}
           viewMoreText="¡Adquiérelo ahora!"
           badgeText="¡Oferta recomendada!"
+          animateOnEntry={animateCards}
         />
         <Card 
           title={cardData8.title} 
@@ -187,7 +206,8 @@ export default function Servicios() {
           iconColorClass="text-orange-600"
           showViewMore={true}
           onViewMore={() => router.push("/paginas/servicios/formularioArmaTuPlan")}
-          viewMoreText="¡Adquiérelo ahora!"  
+          viewMoreText="¡Adquiérelo ahora!"
+          animateOnEntry={animateCards}
         />
       </div>
       
@@ -208,7 +228,8 @@ export default function Servicios() {
           iconColorClass="text-green-500"
           showViewMore={true}
           onViewMore={() => alert('¡Mostrando más detalles!')}
-          viewMoreText="Descubre más" 
+          viewMoreText="Descubre más"
+          animateOnEntry={animateCards}
         />
       </div>
     </>

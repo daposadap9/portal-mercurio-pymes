@@ -1,3 +1,4 @@
+// components/Card.jsx
 import React from 'react';
 import { motion } from 'framer-motion';
 import { FaDollarSign } from 'react-icons/fa';
@@ -16,17 +17,18 @@ const Card = ({
   badgeText = "",
   showViewMore = false,
   onViewMore = () => {},
-  viewMoreText = "Ver más"
+  viewMoreText = "Ver más",
+  animateOnEntry = true // nueva prop
 }) => {
   const displayLines = lines.slice(0, maxLines);
 
   return (
     <motion.div 
-      initial={{ opacity: 0, y: 50 }}         // Estado inicial: opacidad 0 y 50px hacia abajo
-      whileInView={{ opacity: 1, y: 0 }}        // Al entrar en el viewport, se anima a opacidad 1 y posición original
-      whileHover={{ scale: 1.05, transition: { duration: 0.1 } }}  // Efecto scale rápido al hacer hover
-      viewport={{ once: true, amount: 0.3 }}     // Se anima una vez, cuando al menos el 30% está visible
-      transition={{ duration: 0.5 }}             // Duración de la animación de entrada
+      initial={animateOnEntry ? { opacity: 0, y: 50 } : { opacity: 1, y: 0 }}
+      animate={{ opacity: 1, y: 0 }}
+      whileHover={{ scale: 1.05, transition: { duration: 0.2 } }}
+      viewport={{ once: true, amount: 0.3 }}
+      transition={{ duration: 0.5 }}
       className={`
         md:self-stretch relative rounded-xl shadow-2xl p-6
         min-w-[300px] max-w-[300px] flex flex-col items-center transition-transform duration-500 border-2 ${borderColorClass}
