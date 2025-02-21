@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 const Login = () => {
   return (
-    <div className="min-h-full flex items-center justify-center bg-slate-50">
+    <div className="min-h-full flex items-center justify-center">
       <div className="bg-white rounded-xl shadow-2xl p-8 m-4 max-w-md w-full">
         <h2 className="text-2xl font-bold text-center text-teal-600 mb-6">
           Iniciar Sesión
