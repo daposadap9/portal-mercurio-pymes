@@ -7,16 +7,16 @@ const MercurioCustodia = () => {
         {/* Sección Izquierda: Párrafos */}
         <div className="w-full md:w-[35%]">
           <div className="text-center md:text-left bg-white bg-opacity-0 backdrop-blur-xl p-6 rounded-xl border border-white/30">
-            <p className="mb-4 text-md font-medium text-gray-800">
+            <p className="mb-4 text-md font-medium text-black">
               Nuestro servicio de custodia está diseñado para que olvides la preocupación por la gestión de documentos físicos; nosotros nos encargamos de todo mientras tú te concentras en hacer crecer tu negocio.
             </p>
-            <p className="mb-4 text-md font-medium text-gray-800">
+            <p className="mb-4 text-md font-medium text-black">
               Tus documentos estarán siempre disponibles cuando los necesites, con acceso rápido y seguro, sin los costos de mantenerlos en tus oficinas.
             </p>
-            <p className="mb-4 text-md font-medium text-gray-800">
+            <p className="mb-4 text-md font-medium text-black">
               Con la tercerización de archivos, no solo ahorras, sino que optimizas recursos valiosos que puedes redirigir hacia áreas estratégicas de tu empresa.
             </p>
-            <p className="mb-4 text-md font-medium text-gray-800">
+            <p className="mb-4 text-md font-medium text-black">
               No dejes que el desorden documental afecte tu eficiencia: con nuestra custodia física, simplificamos todo el proceso de organización y acceso.
             </p>
           </div>

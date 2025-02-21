@@ -7,10 +7,10 @@ const MercurioPYMES = () => {
         {/* Sección Izquierda: Párrafos */}
         <div className="w-full md:w-[35%]">
           <div className="text-center md:text-left bg-white bg-opacity-0 backdrop-blur-xl p-6 rounded-xl border border-white/30">
-            <p className="mb-4 leading-relaxed text-gray-700 text-base font-normal">
+            <p className="mb-4 leading-relaxed text-black text-base font-normal">
               Mercurio pymes es un software de gestión electrónica de documentos diseñado para estructurar y almacenar la información de pequeñas y medianas empresas, disminuyendo costos y propiciando un ambiente intuitivo y amigable que garantice el éxito en la gestión documental.
             </p>
-            <p className="mb-4 leading-relaxed text-gray-700 text-base font-normal">
+            <p className="mb-4 leading-relaxed text-black text-base font-normal">
               Con mercurio pymes podrás crear expedientes, indexar todos los tipos de documentos que produce tu empresa y, sobre todo, conservarlos en sólo lugar sin aumentar el riesgo de pérdida ni quedarte sin espacio suficiente.
             </p>
           </div>
@@ -53,7 +53,7 @@ const MercurioPYMES = () => {
               </div>
               {/* Bloque para Observaciones */}
               <div className="flex flex-col space-y-2">
-                <label className="text-sm text-gray-700 font-semibold">
+                <label className="text-sm text-black font-semibold">
                   Observaciones:
                 </label>
                 <textarea
