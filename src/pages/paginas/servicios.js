@@ -8,12 +8,12 @@ import {
 import { useRouter } from 'next/router';
 import { useDropdown } from '@/context/DropdownContext';
 
-export default function Servicios() {
+export default function Servicios({disabledProvider }) {
   const router = useRouter();
   const { dropdownActive } = useDropdown();
   
   // Eliminar el estado local y usar directamente el contexto
-  const isAnyDropdownActive = dropdownActive.services || dropdownActive.tramites;
+  const isAnyDropdownActive = disabledProvider ? false : (dropdownActive.services || dropdownActive.tramites);
 
   // Datos para las tarjetas
   const cardData = {

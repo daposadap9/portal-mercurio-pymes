@@ -6,8 +6,13 @@ import {
   FaListAlt, 
   FaInfoCircle 
 } from 'react-icons/fa';
+import { useDropdown } from '@/context/DropdownContext';
 
 const Tramites = () => {
+  const { dropdownActive } = useDropdown();
+    
+    // Eliminar el estado local y usar directamente el contexto
+    const isAnyDropdownActive = dropdownActive.services || dropdownActive.tramites;
   const cards = [
     { 
       title: "PAGA TU FACTURA", 
@@ -36,7 +41,7 @@ const Tramites = () => {
   ];
 
   return (
-    <div className="p-4">
+    <div className={`p-4 ${isAnyDropdownActive ? "mt-24" : ""}`}>
       {/* Contenedor centrado y con ancho máximo */}
       <div className="max-w-6xl mx-auto">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

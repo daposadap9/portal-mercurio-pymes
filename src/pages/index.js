@@ -8,7 +8,7 @@ export default function Home() {
     <>
       <Slider autoPlay={true} autoPlayTime={10000} />
       <div className='mt-16'>
-      <Servicios/>
+      <Servicios disabledProvider="diabledProvider"/>
       </div>
     </>
   );
