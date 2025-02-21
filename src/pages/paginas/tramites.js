@@ -41,7 +41,7 @@ const Tramites = () => {
   ];
 
   return (
-    <div className={`p-4 ${isAnyDropdownActive ? "mt-24" : ""}`}>
+    <div className={`p-4 transition-all duration-500 ease-in-out ${isAnyDropdownActive ? "mt-24" : ""}`}>
       {/* Contenedor centrado y con ancho máximo */}
       <div className="max-w-6xl mx-auto">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
