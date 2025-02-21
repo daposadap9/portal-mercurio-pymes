@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import Header from './Header';
 import Footer from './Footer';
 import SubNavigation from './SubNavigation';
+import { DropdownProvider } from '@/context/DropdownContext';
 
 const Layout = ({ children, handleNavigation, loading }) => {
   const router = useRouter();
@@ -13,6 +14,7 @@ const Layout = ({ children, handleNavigation, loading }) => {
   const randomDelay = () => `-${Math.random() * 15}s`;
 
   return (
+    <DropdownProvider>
     <div className="relative min-h-screen text-black font-exo">
       {/* Fondo degradado fijo */}
       <div 
@@ -35,7 +37,7 @@ const Layout = ({ children, handleNavigation, loading }) => {
       <div className="relative z-10 flex flex-col min-h-screen">
         <Header handleNavigation={handleNavigation} loading={loading} />
         {showSubNav && <SubNavigation />}
-        <main className="flex-grow pt-2 md:pb-20 pb-2">
+        <main className="flex-grow pt-4 md:pb-20 pb-2">
           <div className="mx-auto max-w-full px-4 md:p-10 pb-2">
             {children}
           </div>
@@ -143,7 +145,7 @@ const Layout = ({ children, handleNavigation, loading }) => {
         }
       `}</style>
     </div>
-  );
+    </DropdownProvider>);
 };
 
 export default Layout;

@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   FaHome, 
   FaConciergeBell, 
@@ -19,16 +19,36 @@ import {
   FaListAlt,
   FaInfoCircle
 } from 'react-icons/fa';
+import { useDropdown } from '@/context/DropdownContext';
 
 const Header = ({ handleNavigation, loading }) => {
   const router = useRouter();
-  const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [isMobileServicesModalOpen, setMobileServicesModalOpen] = useState(false);
-  const [isMobileTramitesModalOpen, setMobileTramitesModalOpen] = useState(false);
+const { setDropdownActive } = useDropdown();
 
-  // Estados para controlar el dropdown en Desktop mediante hover
-  const [showServicesDropdown, setShowServicesDropdown] = useState(false);
-  const [showTramitesDropdown, setShowTramitesDropdown] = useState(false);
+const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
+const [isMobileServicesModalOpen, setMobileServicesModalOpen] = useState(false);
+const [isMobileTramitesModalOpen, setMobileTramitesModalOpen] = useState(false);
+
+// Estados para controlar el dropdown en Desktop mediante hover
+const [showServicesDropdown, setShowServicesDropdown] = useState(false);
+const [showTramitesDropdown, setShowTramitesDropdown] = useState(false);
+
+// Función para actualizar el contexto directamente cuando cambien los estados
+const actualizarDropdown = (nuevoEstado) => {
+  setDropdownActive(prev => ({ ...prev, ...nuevoEstado }));
+};
+
+// Cuando cambie el estado de servicios, actualiza el contexto
+useEffect(() => {
+  actualizarDropdown({ services: showServicesDropdown });
+}, [showServicesDropdown]);
+
+// Actualiza el contexto cuando cambie el dropdown de Trámites
+useEffect(() => {
+  actualizarDropdown({ tramites: showTramitesDropdown });
+}, [showTramitesDropdown]);
+
+  
 
   const toggleMobileMenu = () => {
     if (loading) return;
@@ -61,7 +81,7 @@ const Header = ({ handleNavigation, loading }) => {
   const desktopTramitesDropdownItems = [
     { label: "PAGA TU FACTURA", action: () => alert("Pagar factura"), icon: <FaFileInvoiceDollar className="mr-2" /> },
     { label: "PQRSDF", href: "/paginas/tramites/pqrsdf", icon: <FaCommentAlt className="mr-2" /> },
-    { label: "SOLICITUDES MERCURIO CLIENTES",  href: "/paginas/tramites/solicitudesMercurio", icon: <FaListAlt className="mr-2" /> },
+    { label: "SOLICITUDES MERCURIO CLIENTES", href: "/paginas/tramites/solicitudesMercurio", icon: <FaListAlt className="mr-2" /> },
     { label: "CONSULTA ESTADO DE SOLICITUD", href: "/paginas/tramites/estadoSolicitud", icon: <FaInfoCircle className="mr-2" /> }
   ];
 
@@ -255,7 +275,7 @@ const Header = ({ handleNavigation, loading }) => {
           <div className="flex flex-col space-y-1 px-3 py-2">
             <Link href="/" legacyBehavior>
               <a 
-                onClick={handleLinkClick('/', toggleMobileMenu)}
+                onClick={handleLinkClick('/', () => setMobileMenuOpen(false))}
                 className={`${baseLinkClass2} ${isActive('/') ? activeLinkClass : inactiveLinkClass} text-sm`}
               >
                 <FaHome className="mr-1 text-base" /> INICIO
@@ -281,7 +301,7 @@ const Header = ({ handleNavigation, loading }) => {
             </button>
             <Link href="/paginas/contactanos" legacyBehavior>
               <a 
-                onClick={handleLinkClick('/paginas/contactanos', toggleMobileMenu)}
+                onClick={handleLinkClick('/paginas/contactanos', () => setMobileMenuOpen(false))}
                 className={`${baseLinkClass2} ${isActive('/paginas/contactanos') ? activeLinkClass : inactiveLinkClass} text-sm`}
               >
                 <FaEnvelope className="mr-1 text-base" /> CONTÁCTENOS
@@ -289,7 +309,7 @@ const Header = ({ handleNavigation, loading }) => {
             </Link>
             <Link href="/paginas/login" legacyBehavior>
               <a 
-                onClick={handleLinkClick('/paginas/login', toggleMobileMenu)}
+                onClick={handleLinkClick('/paginas/login', () => setMobileMenuOpen(false))}
                 className={`${baseLinkClass2} ${isActive('/paginas/login') ? activeLinkClass : inactiveLinkClass} rounded text-sm`}
               >
                 <FaSignInAlt className="mr-1 text-base" /> INGRESAR

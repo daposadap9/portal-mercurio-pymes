@@ -1,5 +1,4 @@
-// pages/Servicios.jsx
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Card from '@/components/Card';
 import { 
   FaBoxes, FaBoxOpen, FaChartLine, FaDatabase, FaFileAlt, 
@@ -7,9 +6,14 @@ import {
   FaRobot, FaSearch, FaShieldAlt, FaTrashAlt, FaTruck, FaInstagram 
 } from 'react-icons/fa';
 import { useRouter } from 'next/router';
+import { useDropdown } from '@/context/DropdownContext';
 
 export default function Servicios() {
   const router = useRouter();
+  const { dropdownActive } = useDropdown();
+  
+  // Eliminar el estado local y usar directamente el contexto
+  const isAnyDropdownActive = dropdownActive.services || dropdownActive.tramites;
 
   // Datos para las tarjetas
   const cardData = {
@@ -96,8 +100,8 @@ export default function Servicios() {
 
   return (
     <>
-      {/* Título principal */}
-      <div className="flex justify-center text-2xl md:text-4xl font-bold text-teal-600 text-center titulo-shadow">
+      {/* Título principal: se aplica mt-24 si isDropdownActive es true */}
+      <div className={`flex justify-center text-2xl md:text-4xl font-bold ${isAnyDropdownActive ? "mt-24" : ""} text-teal-600 text-center titulo-shadow`}>
         <h1>¡Cotiza tu servicio!</h1>
       </div>
 
@@ -150,14 +154,11 @@ export default function Servicios() {
         />
       </div>
 
-      {/* Título de paquetes */}
       <div className="flex justify-center pt-10 text-2xl md:text-4xl font-bold text-teal-600 text-center titulo-shadow">
         <h1>¡Nuestros paquetes!</h1>
       </div>
-
-      {/* Contenedor de planes */}
       <div className="flex flex-col md:flex-row flex-wrap items-center justify-center pt-5 gap-4">
-        <Card
+        <Card 
           title={cardData6.title} 
           lines={cardData6.lines} 
           maxLines={cardData6.maxLines}
@@ -193,17 +194,21 @@ export default function Servicios() {
         />
       </div>
       
-      {/* Título de Servicios Adicionales */}
       <div className="flex justify-center pt-10 text-2xl md:text-4xl font-bold text-teal-600 text-center titulo-shadow">
         <h1>Servicios Adicionales</h1>
       </div>
       
-      {/* Contenedor de Servicios Adicionales */}
       <div className="flex flex-col md:flex-row flex-wrap items-center justify-center pt-5 gap-4">
         <Card 
-          title={cardData5.title} 
-          lines={cardData5.lines} 
-          maxLines={cardData5.maxLines} 
+          title="SERVICIOS ADICIONALES"
+          lines={[
+            { text: 'Transporte de máx 50 cajas x300', icon: <FaTruck /> },
+            { text: 'Cajas x300', icon: <FaBoxes /> },
+            { text: 'Consultas digitales hasta 5 folios', icon: <FaFileAlt /> },
+            { text: '1TB de almacenamiento', icon: <FaHdd /> },
+            { text: '100 GB de almacenamiento', icon: <FaDatabase /> }
+          ]}
+          maxLines={7}
           borderColorClass="hover:border-green-500"
           badgeText="¡Oferta recomendada!"
           titleColorClass="text-green-700"
