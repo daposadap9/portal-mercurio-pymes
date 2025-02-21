@@ -1,6 +1,5 @@
 // components/Card.jsx
 import React from 'react';
-import { motion } from 'framer-motion';
 import { FaDollarSign } from 'react-icons/fa';
 
 const Card = ({ 
@@ -17,21 +16,15 @@ const Card = ({
   badgeText = "",
   showViewMore = false,
   onViewMore = () => {},
-  viewMoreText = "Ver más",
-  animateOnEntry = true // nueva prop
+  viewMoreText = "Ver más"
 }) => {
   const displayLines = lines.slice(0, maxLines);
 
   return (
-    <motion.div 
-      initial={animateOnEntry ? { opacity: 0, y: 50 } : { opacity: 1, y: 0 }}
-      animate={{ opacity: 1, y: 0 }}
-      whileHover={{ scale: 1.05, transition: { duration: 0.1 } }}
-      viewport={{ once: true, amount: 0.3 }}
-      transition={{ duration: 0.5 }}
+    <div 
       className={`
         md:self-stretch relative rounded-xl shadow-2xl p-6
-        min-w-[300px] max-w-[300px] flex flex-col items-center transition-transform duration-500 border-2 ${borderColorClass}
+        min-w-[300px] max-w-[300px] flex flex-col items-center transition-transform duration-200 hover:scale-105 border-2 ${borderColorClass}
         bg-white border border-white/30
       `}
     >
@@ -57,18 +50,10 @@ const Card = ({
 
           if (typeof line === "object" && line !== null) {
             content = line.text || "";
-            if (line.color) {
-              colorClass = line.color;
-            }
-            if (typeof line.showIcon !== "undefined") {
-              showIcon = line.showIcon;
-            }
-            if (line.icon) {
-              customIcon = line.icon;
-            }
-            if (line.textSize) {
-              lineTextSize = line.textSize;
-            }
+            if (line.color) colorClass = line.color;
+            if (typeof line.showIcon !== "undefined") showIcon = line.showIcon;
+            if (line.icon) customIcon = line.icon;
+            if (line.textSize) lineTextSize = line.textSize;
           } else {
             content = line;
           }
@@ -99,7 +84,7 @@ const Card = ({
           </button>
         </div>
       )}
-    </motion.div>
+    </div>
   );
 };
 
