@@ -47,7 +47,10 @@ const Layout = ({ children, handleNavigation, loading }) => {
       <style jsx global>{`
         @import url('https://fonts.googleapis.com/css?family=Exo:400,700');
         * { margin: 0; padding: 0; }
-        body { font-family: 'Exo', sans-serif; }
+        html, body { 
+          font-family: 'Exo', sans-serif;
+          background-color: white; /* Color de fondo para evitar el negro */
+        }
         
         .circles {
           width: 100%;
