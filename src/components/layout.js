@@ -50,6 +50,7 @@ const Layout = ({ children, handleNavigation, loading }) => {
         html, body { 
           font-family: 'Exo', sans-serif;
           background-color: white; /* Color de fondo para evitar el negro */
+          scroll-behavior: smooth;
         }
         
         .circles {
