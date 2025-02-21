@@ -6,26 +6,40 @@ import SubNavigation from './SubNavigation';
 
 const Layout = ({ children, handleNavigation, loading }) => {
   const router = useRouter();
-  // Detectamos si la ruta actual es "anidada" (más de un segmento)
   const pathSegments = router.asPath.split('/').filter(seg => seg !== '');
   const showSubNav = pathSegments.length > 1;
+
+  // Para dispositivos pequeños, mostramos menos elementos
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+  const numElements = isMobile ? 20 : 50;
 
   // Función para generar un delay aleatorio negativo
   const randomDelay = () => `-${Math.random() * 15}s`;
 
   return (
     <div className="relative min-h-screen text-black font-exo">
-      {/* Fondo degradado fijo con tonos claros */}
+      {/* Fondo degradado fijo */}
       <div 
-        className="absolute inset-0 bg-gradient-to-tl from-teal-600 via-white to-white opacity-95 bg-fixed"
+        className="absolute inset-0 bg-gradient-to-tl from-teal-500 via-white to-white opacity-95 bg-fixed"
       ></div>
       
-      {/* Capa de figuras animadas fijas, generando 50 elementos con delays aleatorios */}
-      <ul className="circles fixed inset-0 pointer-events-none">
-        {Array.from({ length: 50 }).map((_, index) => (
-          <li key={index} style={{ animationDelay: randomDelay() }}></li>
-        ))}
-      </ul>
+      {/* Capa de figuras animadas (se muestra solo en desktop o con menos elementos en mobile) */}
+      {!isMobile && (
+        <ul className="circles fixed inset-0 pointer-events-none">
+          {Array.from({ length: numElements }).map((_, index) => (
+            <li key={index} style={{ animationDelay: randomDelay() }}></li>
+          ))}
+        </ul>
+      )}
+
+      {/* Opcional: En mobile, puedes optar por una versión menos pesada */}
+      {isMobile && (
+        <ul className="circles fixed inset-0 pointer-events-none">
+          {Array.from({ length: numElements }).map((_, index) => (
+            <li key={index} style={{ animationDelay: randomDelay(), animationDuration: '20s' }}></li>
+          ))}
+        </ul>
+      )}
 
       {/* Capa de imagen superpuesta (opcional) */}
       <div 
@@ -44,19 +58,15 @@ const Layout = ({ children, handleNavigation, loading }) => {
         {/* <Footer /> */}
       </div>
 
-      {/* Estilos globales */}
       <style jsx global>{`
         @import url('https://fonts.googleapis.com/css?family=Exo:400,700');
-
         * {
           margin: 0;
           padding: 0;
         }
-        
         body {
           font-family: 'Exo', sans-serif;
         }
-        
         .circles {
           width: 100%;
           height: 100%;
@@ -64,7 +74,6 @@ const Layout = ({ children, handleNavigation, loading }) => {
           top: 0;
           left: 0;
         }
-        
         .circles li {
           position: absolute;
           display: block;
@@ -72,11 +81,9 @@ const Layout = ({ children, handleNavigation, loading }) => {
           background: rgba(255, 255, 255, 1);
           animation: animate 15s linear infinite;
           bottom: -150px;
-          /* Borde redondeado, pero no circular: por ejemplo, 8px */
           border-radius: 8px;
         }
-        
-        /* Distribución de círculos con tamaños aumentados */
+        /* Ejemplo de distribución (se mantiene igual, pero podrías reducir algunos en mobile) */
         .circles li:nth-child(1) { left: 2%;  width: 70px; height: 70px; }
         .circles li:nth-child(2) { left: 8%;  width: 80px; height: 80px; }
         .circles li:nth-child(3) { left: 14%; width: 65px; height: 65px; }
@@ -109,6 +116,16 @@ const Layout = ({ children, handleNavigation, loading }) => {
         .circles li:nth-child(30) { left: 96%; width: 85px; height: 85px; }
         .circles li:nth-child(31) { left: 3%; width: 70px; height: 70px; }
         .circles li:nth-child(32) { left: 8%; width: 80px; height: 80px; }
+        .circles li:nth-child(33) { left: 13%; width: 75px; height: 75px; }
+        .circles li:nth-child(34) { left: 18%; width: 85px; height: 85px; }
+        .circles li:nth-child(35) { left: 23%; width: 70px; height: 70px; }
+        .circles li:nth-child(36) { left: 28%; width: 80px; height: 80px; }
+        .circles li:nth-child(37) { left: 33%; width: 75px; height: 75px; }
+        .circles li:nth-child(38) { left: 38%; width: 85px; height: 85px; }
+        .circles li:nth-child(39) { left: 43%; width: 70px; height: 70px; }
+        .circles li:nth-child(40) { left: 48%; width: 80px; height: 80px; }
+        .circles li:nth-child(41) { left: 53%; width: 75px; height: 75px; }
+        .circles li:nth-child(42) { left: 58%; width: 85px; height: 85px; }
         .circles li:nth-child(43) { left: 63%; width: 70px; height: 70px; }
         .circles li:nth-child(44) { left: 68%; width: 80px; height: 80px; }
         .circles li:nth-child(45) { left: 73%; width: 75px; height: 75px; }
