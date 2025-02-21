@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Header from './Header';
 import Footer from './Footer';
@@ -9,6 +9,18 @@ const Layout = ({ children, handleNavigation, loading }) => {
   const pathSegments = router.asPath.split('/').filter(seg => seg !== '');
   const showSubNav = pathSegments.length > 1;
 
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkScreen = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    checkScreen();
+    window.addEventListener('resize', checkScreen);
+    return () => window.removeEventListener('resize', checkScreen);
+  }, []);
+
   // Función para generar un delay aleatorio negativo
   const randomDelay = () => `-${Math.random() * 15}s`;
 
@@ -16,15 +28,39 @@ const Layout = ({ children, handleNavigation, loading }) => {
     <div className="relative min-h-screen text-black font-exo">
       {/* Fondo degradado fijo */}
       <div 
-        className="absolute inset-0 bg-gradient-to-tl from-teal-500 via-white to-white opacity-95 bg-fixed"
+        className="absolute inset-0 bg-gradient-to-tl from-teal-200 via-teal-200 to-teal-200 opacity-95 bg-fixed"
       ></div>
       
-      {/* Capa de cuadros animados fijos: 50 elementos en desktop, 15 en mobile */}
-      <ul className="circles fixed inset-0 pointer-events-none">
-        {Array.from({ length: 50 }).map((_, index) => (
-          <li key={index} style={{ animationDelay: randomDelay() }}></li>
-        ))}
-      </ul>
+      {/* Capa de cuadros animados fijos solo en desktop */}
+      {!isMobile && (
+        <ul className="circles fixed inset-0 pointer-events-none">
+          {Array.from({ length: 50 }).map((_, index) => (
+            <li key={index} style={{ animationDelay: randomDelay() }}></li>
+          ))}
+        </ul>
+      )}
+
+      {/* Versión estática en mobile para dar continuidad visual */}
+      {isMobile && (
+        <ul className="circles fixed inset-0 pointer-events-none">
+          {Array.from({ length: 15 }).map((_, index) => (
+            <li 
+              key={index} 
+              style={{
+                // Sin animación
+                animation: "none",
+                bottom: "-150px",
+                borderRadius: "8px",
+                background: "rgba(255,255,255,1)",
+                // Distribución sencilla
+                left: `${(index * 6) % 100}%`,
+                width: "70px",
+                height: "70px"
+              }}
+            ></li>
+          ))}
+        </ul>
+      )}
 
       {/* Capa de imagen superpuesta (opcional) */}
       <div 
@@ -43,12 +79,11 @@ const Layout = ({ children, handleNavigation, loading }) => {
         {/* <Footer /> */}
       </div>
 
-      {/* Estilos globales */}
       <style jsx global>{`
         @import url('https://fonts.googleapis.com/css?family=Exo:400,700');
         * { margin: 0; padding: 0; }
         body { font-family: 'Exo', sans-serif; }
-        
+
         .circles {
           width: 100%;
           height: 100%;
@@ -65,7 +100,7 @@ const Layout = ({ children, handleNavigation, loading }) => {
           bottom: -150px;
           border-radius: 8px;
         }
-        /* Distribución para desktop (50 elementos) */
+        /* Distribución de cuadros para desktop */
         .circles li:nth-child(1) { left: 2%;  width: 70px; height: 70px; }
         .circles li:nth-child(2) { left: 8%;  width: 80px; height: 80px; }
         .circles li:nth-child(3) { left: 14%; width: 65px; height: 65px; }
@@ -133,7 +168,7 @@ const Layout = ({ children, handleNavigation, loading }) => {
           .circles li {
             display: none;
           }
-          .circles li:nth-child(-n+0) {
+          .circles li:nth-child(-n+15) {
             display: block;
           }
         }
