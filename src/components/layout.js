@@ -28,7 +28,7 @@ const Layout = ({ children, handleNavigation, loading }) => {
     <div className="relative min-h-screen text-black font-exo">
       {/* Fondo degradado fijo */}
       <div 
-        className="absolute inset-0 bg-gradient-to-tl from-teal-200 via-teal-200 to-teal-200 opacity-95 bg-fixed"
+        className="absolute inset-0 bg-gradient-to-tl from-teal-500 via-white to-white opacity-95 bg-fixed"
       ></div>
       
       {/* Capa de cuadros animados fijos solo en desktop */}
