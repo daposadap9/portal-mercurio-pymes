@@ -24,7 +24,7 @@ const Card = ({
     <div className={`
       md:self-stretch relative rounded-xl shadow-2xl p-6
       min-w-[300px] max-w-[300px] flex flex-col items-center transition-transform duration-500 hover:scale-105 border-2 ${borderColorClass}
-      bg-white border border-white/30
+      bg-white bg-opacity-50 backdrop-blur-md border border-white/30
     `}>
       {/* Badge opcional */}
       {badgeText && (
