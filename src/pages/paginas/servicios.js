@@ -101,9 +101,10 @@ export default function Servicios({disabledProvider }) {
   return (
     <>
       {/* Título principal: se aplica mt-24 si isDropdownActive es true */}
-      <div className={`flex justify-center text-2xl md:text-4xl font-bold ${isAnyDropdownActive ? "mt-24" : ""} text-teal-600 text-center titulo-shadow`}>
-        <h1>¡Cotiza tu servicio!</h1>
+      <div className={`flex justify-center text-2xl md:text-4xl font-bold transition-all duration-500 ease-in-out ${isAnyDropdownActive ? "mt-24" : "mt-0"} text-teal-600 text-center titulo-shadow`}>
+      <h1>¡Cotiza tu servicio!</h1>
       </div>
+
 
       {/* Contenedor de servicios */}
       <div className="flex flex-col md:flex-row flex-wrap items-center justify-center pt-5 gap-4 p-2">
