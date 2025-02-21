@@ -1,25 +1,61 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import { FaWhatsapp, FaInstagram } from 'react-icons/fa';
+
+const containerVariants = {
+  animate: {
+    transition: {
+      staggerChildren: 0.3, // 0.3 segundos de retraso entre cada icono
+    },
+  },
+};
+
+const iconVariants = {
+  initial: { y: 0 },
+  animate: {
+    y: [0, -20, 0],
+    transition: {
+      duration: 0.5,
+      repeat: Infinity,
+      repeatDelay: 30,
+      ease: "easeInOut",
+    },
+  },
+};
+
+// Variante exclusiva para WhatsApp usando spring con dos keyframes
+const whatsappIconVariant = {
+  initial: { y: 0 },
+  animate: {
+    y: [-25, 0],
+    transition: {
+      type: "spring",
+      stiffness: 300,
+      damping: 10,
+      repeat: Infinity,
+      repeatDelay: 30,
+    },
+  },
+};
 
 const SocialWhatsAppPanel = ({ 
   phoneNumber, 
   message = "¡Hola! Quiero más información.", 
   className = "" 
 }) => {
-  // Enlace para WhatsApp en formato internacional
   const whatsappLink = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-  
-  // Tamaño común para los contenedores de íconos
   const containerSize = "w-12 h-12";
-  // Tamaño de ícono
   const iconSize = 32;
 
   return (
-    <div 
+    <motion.div 
       className={`fixed right-3 bottom-10 z-[10] flex flex-col items-center space-y-3 ${className}`}
+      variants={containerVariants}
+      initial="initial"
+      animate="animate"
     >
       {/* Botón de WhatsApp */}
-      <a
+      <motion.a
         href={whatsappLink}
         target="_blank"
         rel="noopener noreferrer"
@@ -30,14 +66,15 @@ const SocialWhatsAppPanel = ({
           text-white rounded-full 
           transform transition-all duration-300 hover:scale-110
         `}
+        variants={whatsappIconVariant}
       >
         <FaWhatsapp size={iconSize} />
-      </a>
+      </motion.a>
 
       {/* Grupo de redes sociales vertical */}
       <div className="flex flex-col items-center space-y-3">
         {/* Instagram */}
-        <a 
+        <motion.a 
           href="https://www.instagram.com/servisoftsa/#" 
           target="_blank" 
           rel="noopener noreferrer"
@@ -47,11 +84,12 @@ const SocialWhatsAppPanel = ({
             rounded-full bg-white shadow border border-gray-200
           `}
           style={{ textShadow: '1px 1px 3px rgba(0,0,0,0.2)' }}
+          variants={iconVariants}
         >
           <FaInstagram size={iconSize} />
-        </a>
+        </motion.a>
         {/* Servisoft */}
-        <a 
+        <motion.a 
           href="https://servisoft.co/" 
           target="_blank" 
           rel="noopener noreferrer"
@@ -61,11 +99,12 @@ const SocialWhatsAppPanel = ({
             rounded-full bg-white shadow border border-gray-200
           `}
           style={{ textShadow: '1px 1px 3px rgba(0,0,0,0.2)' }}
+          variants={iconVariants}
         >
           <img src="/servisoft.webp" alt="Servisoft" className="w-6 h-6 object-contain" />
-        </a>
+        </motion.a>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

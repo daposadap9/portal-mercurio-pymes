@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import { FaDollarSign } from 'react-icons/fa';
 
 const Card = ({ 
@@ -17,15 +18,20 @@ const Card = ({
   onViewMore = () => {},
   viewMoreText = "Ver más"
 }) => {
-  // Tomamos solo las primeras maxLines líneas
   const displayLines = lines.slice(0, maxLines);
 
   return (
-    <div className={`
-      md:self-stretch relative rounded-xl shadow-2xl p-6
-      min-w-[300px] max-w-[300px] flex flex-col items-center transition-transform duration-500 hover:scale-105 border-2 ${borderColorClass}
-      bg-white border border-white/30
-    `}>
+    <motion.div 
+      initial={{ opacity: 0, y: 50 }}         // Estado inicial: opacidad 0 y 50px hacia abajo
+      whileInView={{ opacity: 1, y: 0 }}        // Cuando entra en el viewport, se anima a opacidad 1 y posición original
+      viewport={{ once: true, amount: 0.3 }}     // Se anima una vez, cuando al menos el 30% está visible
+      transition={{ duration: 0.5 }}             // Duración de la animación
+      className={`
+        md:self-stretch relative rounded-xl shadow-2xl p-6
+        min-w-[300px] max-w-[300px] flex flex-col items-center transition-transform duration-500 hover:scale-105 border-2 ${borderColorClass}
+        bg-white border border-white/30
+      `}
+    >
       {/* Badge opcional */}
       {badgeText && (
         <div className="absolute -top-2 -right-0 bg-black text-white text-xs font-bold px-2 py-1 rounded-full">
@@ -90,7 +96,7 @@ const Card = ({
           </button>
         </div>
       )}
-    </div>
+    </motion.div>
   );
 };
 
