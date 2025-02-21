@@ -26,7 +26,7 @@ const Card = ({
     <motion.div 
       initial={animateOnEntry ? { opacity: 0, y: 50 } : { opacity: 1, y: 0 }}
       animate={{ opacity: 1, y: 0 }}
-      whileHover={{ scale: 1.05, transition: { duration: 0.2 } }}
+      whileHover={{ scale: 1.05, transition: { duration: 0.1 } }}
       viewport={{ once: true, amount: 0.3 }}
       transition={{ duration: 0.5 }}
       className={`
