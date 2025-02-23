@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { 
   FaHome, 
   FaConciergeBell, 
@@ -20,35 +20,34 @@ import {
   FaInfoCircle
 } from 'react-icons/fa';
 import { useDropdown } from '@/context/DropdownContext';
+import { ThemeContext } from '@/context/ThemeContext';
 
 const Header = ({ handleNavigation, loading }) => {
   const router = useRouter();
-const { setDropdownActive } = useDropdown();
+  const { setDropdownActive } = useDropdown();
 
-const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
-const [isMobileServicesModalOpen, setMobileServicesModalOpen] = useState(false);
-const [isMobileTramitesModalOpen, setMobileTramitesModalOpen] = useState(false);
+  const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isMobileServicesModalOpen, setMobileServicesModalOpen] = useState(false);
+  const [isMobileTramitesModalOpen, setMobileTramitesModalOpen] = useState(false);
 
-// Estados para controlar el dropdown en Desktop mediante hover
-const [showServicesDropdown, setShowServicesDropdown] = useState(false);
-const [showTramitesDropdown, setShowTramitesDropdown] = useState(false);
+  // Estados para controlar el dropdown en Desktop mediante hover
+  const [showServicesDropdown, setShowServicesDropdown] = useState(false);
+  const [showTramitesDropdown, setShowTramitesDropdown] = useState(false);
 
-// Función para actualizar el contexto directamente cuando cambien los estados
-const actualizarDropdown = (nuevoEstado) => {
-  setDropdownActive(prev => ({ ...prev, ...nuevoEstado }));
-};
+  // Función para actualizar el contexto directamente cuando cambien los estados
+  const actualizarDropdown = (nuevoEstado) => {
+    setDropdownActive(prev => ({ ...prev, ...nuevoEstado }));
+  };
 
-// Cuando cambie el estado de servicios, actualiza el contexto
-useEffect(() => {
-  actualizarDropdown({ services: showServicesDropdown });
-}, [showServicesDropdown]);
+  // Cuando cambie el estado de servicios, actualiza el contexto
+  useEffect(() => {
+    actualizarDropdown({ services: showServicesDropdown });
+  }, [showServicesDropdown]);
 
-// Actualiza el contexto cuando cambie el dropdown de Trámites
-useEffect(() => {
-  actualizarDropdown({ tramites: showTramitesDropdown });
-}, [showTramitesDropdown]);
-
-  
+  // Actualiza el contexto cuando cambie el dropdown de Trámites
+  useEffect(() => {
+    actualizarDropdown({ tramites: showTramitesDropdown });
+  }, [showTramitesDropdown]);
 
   const toggleMobileMenu = () => {
     if (loading) return;
@@ -57,6 +56,19 @@ useEffect(() => {
 
   const closeMobileServicesModal = () => {
     setMobileServicesModalOpen(false);
+  };
+
+  const { theme, setTheme } = useContext(ThemeContext);
+
+  // Función para alternar temas: light -> purple -> dark -> light...
+  const toggleTheme = () => {
+    if (theme === 'light') {
+      setTheme('purple');
+    } else if (theme === 'purple') {
+      setTheme('dark');
+    } else {
+      setTheme('light');
+    }
   };
 
   // Opciones para el dropdown de SERVICIOS en Desktop
@@ -258,6 +270,19 @@ useEffect(() => {
           </Link>
         </div>
 
+        {/* Nuevo select para cambiar tema (Desktop) */}
+        <div className="hidden lg:flex items-center">
+          <select
+            value={theme}
+            onChange={(e) => setTheme(e.target.value)}
+            className="p-1 rounded text-sm bg-white text-teal-600 border border-teal-100"
+          >
+            <option value="light">Light</option>
+            <option value="purple">Purple</option>
+            <option value="dark">Dark</option>
+          </select>
+        </div>
+
         {/* Menú móvil */}
         <div className="lg:hidden flex items-center">
           <button 
@@ -315,6 +340,18 @@ useEffect(() => {
                 <FaSignInAlt className="mr-1 text-base" /> INGRESAR
               </a>
             </Link>
+            {/* Nuevo select para cambiar tema (Mobile) */}
+            <div className="mt-2">
+              <select
+                value={theme}
+                onChange={(e) => setTheme(e.target.value)}
+                className="p-1 rounded text-sm bg-white text-teal-600 border border-teal-100 w-full"
+              >
+                <option value="light">Light</option>
+                <option value="purple">Purple</option>
+                <option value="dark">Dark</option>
+              </select>
+            </div>
           </div>
         </div>
       )}

@@ -7,6 +7,7 @@ import VerticalBarTransition from "../components/VerticalBarTransition";
 import { ApolloProvider } from '@apollo/client';
 import client from '../lib/apolloClient';
 import WhatsAppButton from "../components/WhatsAppButton";
+import { ThemeProvider } from '@/context/ThemeContext'; // Importa el ThemeProvider
 
 export default function App({ Component, pageProps }) {
   const router = useRouter();
@@ -48,15 +49,17 @@ export default function App({ Component, pageProps }) {
 
   return (
     <ApolloProvider client={client}>
-      <Layout handleNavigation={handleDelayedNavigation} loading={loading}>
-        {loading && <VerticalBarTransition onComplete={() => setLoading(false)} />}
-        <Component {...pageProps} />
-      </Layout>
-      {/* El botón se coloca fuera del Layout para que sea fixed y se muestre siempre */}
-      <WhatsAppButton 
-        phoneNumber="3008676122" 
-        message="¡Hola! Quiero más información." 
-      />
+      <ThemeProvider>
+        <Layout handleNavigation={handleDelayedNavigation} loading={loading}>
+          {loading && <VerticalBarTransition onComplete={() => setLoading(false)} />}
+          <Component {...pageProps} />
+        </Layout>
+        {/* El botón se coloca fuera del Layout para que sea fixed y se muestre siempre */}
+        <WhatsAppButton 
+          phoneNumber="3008676122" 
+          message="¡Hola! Quiero más información." 
+        />
+      </ThemeProvider>
     </ApolloProvider>
   );
 }
