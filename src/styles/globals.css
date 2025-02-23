@@ -57,7 +57,7 @@
   /* Convertir textos (black y grays) a blanco off-white */
   --text-black: #fdfdfd;
   --gray-50:   #f8f0fa;
-  --gray-100:  #f2e6f5;
+  --gray-100:  #cd83fd;
   --gray-200:  #ebdcec;
   --gray-300:  #e5d3e6;
   --gray-400:  #debae0;
@@ -68,7 +68,7 @@
   --gray-900:  #bb69c2;
   
   /* Opcional: ajustar tonos de teal para complementar el morado */
-  --text-teal-600: #d1b3ff;
+  --text-teal-600: white ;
   --text-teal-500: #c791f4;
   --text-teal-700: #b38aff;
   
@@ -108,14 +108,14 @@
   
   /* Paleta de grises adaptada para Dark */
   --gray-50:   #e0e0e0;
-  --gray-100:  #c2c2c2;
+  --gray-100:  #2d2828;
   --gray-200:  #a3a3a3;
   --gray-300:  #858585;
   --gray-400:  #666666;
   --gray-500:  #4d4d4d;
   --gray-600:  #333333;
-  --gray-700:  #1a1a1a;
-  --gray-800:  #0d0d0d;
+  --gray-700:  #e0e0e0;
+  --gray-800:  #fbf8f8;
   --gray-900:  #080808;
   
   /* Otros colores adaptados al Dark */
