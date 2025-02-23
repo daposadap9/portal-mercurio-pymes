@@ -103,8 +103,8 @@
   --text-teal-500: #26c6da;
   --text-teal-700: #00acc1;
   --teal-50:  #e0f7fa;
-  --teal-100: #b2ebf2;
-  --teal-200: #80deea;
+  --teal-100: black;
+  --teal-200: #4dd0e1;
   
   /* Paleta de grises adaptada para Dark */
   --gray-50:   #e0e0e0;
