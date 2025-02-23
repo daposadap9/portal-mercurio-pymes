@@ -278,7 +278,7 @@ const Header = ({ handleNavigation, loading }) => {
             className="p-1 rounded text-sm bg-white text-teal-600 border border-teal-100"
           >
             <option value="light">Light</option>
-            <option value="purple">Purple</option>
+            <option value="purple">Dark blue</option>
             <option value="dark">Dark</option>
           </select>
         </div>
@@ -348,7 +348,7 @@ const Header = ({ handleNavigation, loading }) => {
                 className="p-1 rounded text-sm bg-white text-teal-600 border border-teal-100 w-full"
               >
                 <option value="light">Light</option>
-                <option value="purple">Purple</option>
+                <option value="purple">Dark blue</option>
                 <option value="dark">Dark</option>
               </select>
             </div>
