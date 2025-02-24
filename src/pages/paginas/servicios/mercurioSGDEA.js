@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { gql, useMutation } from '@apollo/client';
 import { FaCalendarAlt } from 'react-icons/fa';
+import { useRouter } from 'next/router';
 
 const SET_SIGUIENTE_RADICADO_NEW = gql`
   mutation SetSiguienteRadicadoNew {
@@ -9,6 +10,7 @@ const SET_SIGUIENTE_RADICADO_NEW = gql`
 `;
 
 const MercurioSGDEA = () => {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     nombre: "",
     apellido: "",
@@ -20,7 +22,6 @@ const MercurioSGDEA = () => {
   });
   
   const [newRadicado, setNewRadicado] = useState(null);
-
   const [setSiguienteRadicadoNew, { loading, error }] = useMutation(SET_SIGUIENTE_RADICADO_NEW);
 
   const handleChange = (e) => {
@@ -34,25 +35,25 @@ const MercurioSGDEA = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      // Llamamos a la mutation para obtener el radicado
       const { data } = await setSiguienteRadicadoNew();
       const radicado = data.setSiguienteRadicadoNew;
-
       setNewRadicado(radicado);
 
-      // Construir mensaje para la alerta
-      const mensajeAlerta = `
-        📌 Nuevo Radicado: ${radicado}\n
-        📝 Datos ingresados:
-        - Nombre: ${formData.nombre}
-        - Apellido: ${formData.apellido}
-        - Entidad: ${formData.entidad}
-        - E-mail: ${formData.email}
-        - Teléfono: ${formData.telefono}
-        - Fecha: ${formData.fecha}
-        - Observaciones: ${formData.observaciones}
-      `;
+      // Construimos documentInfo a partir de los datos del formulario
+      const documentInfo = `${formData.nombre} - ${formData.apellido} - ${formData.entidad} - ${formData.email} - ${formData.telefono} - ${formData.fecha} - ${formData.observaciones}`;
 
-      alert(mensajeAlerta);
+      // Redireccionamos al componente de éxito pasando los datos por query parameters
+      router.push({
+        pathname: '/radicadoExitoso',
+        query: {
+          nombre: formData.nombre,
+          fecha: formData.fecha,
+          observaciones: formData.observaciones,
+          documentInfo: documentInfo,
+          radicado: radicado
+        }
+      });
     } catch (err) {
       console.error("Error al generar radicado:", err);
       alert("Error al generar radicado");
