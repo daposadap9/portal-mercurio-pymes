@@ -47,8 +47,8 @@
   /* Variables para body en light */
   --foreground: var(--text-black);
   --background: var(--bg-white);
-  
 }
+
 .purple {
   /* Fondo degradado en tonos de azul oscuro */
   background: linear-gradient(135deg, #0d253f, #1b3a5c);
@@ -67,11 +67,11 @@
   --gray-500:  #5c6673;
   --gray-600:  #444e5b;
   --gray-700:  white;
-  --gray-800:  #121c2b;
+  --gray-800:  black;
   --gray-900:  #000511;
 
   /* Tonos sutiles para detalles, manteniendo la coherencia */
-  --text-teal-600: #f0f0f0;
+  --text-teal-600: #dcdeff;
   --text-teal-500: #d1e0e0;
   --text-teal-700: #b0c0c0;
 
