@@ -3,9 +3,14 @@ import { gql, useMutation } from '@apollo/client';
 import { FaCalendarAlt } from 'react-icons/fa';
 import { useRouter } from 'next/router';
 
-const SET_SIGUIENTE_RADICADO_NEW = gql`
-  mutation SetSiguienteRadicadoNew {
-    setSiguienteRadicadoNew
+// Mutation que realiza todo el proceso de radicación
+const INSERT_MERT_RECIBIDO = gql`
+  mutation InsertMertRecibido($documentInfo: String!) {
+    insertMertRecibido(documentInfo: $documentInfo) {
+      success
+      message
+      idDocumento
+    }
   }
 `;
 
@@ -22,7 +27,7 @@ const MercurioSGDEA = () => {
   });
   
   const [newRadicado, setNewRadicado] = useState(null);
-  const [setSiguienteRadicadoNew, { loading, error }] = useMutation(SET_SIGUIENTE_RADICADO_NEW);
+  const [insertMertRecibido, { loading, error }] = useMutation(INSERT_MERT_RECIBIDO);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -35,35 +40,39 @@ const MercurioSGDEA = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Llamamos a la mutation para obtener el radicado
-      const { data } = await setSiguienteRadicadoNew();
-      const radicado = data.setSiguienteRadicadoNew;
-      setNewRadicado(radicado);
-
-      // Construimos documentInfo a partir de los datos del formulario
+      // Construimos un string con toda la información del formulario
       const documentInfo = `${formData.nombre} - ${formData.apellido} - ${formData.entidad} - ${formData.email} - ${formData.telefono} - ${formData.fecha} - ${formData.observaciones}`;
-
-      // Redireccionamos al componente de éxito pasando los datos por query parameters
-      router.push({
-        pathname: '/radicadoExitoso',
-        query: {
-          nombre: formData.nombre,
-          fecha: formData.fecha,
-          observaciones: formData.observaciones,
-          documentInfo: documentInfo,
-          radicado: radicado
-        }
-      });
+      
+      // Llamamos a la mutation para radicar: esta mutation internamente obtiene el siguiente radicado y realiza todas las inserciones
+      const { data } = await insertMertRecibido({ variables: { documentInfo } });
+      const result = data.insertMertRecibido;
+      
+      if (result.success) {
+        setNewRadicado(result.idDocumento);
+        // Redirigimos a la página de éxito pasando los datos necesarios vía query parameters
+        router.push({
+          pathname: '/radicadoExitoso',
+          query: {
+            nombre: formData.nombre,
+            fecha: formData.fecha,
+            observaciones: formData.observaciones,
+            documentInfo: documentInfo,
+            radicado: result.idDocumento
+          }
+        });
+      } else {
+        alert("Error: " + result.message);
+      }
     } catch (err) {
-      console.error("Error al generar radicado:", err);
-      alert("Error al generar radicado");
+      console.error("Error al radicar:", err);
+      alert("Error al radicar");
     }
   };
 
   return (
     <div className="min-h-full flex items-center justify-center p-4">
       <div className="w-full max-w-6xl flex flex-col md:flex-row justify-around gap-4">
-        {/* Sección Izquierda: Párrafos */}
+        {/* Sección Izquierda: Información */}
         <div className="w-full md:w-[35%]">
           <div className="text-center md:text-left bg-white bg-opacity-0 backdrop-blur-xl p-6 rounded-xl border border-white/30">
             <p className="mb-4 leading-relaxed text-black text-base font-medium">
@@ -73,10 +82,10 @@ const MercurioSGDEA = () => {
               Facilita la clasificación, la ordenación y un acceso eficiente a los documentos, garantizando una gestión documental estructurada y sin pérdida de información.
             </p>
             <p className="mb-4 leading-relaxed text-black text-base font-medium">
-              En compañía de nuestros partners en almacenamiento en la nube, estamos comprometidos con los más altos estándares de calidad en cuanto al resguardo de documentos físicos y digitales, evitando así cualquier tipo de alteración en la información de todos nuestros clientes.
+              En compañía de nuestros partners en almacenamiento en la nube, estamos comprometidos con los más altos estándares de calidad en cuanto al resguardo de documentos físicos y digitales, evitando así cualquier alteración en la información.
             </p>
             <p className="mb-4 leading-relaxed text-black text-base font-medium">
-              Del mismo modo, con el sgdea mercurio la entidad facilita la transcripción del archivo físico a formato digital, asegurando su preservación y la consulta a largo plazo mediante altos estándares de gestión electrónica documental.
+              Asimismo, el sgdea mercurio facilita la transcripción del archivo físico a formato digital, asegurando su preservación y consulta a largo plazo mediante altos estándares de gestión electrónica documental.
             </p>
           </div>
         </div>
@@ -88,7 +97,7 @@ const MercurioSGDEA = () => {
               Agenda demostración con nuestro equipo comercial
             </h2>
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-              {/* Bloque de Datos Personales */}
+              {/* Datos Personales */}
               <div className="flex flex-col space-y-4">
                 <input 
                   type="text" 
@@ -136,8 +145,8 @@ const MercurioSGDEA = () => {
                   required
                 />
               </div>
-
-              {/* Bloque para Selección de Día y Agenda */}
+              
+              {/* Selección de Día */}
               <div className="flex flex-col mt-4 space-y-2">
                 <label className="text-sm text-gray-700 font-semibold">
                   Selecciona el día de preferencia
@@ -154,8 +163,8 @@ const MercurioSGDEA = () => {
                   />
                 </div>
               </div>
-
-              {/* Bloque para Observaciones */}
+              
+              {/* Observaciones */}
               <div className="flex flex-col mt-4 space-y-2">
                 <label className="text-sm text-gray-700 font-semibold">
                   Observaciones:
@@ -169,7 +178,7 @@ const MercurioSGDEA = () => {
                   onChange={handleChange}
                 />
               </div>
-
+              
               {/* Botón de Envío */}
               <div className="mt-6 flex flex-col">
                 <button 

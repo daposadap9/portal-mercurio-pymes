@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 
 const RadicadoExitoso = () => {
   const router = useRouter();
-  // Extraemos los datos pasados por query
+  // Extraemos los datos pasados por query-
   const { nombre, fecha, observaciones, documentInfo, radicado } = router.query;
 
   return (
