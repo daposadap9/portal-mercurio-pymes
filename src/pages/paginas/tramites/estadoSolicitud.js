@@ -44,7 +44,7 @@ const EstadoSolicitud = () => {
           value={idDocumento}
           onChange={(e) => setIdDocumento(e.target.value)}
           placeholder="Ingresa el numero de radicado"
-          className="flex-1 p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+          className="flex-1 p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
         />
         <button
           onClick={consultarEstado}

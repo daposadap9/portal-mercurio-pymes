@@ -99,7 +99,7 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
               onChange={handleChange}
               required
               placeholder="Ingrese sus nombres"
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-2"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-2 text-gray-900"
             />
           </div>
           <div>
@@ -114,7 +114,7 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
               onChange={handleChange}
               required
               placeholder="Ingrese sus apellidos"
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-2"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-2 text-gray-900"
             />
           </div>
         </div>
@@ -133,7 +133,7 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
               onChange={handleChange}
               required
               placeholder="Ingrese su número de identificación"
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-2"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-2 text-gray-900"
             />
           </div>
           <div>
@@ -148,7 +148,7 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
               onChange={handleChange}
               required
               placeholder="Ingrese el nombre de la entidad"
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-2"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-2 text-gray-900"
             />
           </div>
         </div>
@@ -167,7 +167,7 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
               onChange={handleChange}
               required
               placeholder="Ingrese su correo electrónico"
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-2"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-2 text-gray-900"
             />
           </div>
           <div>
@@ -182,7 +182,7 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
               onChange={handleChange}
               required
               placeholder="Ingrese su número de teléfono celular"
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-2"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-2 text-gray-900"
             />
           </div>
         </div>
@@ -197,7 +197,7 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
             id="anexo"
             name="anexo"
             onChange={handleChange}
-            className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100 shadow-inset-sm"
+            className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100 shadow-inset-sm text-gray-900"
           />
         </div>
 
@@ -213,7 +213,7 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
             onChange={handleChange}
             rows="4"
             placeholder="Escribe aquí tus comentarios o dudas..."
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-2"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-2 text-gray-900"
           ></textarea>
         </div>
 
@@ -232,7 +232,7 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
             name="aceptaNotificaciones"
             checked={formData.aceptaNotificaciones}
             onChange={handleChange}
-            className="h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-300 rounded mt-1"
+            className="h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-300 rounded mt-1 text-gray-900"
           />
           <label htmlFor="aceptaNotificaciones" className="ml-2 block text-md font-bold text-gray-700">
             Al presentar esta PQRSDF por este medio, acepto y autorizo a XXXXXXXXX para que todas las notificaciones sean enviadas al correo electrónico registrado, esto con base en el artículo 56 de la ley 143 de 2011.
@@ -303,7 +303,7 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
               <input
                 type="checkbox"
                 id="modalAceptaTerminos"
-                className="h-4 w-4 text-teal-600"
+                className="h-4 w-4 text-teal-600 text-gray-900"
                 checked={formData.aceptaTerminos}
                 onChange={(e) =>
                   setFormData({ ...formData, aceptaTerminos: e.target.checked })

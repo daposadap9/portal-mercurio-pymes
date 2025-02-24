@@ -28,27 +28,27 @@ const MercurioPYMES = () => {
                 <input 
                   type="text" 
                   placeholder="Nombre:" 
-                  className="border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  className="border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
                 />
                 <input 
                   type="text" 
                   placeholder="Apellido:" 
-                  className="border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  className="border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
                 />
                 <input 
                   type="text" 
                   placeholder="Entidad y/o empresa:" 
-                  className="border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  className="border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
                 />
                 <input 
                   type="email" 
                   placeholder="E-mail:" 
-                  className="border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  className="border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
                 />
                 <input 
                   type="tel" 
                   placeholder="Teléfono celular:" 
-                  className="border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  className="border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
                 />
               </div>
               {/* Bloque para Observaciones */}
@@ -58,7 +58,7 @@ const MercurioPYMES = () => {
                 </label>
                 <textarea
                   placeholder="Ingresa tus observaciones aquí..."
-                  className="border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  className="border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
                   rows="4"
                 />
               </div>
@@ -68,7 +68,6 @@ const MercurioPYMES = () => {
                   Conoce el valor de tu inversión
                 </h3>
                 <div className="flex flex-col gap-4">
-                  {/* Botones con efecto de ola interna */}
                   <style jsx>{`
                     .btn-wave {
                       position: relative;
@@ -105,7 +104,6 @@ const MercurioPYMES = () => {
                     10 usuarios - $700.000
                   </button>
                 </div>
-                {/* Botón de Enviar */}
                 <div className="md:w-1/2 flex items-end mt-4">
                   <button className="w-full bg-teal-500 text-white font-bold py-2 rounded-md transition-colors duration-300 hover:bg-teal-600">
                     Link de pago

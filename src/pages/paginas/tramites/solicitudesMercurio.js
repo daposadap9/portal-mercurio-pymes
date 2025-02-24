@@ -116,7 +116,7 @@ const SolicitudesMercurio = ({ tipoSolicitud: tipoSolicitudProp }) => {
               onChange={handleChange}
               placeholder="Ingrese el cliente"
               disabled={!policyAccepted}
-              className="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
+              className="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
             />
           </div>
           <div>
@@ -129,7 +129,7 @@ const SolicitudesMercurio = ({ tipoSolicitud: tipoSolicitudProp }) => {
               onChange={handleChange}
               placeholder="Ingrese el nombre del radicador"
               disabled={!policyAccepted}
-              className="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
+              className="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
             />
           </div>
           <div>
@@ -155,7 +155,7 @@ const SolicitudesMercurio = ({ tipoSolicitud: tipoSolicitudProp }) => {
               onChange={handleChange}
               placeholder="Ingrese el email"
               disabled={!policyAccepted}
-              className="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
+              className="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
             />
           </div>
           <div>
@@ -168,7 +168,7 @@ const SolicitudesMercurio = ({ tipoSolicitud: tipoSolicitudProp }) => {
               onChange={handleChange}
               placeholder="Ingrese el teléfono"
               disabled={!policyAccepted}
-              className="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
+              className="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
             />
           </div>
           <div>
@@ -216,7 +216,7 @@ const SolicitudesMercurio = ({ tipoSolicitud: tipoSolicitudProp }) => {
               onChange={handleChange}
               placeholder="Ingrese el asunto de la solicitud"
               disabled={!policyAccepted}
-              className="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
+              className="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
             />
           </div>
           <div>
@@ -228,7 +228,7 @@ const SolicitudesMercurio = ({ tipoSolicitud: tipoSolicitudProp }) => {
               onChange={handleChange}
               placeholder="Ingrese una descripción (opcional)"
               disabled={!policyAccepted}
-              className="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
+              className="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
               rows="3"
             ></textarea>
           </div>
@@ -241,7 +241,7 @@ const SolicitudesMercurio = ({ tipoSolicitud: tipoSolicitudProp }) => {
               onChange={handleChange}
               placeholder="Describa el paso a paso del requerimiento"
               disabled={!policyAccepted}
-              className="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
+              className="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
               rows="3"
             ></textarea>
           </div>

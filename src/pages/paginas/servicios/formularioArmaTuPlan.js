@@ -1,4 +1,4 @@
-import Loading from '@/components/loading';
+import Loading from '@/components/loading'; 
 import React, { useState } from 'react';
 
 const FormularioArmaTuPlan = () => {
@@ -72,7 +72,7 @@ const FormularioArmaTuPlan = () => {
               onChange={handleChange}
               required
               placeholder="Ingrese sus nombres"
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-2"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-2 text-gray-900"
             />
           </div>
           <div>
@@ -87,7 +87,7 @@ const FormularioArmaTuPlan = () => {
               onChange={handleChange}
               required
               placeholder="Ingrese sus apellidos"
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-2"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-2 text-gray-900"
             />
           </div>
         </div>
@@ -105,7 +105,7 @@ const FormularioArmaTuPlan = () => {
             onChange={handleChange}
             required
             placeholder="Ingrese el nombre de la entidad o empresa"
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-2"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-2 text-gray-900"
           />
         </div>
 
@@ -145,7 +145,7 @@ const FormularioArmaTuPlan = () => {
               onChange={handleChange}
               required
               placeholder="Ingrese su correo electrónico"
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-2"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-2 text-gray-900"
             />
           </div>
           <div>
@@ -160,7 +160,7 @@ const FormularioArmaTuPlan = () => {
               onChange={handleChange}
               required
               placeholder="Ingrese su número de teléfono celular"
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-2"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-2 text-gray-900"
             />
           </div>
         </div>
@@ -175,7 +175,7 @@ const FormularioArmaTuPlan = () => {
             id="anexo"
             name="anexo"
             onChange={handleChange}
-            className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100 shadow-inset-sm"
+            className="mt-1 block w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100 shadow-inset-sm text-gray-900"
           />
         </div>
 
@@ -191,7 +191,7 @@ const FormularioArmaTuPlan = () => {
             onChange={handleChange}
             rows="4"
             placeholder="Escribe aquí tus comentarios o dudas..."
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-2"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-2 text-gray-900"
           ></textarea>
         </div>
 
@@ -254,7 +254,7 @@ const FormularioArmaTuPlan = () => {
             className="absolute inset-0 bg-black opacity-50"
             onClick={() => setShowModal(false)}
           ></div>
-          {/* Contenedor de la modal: 50vh en mobile, 70vh en desktop */}
+          {/* Contenedor de la modal */}
           <div className="relative bg-white rounded-lg shadow-2xl p-6 w-full max-w-4xl mx-auto my-4 overflow-auto h-[60vh] md:h-[90vh]">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-bold text-center flex-1">
@@ -267,11 +267,8 @@ const FormularioArmaTuPlan = () => {
                 &times;
               </button>
             </div>
-            {/* Contenedor para el iframe con loading */}
             <div className="w-full" style={{ height: 'calc(100% - 120px)' }}>
-              {!pdfLoaded && (
-                <Loading/>
-              )}
+              {!pdfLoaded && <Loading />}
               <iframe
                 onLoad={() => setPdfLoaded(true)}
                 src="/politicaDeTratamientosPersonales.pdf"
@@ -284,7 +281,7 @@ const FormularioArmaTuPlan = () => {
               <input
                 type="checkbox"
                 id="modalAceptaPolitica"
-                className="h-4 w-4 text-teal-600"
+                className="h-4 w-4 text-teal-600 text-gray-900"
                 checked={formData.aceptaPolitica}
                 onChange={(e) =>
                   setFormData({ ...formData, aceptaPolitica: e.target.checked })
