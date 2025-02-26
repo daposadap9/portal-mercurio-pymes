@@ -5,6 +5,7 @@
 /* Modo Light (por defecto) */
 :root,
 .light {
+  --background: #ffffff;
   /* Colores base */
   --bg-white: #ffffff;
   --text-black: #000000;
@@ -51,7 +52,7 @@
 
 .purple {
   /* Fondo degradado en tonos de azul oscuro */
-  background: linear-gradient(135deg, #0d253f, #1b3a5c);
+  --background: linear-gradient(135deg, #0d253f, #1b3a5c);
 
   /* Paleta adaptada al azul oscuro */
   --bg-white: #1b3a5c;
@@ -92,6 +93,7 @@
 
 
 .dark {
+  --background: #121212;
   /* Fondo oscuro elegante */
   --bg-white: #121212;
   

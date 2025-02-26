@@ -2,6 +2,7 @@
 import { ApolloServer, gql } from 'apollo-server-micro';
 import sql from 'mssql';
 import dotenv from 'dotenv';
+import axios from 'axios'; // Se agrega Axios para la petición SOAP
 
 dotenv.config();
 
@@ -72,7 +73,7 @@ const resolvers = {
     async setSiguienteRadicadoNew() {
       return await getNextRadicado();
     },
-    // Mutation para insertar en MERT_RECIBIDO usando el radicado obtenido
+    // Mutation para insertar en MERT_RECIBIDO y posteriormente enviar la petición SOAP
     async insertMertRecibido(_, { documentInfo }) {
       // Primero, obtenemos el radicado a utilizar
       const idDocumento = await getNextRadicado();
@@ -163,8 +164,8 @@ const resolvers = {
 
           // 3. Insertar en MERT_RECIBIDO con valores fijos y la información del formulario
           requestTx.input('fecDocumento', sql.DateTime, new Date());
-          requestTx.input('idAsociado', sql.VarChar, '');
-          requestTx.input('idGeografia', sql.VarChar, '00018');
+          requestTx.input('idAsociado', sql.VarChar, '800240660-2');
+          requestTx.input('idGeografia', sql.VarChar, '00001');
           requestTx.input('idRemitente', sql.VarChar, '00000');
           requestTx.input('idDestinatario', sql.VarChar, 'ADMIN');
           requestTx.input('idTipo', sql.VarChar, 'D170');
@@ -176,7 +177,7 @@ const resolvers = {
           requestTx.input('obsDocumento', sql.VarChar, documentInfo);
           requestTx.input('revisado', sql.VarChar, '');
           requestTx.input('bolRuta', sql.VarChar, 'S');
-          requestTx.input('idAsunto', sql.VarChar, '');
+          requestTx.input('idAsunto', sql.VarChar, "AP001");
           requestTx.input('fuente', sql.VarChar, 'S');
           requestTx.input('idTipoFuente', sql.VarChar, '');
           requestTx.input('idEstado', sql.VarChar, null);
@@ -269,10 +270,34 @@ const resolvers = {
           `;
           await requestTx.query(insertRecibidoQuery);
 
+          // Confirmar la transacción
           await transaction.commit();
+
+          // Realizar la petición SOAP al webservice
+          const soapBody = `<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:rut="http://www.servisoft.com.co/Mercurio/Servicios/Schema/RutaService">
+            <soapenv:Header/>
+            <soapenv:Body>
+              <rut:DocumentoRutaIniciarFlujoRequest>
+                  <rut:idDocumento>${idDocumento}</rut:idDocumento>
+                  <rut:tipDocumento>R</rut:tipDocumento>
+                  <rut:idCondicion></rut:idCondicion>
+              </rut:DocumentoRutaIniciarFlujoRequest>
+            </soapenv:Body>
+          </soapenv:Envelope>`;
+
+          try {
+            const soapResponse = await axios.post('http://localhost:8080/mercurio/RutaService', soapBody, {
+              headers: { 'Content-Type': 'text/xml' }
+            });
+            console.log('SOAP request successful:', soapResponse.data);
+          } catch (soapError) {
+            console.error('Error making SOAP request:', soapError);
+            // Dependiendo de tus necesidades, podrías optar por lanzar un error o simplemente loguearlo
+          }
+
           return {
             success: true,
-            message: 'Insert realizado exitosamente',
+            message: 'Insert realizado exitosamente y SOAP request enviado',
             idDocumento
           };
         } catch (txError) {
