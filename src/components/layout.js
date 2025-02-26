@@ -54,44 +54,6 @@ const Layout = ({ children, handleNavigation, loading }) => {
           background-color: white; /* Color de fondo para evitar el negro */
           scroll-behavior: smooth;
         }
-        
-        .circles {
-          width: 100%;
-          height: 100%;
-          overflow: hidden;
-          top: 0;
-          left: 0;
-        }
-        .circles li {
-          position: absolute;
-          display: block;
-          list-style: none;
-          background: rgba(255, 255, 255, 1);
-          animation: animate 15s linear infinite;
-          bottom: -150px;
-          border-radius: 8px;
-        }
-        
-        @keyframes animate {
-          0% {
-            transform: translateY(0) rotate(0deg);
-            opacity: 1;
-          }
-          100% {
-            transform: translateY(-1200px) rotate(720deg);
-            opacity: 0;
-          }
-        }
-
-        /* En mobile, se muestran solo los primeros 15 elementos */
-        @media (max-width: 768px) {
-          .circles li {
-            display: none;
-          }
-          .circles li:nth-child(-n+15) {
-            display: block;
-          }
-        }
       `}</style>
     </div>
     </DropdownProvider>);

@@ -1,26 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
-// Ahora las imágenes por defecto son imagen1.webp e imagen2.webp
-const defaultImages = ["/imagen1.webp", "/imagen2.webp"];
+const defaultVideos = ["/imagen1.mp4", "/imagen2.mp4", "/imagen3.mp4"];
 
-const Slider = ({ images = defaultImages, autoPlay = false, autoPlayTime = 3000 }) => {
-  // Si se pasa un array vacío, se utiliza el array por defecto
-  if (!images || images.length === 0) {
-    images = defaultImages;
+const Slider = ({ videos = defaultVideos, autoPlay = false, autoPlayTime = 3000 }) => {
+  if (!videos || videos.length === 0) {
+    videos = defaultVideos;
   }
 
   const [currentIndex, setCurrentIndex] = useState(0);
+  const videoRefs = useRef([]);
 
   const nextSlide = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % videos.length);
   };
 
   const prevSlide = () => {
-    setCurrentIndex((prevIndex) => (prevIndex - 1 + images.length) % images.length);
+    setCurrentIndex((prevIndex) => (prevIndex - 1 + videos.length) % videos.length);
   };
 
-  // Auto-play: cambia de imagen automáticamente si se activa la opción
+  // Cambio automático de slide
   useEffect(() => {
     let interval = null;
     if (autoPlay) {
@@ -31,29 +30,42 @@ const Slider = ({ images = defaultImages, autoPlay = false, autoPlayTime = 3000 
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [autoPlay, autoPlayTime, images.length]);
+  }, [autoPlay, autoPlayTime, videos.length]);
+
+  // Controla la reproducción del video activo: se reproduce y resetea los otros
+  useEffect(() => {
+    videoRefs.current.forEach((video, index) => {
+      if (video) {
+        if (index === currentIndex) {
+          video.currentTime = 0;
+          video.play().catch(error => console.error("Error al reproducir el video:", error));
+        } else {
+          video.pause();
+          video.currentTime = 0;
+        }
+      }
+    });
+  }, [currentIndex]);
 
   return (
-    <div className="relative w-full max-w-5xl mx-auto rounded-xl overflow-hidden shadow-md bg-white">
-      {/* Contenedor de slides */}
-      <div
-        className="flex transition-transform duration-500 ease-in-out"
-        style={{ transform: `translateX(-${currentIndex * 100}%)` }}
-      >
-        {images.map((src, index) => (
-          <img
-            key={index}
-            src={src}
-            alt={`Slide ${index}`}
-            className="w-full flex-shrink-0 h-80 sm:h-96 lg:h-[32rem] object-contain sm:object-cover"
-          />
-        ))}
-      </div>
+    <div className="relative w-full h-60 sm:h-80 md:h-[32rem] overflow-hidden rounded-md">
+      {/* Videos con efecto fade */}
+      {videos.map((src, index) => (
+        <video
+          key={index}
+          ref={el => videoRefs.current[index] = el}
+          src={src}
+          muted
+          loop
+          playsInline
+          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${index === currentIndex ? 'opacity-100' : 'opacity-0'}`}
+        />
+      ))}
 
       {/* Botón de flecha izquierda */}
       <button
         onClick={prevSlide}
-        className="absolute top-1/2 transform -translate-y-1/2 left-4 text-black bg-orange-500 bg-opacity-80 p-2 rounded-full hover:bg-opacity-75"
+        className="absolute top-1/2 left-4 transform -translate-y-1/2 text-black bg-orange-500 bg-opacity-80 p-3 rounded-full hover:bg-opacity-75 z-10"
       >
         <FaChevronLeft size={20} />
       </button>
@@ -61,14 +73,14 @@ const Slider = ({ images = defaultImages, autoPlay = false, autoPlayTime = 3000 
       {/* Botón de flecha derecha */}
       <button
         onClick={nextSlide}
-        className="absolute top-1/2 transform -translate-y-1/2 right-4 text-black bg-orange-500 bg-opacity-80 p-2 rounded-full hover:bg-opacity-75"
+        className="absolute top-1/2 right-4 transform -translate-y-1/2 text-black bg-orange-500 bg-opacity-80 p-3 rounded-full hover:bg-opacity-75 z-10"
       >
         <FaChevronRight size={20} />
       </button>
 
       {/* Indicadores */}
-      <div className="absolute bottom-4 left-0 right-0 flex justify-center space-x-2">
-        {images.map((_, index) => (
+      <div className="absolute bottom-8 left-0 right-0 flex justify-center space-x-2 z-10">
+        {videos.map((_, index) => (
           <div
             key={index}
             onClick={() => setCurrentIndex(index)}
