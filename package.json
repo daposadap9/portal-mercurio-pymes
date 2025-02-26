@@ -11,6 +11,7 @@
   "dependencies": {
     "@apollo/client": "^3.13.1",
     "apollo-server-micro": "^3.13.0",
+    "axios": "^1.7.9",
     "dotenv": "^16.4.7",
     "graphql": "^16.10.0",
     "mssql": "^11.0.1",

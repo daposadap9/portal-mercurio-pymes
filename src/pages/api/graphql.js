@@ -2,6 +2,7 @@
 import { ApolloServer, gql } from 'apollo-server-micro';
 import sql from 'mssql';
 import dotenv from 'dotenv';
+import axios from 'axios'; // Se agrega Axios para la petición SOAP
 
 dotenv.config();
 
@@ -72,7 +73,7 @@ const resolvers = {
     async setSiguienteRadicadoNew() {
       return await getNextRadicado();
     },
-    // Mutation para insertar en MERT_RECIBIDO usando el radicado obtenido
+    // Mutation para insertar en MERT_RECIBIDO y posteriormente enviar la petición SOAP
     async insertMertRecibido(_, { documentInfo }) {
       // Primero, obtenemos el radicado a utilizar
       const idDocumento = await getNextRadicado();
@@ -162,121 +163,141 @@ const resolvers = {
           await requestTx.query(updateConfigQuery);
 
           // 3. Insertar en MERT_RECIBIDO con valores fijos y la información del formulario
-          // ... dentro de la transacción, en la parte de inserción en MERT_RECIBIDO
+          requestTx.input('fecDocumento', sql.DateTime, new Date());
+          requestTx.input('idAsociado', sql.VarChar, '800240660-2');
+          requestTx.input('idGeografia', sql.VarChar, '00001');
+          requestTx.input('idRemitente', sql.VarChar, '00000');
+          requestTx.input('idDestinatario', sql.VarChar, 'ADMIN');
+          requestTx.input('idTipo', sql.VarChar, 'D170');
+          requestTx.input('idRuta', sql.VarChar, 'RUT00000000000000011');
+          requestTx.input('fecOrigen', sql.DateTime, new Date());
+          requestTx.input('bolAnexo', sql.VarChar, 'N');
+          requestTx.input('valAnexo', sql.Int, 0);
+          requestTx.input('bolRespuesta', sql.Int, 0);
+          requestTx.input('obsDocumento', sql.VarChar, documentInfo);
+          requestTx.input('revisado', sql.VarChar, '');
+          requestTx.input('bolRuta', sql.VarChar, 'S');
+          requestTx.input('idAsunto', sql.VarChar, "AP001");
+          requestTx.input('fuente', sql.VarChar, 'S');
+          requestTx.input('idTipoFuente', sql.VarChar, '');
+          requestTx.input('idEstado', sql.VarChar, null);
+          requestTx.input('folios', sql.Int, 0);
+          requestTx.input('fecIndexado', sql.DateTime, new Date('1900-01-01T00:00:00'));
+          requestTx.input('idPrioridad', sql.Int, 6);
+          requestTx.input('numCaja', sql.VarChar, '');
+          requestTx.input('idUsuarioFirma', sql.VarChar, null);
+          requestTx.input('claveFirma', sql.VarChar, '');
+          requestTx.input('fecFirma', sql.DateTime, null);
+          requestTx.input('desDocumento', sql.VarChar, documentInfo);
+          requestTx.input('idUsuarioRad', sql.VarChar, 'DPOSADA');
+          requestTx.input('radicOrigen', sql.VarChar, '');
+          requestTx.input('idTipoEntidad', sql.VarChar, 'TE07');
+          requestTx.input('dirigidoA', sql.VarChar, '');
+          requestTx.input('idSede', sql.Int, 1);
+          requestTx.input('disposicion', sql.Int, 6);
 
-requestTx.input('fecDocumento', sql.DateTime, new Date());
-requestTx.input('idAsociado', sql.VarChar, '800240660-2');
-requestTx.input('idGeografia', sql.VarChar, '00018');
-requestTx.input('idRemitente', sql.VarChar, '00000');
-requestTx.input('idDestinatario', sql.VarChar, 'ADMIN');
-requestTx.input('idTipo', sql.VarChar, 'D170');
-requestTx.input('idRuta', sql.VarChar, 'RUT00000000000000011');
-requestTx.input('fecOrigen', sql.DateTime, new Date());
-requestTx.input('bolAnexo', sql.VarChar, 'N');
-requestTx.input('valAnexo', sql.Int, 0);
-requestTx.input('bolRespuesta', sql.Int, 0);
-requestTx.input('obsDocumento', sql.VarChar, documentInfo);
-requestTx.input('revisado', sql.VarChar, '');
-requestTx.input('bolRuta', sql.VarChar, 'S');
-// Cambiamos 'idAsunto' a null en lugar de cadena vacía
-requestTx.input('idAsunto', sql.VarChar, null);
-requestTx.input('fuente', sql.VarChar, 'S');
-requestTx.input('idTipoFuente', sql.VarChar, '');
-requestTx.input('idEstado', sql.VarChar, null);
-requestTx.input('folios', sql.Int, 0);
-requestTx.input('fecIndexado', sql.DateTime, new Date('1900-01-01T00:00:00'));
-requestTx.input('idPrioridad', sql.Int, 6);
-requestTx.input('numCaja', sql.VarChar, '');
-requestTx.input('idUsuarioFirma', sql.VarChar, null);
-requestTx.input('claveFirma', sql.VarChar, '');
-requestTx.input('fecFirma', sql.DateTime, null);
-requestTx.input('desDocumento', sql.VarChar, documentInfo);
-requestTx.input('idUsuarioRad', sql.VarChar, 'DPOSADA');
-requestTx.input('radicOrigen', sql.VarChar, '');
-requestTx.input('idTipoEntidad', sql.VarChar, 'TE07');
-requestTx.input('dirigidoA', sql.VarChar, '');
-requestTx.input('idSede', sql.Int, 1);
-requestTx.input('disposicion', sql.Int, 6);
+          const insertRecibidoQuery = `
+            INSERT INTO MERT_RECIBIDO (
+              IDDOCUMENTO,
+              FECDOCUMENTO,
+              IDASOCIADO,
+              IDGEOGRAFIA,
+              IDREMITENTE,
+              IDDESTINATARIO,
+              IDTIPO,
+              IDRUTA,
+              FECORIGEN,
+              BOLANEXO,
+              VALANEXO,
+              BOLRESPUESTA,
+              OBSDOCUMENTO,
+              REVISADO,
+              BOLRUTA,
+              IDASUNTO,
+              FUENTE,
+              IDTIPOFUENTE,
+              IDESTADO,
+              FOLIOS,
+              FECINDEXADO,
+              IDPRIORIDAD,
+              NUMCAJA,
+              IDUSUARIO_FIRMA,
+              CLAVE_FIRMA,
+              FECFIRMA,
+              DESDOCUMENTO,
+              IDUSUARIO_RAD,
+              RADICORIGEN,
+              IDTIPOENTIDAD,
+              dirigidoA,
+              ID_SEDE,
+              DISPOSICION
+            )
+            VALUES (
+              @idDocumento,
+              @fecDocumento,
+              @idAsociado,
+              @idGeografia,
+              @idRemitente,
+              @idDestinatario,
+              @idTipo,
+              @idRuta,
+              @fecOrigen,
+              @bolAnexo,
+              @valAnexo,
+              @bolRespuesta,
+              @obsDocumento,
+              @revisado,
+              @bolRuta,
+              @idAsunto,
+              @fuente,
+              @idTipoFuente,
+              @idEstado,
+              @folios,
+              @fecIndexado,
+              @idPrioridad,
+              @numCaja,
+              @idUsuarioFirma,
+              @claveFirma,
+              @fecFirma,
+              @desDocumento,
+              @idUsuarioRad,
+              @radicOrigen,
+              @idTipoEntidad,
+              @dirigidoA,
+              @idSede,
+              @disposicion
+            )
+          `;
+          await requestTx.query(insertRecibidoQuery);
 
-const insertRecibidoQuery = `
-  INSERT INTO MERT_RECIBIDO (
-    IDDOCUMENTO,
-    FECDOCUMENTO,
-    IDASOCIADO,
-    IDGEOGRAFIA,
-    IDREMITENTE,
-    IDDESTINATARIO,
-    IDTIPO,
-    IDRUTA,
-    FECORIGEN,
-    BOLANEXO,
-    VALANEXO,
-    BOLRESPUESTA,
-    OBSDOCUMENTO,
-    REVISADO,
-    BOLRUTA,
-    IDASUNTO,
-    FUENTE,
-    IDTIPOFUENTE,
-    IDESTADO,
-    FOLIOS,
-    FECINDEXADO,
-    IDPRIORIDAD,
-    NUMCAJA,
-    IDUSUARIO_FIRMA,
-    CLAVE_FIRMA,
-    FECFIRMA,
-    DESDOCUMENTO,
-    IDUSUARIO_RAD,
-    RADICORIGEN,
-    IDTIPOENTIDAD,
-    dirigidoA,
-    ID_SEDE,
-    DISPOSICION
-  )
-  VALUES (
-    @idDocumento,
-    @fecDocumento,
-    @idAsociado,
-    @idGeografia,
-    @idRemitente,
-    @idDestinatario,
-    @idTipo,
-    @idRuta,
-    @fecOrigen,
-    @bolAnexo,
-    @valAnexo,
-    @bolRespuesta,
-    @obsDocumento,
-    @revisado,
-    @bolRuta,
-    @idAsunto,
-    @fuente,
-    @idTipoFuente,
-    @idEstado,
-    @folios,
-    @fecIndexado,
-    @idPrioridad,
-    @numCaja,
-    @idUsuarioFirma,
-    @claveFirma,
-    @fecFirma,
-    @desDocumento,
-    @idUsuarioRad,
-    @radicOrigen,
-    @idTipoEntidad,
-    @dirigidoA,
-    @idSede,
-    @disposicion
-  )
-`;
-await requestTx.query(insertRecibidoQuery);
-
-
+          // Confirmar la transacción
           await transaction.commit();
+
+          // Realizar la petición SOAP al webservice
+          const soapBody = `<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:rut="http://www.servisoft.com.co/Mercurio/Servicios/Schema/RutaService">
+            <soapenv:Header/>
+            <soapenv:Body>
+              <rut:DocumentoRutaIniciarFlujoRequest>
+                  <rut:idDocumento>${idDocumento}</rut:idDocumento>
+                  <rut:tipDocumento>R</rut:tipDocumento>
+                  <rut:idCondicion></rut:idCondicion>
+              </rut:DocumentoRutaIniciarFlujoRequest>
+            </soapenv:Body>
+          </soapenv:Envelope>`;
+
+          try {
+            const soapResponse = await axios.post('http://localhost:8080/mercurio/RutaService', soapBody, {
+              headers: { 'Content-Type': 'text/xml' }
+            });
+            console.log('SOAP request successful:', soapResponse.data);
+          } catch (soapError) {
+            console.error('Error making SOAP request:', soapError);
+            // Dependiendo de tus necesidades, podrías optar por lanzar un error o simplemente loguearlo
+          }
+
           return {
             success: true,
-            message: 'Insert realizado exitosamente',
+            message: 'Insert realizado exitosamente y SOAP request enviado',
             idDocumento
           };
         } catch (txError) {
