@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
-const defaultVideos = ["/imagen1.mp4", "/imagen2.mp4", "/imagen3.mp4"];
+const defaultVideos = ["/imagen1.gif", "/imagen2.gif", "/imagen3.gif"];
 
 const Slider = ({ videos = defaultVideos, autoPlay = false, autoPlayTime = 3000 }) => {
   if (!videos || videos.length === 0) {
@@ -10,6 +10,9 @@ const Slider = ({ videos = defaultVideos, autoPlay = false, autoPlayTime = 3000 
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const videoRefs = useRef([]);
+
+  // Función para detectar si es un GIF
+  const isGif = (src) => src.toLowerCase().endsWith('.gif');
 
   const nextSlide = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % videos.length);
@@ -32,9 +35,10 @@ const Slider = ({ videos = defaultVideos, autoPlay = false, autoPlayTime = 3000 
     };
   }, [autoPlay, autoPlayTime, videos.length]);
 
-  // Controla la reproducción del video activo: se reproduce y resetea los otros
+  // Controla la reproducción de los videos activos
   useEffect(() => {
     videoRefs.current.forEach((video, index) => {
+      // Solo se procesa si existe el elemento video (no aplica para GIFs)
       if (video) {
         if (index === currentIndex) {
           video.currentTime = 0;
@@ -49,18 +53,27 @@ const Slider = ({ videos = defaultVideos, autoPlay = false, autoPlayTime = 3000 
 
   return (
     <div className="relative w-full h-60 sm:h-80 md:h-[32rem] overflow-hidden rounded-md">
-      {/* Videos con efecto fade */}
-      {videos.map((src, index) => (
-        <video
-          key={index}
-          ref={el => videoRefs.current[index] = el}
-          src={src}
-          muted
-          loop
-          playsInline
-          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${index === currentIndex ? 'opacity-100' : 'opacity-0'}`}
-        />
-      ))}
+      {videos.map((src, index) => {
+        const commonClassNames = `absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${index === currentIndex ? 'opacity-100' : 'opacity-0'}`;
+        return isGif(src) ? (
+          <img 
+            key={index} 
+            src={src} 
+            alt={`Slide ${index}`} 
+            className={commonClassNames} 
+          />
+        ) : (
+          <video
+            key={index}
+            ref={el => videoRefs.current[index] = el}
+            src={src}
+            muted
+            loop
+            playsInline
+            className={commonClassNames}
+          />
+        );
+      })}
 
       {/* Botón de flecha izquierda */}
       <button
