@@ -11,6 +11,7 @@ const Slider = ({ videos = defaultVideos, autoPlay = false, autoPlayTime = 3000 
   const [currentIndex, setCurrentIndex] = useState(0);
   const videoRefs = useRef([]);
 
+<<<<<<< HEAD
   // Función para determinar el tipo de medio según su extensión
   const getMediaType = (src) => {
     const ext = src.split('.').pop().toLowerCase();
@@ -21,6 +22,10 @@ const Slider = ({ videos = defaultVideos, autoPlay = false, autoPlayTime = 3000 
     }
     return 'image';
   };
+=======
+  // Función para detectar si es un GIF
+  const isGif = (src) => src.toLowerCase().endsWith('.gif');
+>>>>>>> 9f525ab1b220dd2fc97fff06e90a6ab7a540c1d2
 
   const nextSlide = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % videos.length);
@@ -46,7 +51,11 @@ const Slider = ({ videos = defaultVideos, autoPlay = false, autoPlayTime = 3000 
   // Controla la reproducción de los videos activos
   useEffect(() => {
     videoRefs.current.forEach((video, index) => {
+<<<<<<< HEAD
       // Solo se procesa si el elemento es un video (no aplica para imágenes)
+=======
+      // Solo se procesa si existe el elemento video (no aplica para GIFs)
+>>>>>>> 9f525ab1b220dd2fc97fff06e90a6ab7a540c1d2
       if (video) {
         if (index === currentIndex) {
           video.currentTime = 0;
@@ -62,6 +71,7 @@ const Slider = ({ videos = defaultVideos, autoPlay = false, autoPlayTime = 3000 
   return (
     <div className="relative w-full h-60 sm:h-80 md:h-[32rem] overflow-hidden rounded-md shadow-lg">
       {videos.map((src, index) => {
+<<<<<<< HEAD
         const commonClassNames = `absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${
           index === currentIndex ? 'opacity-100' : 'opacity-0'
         }`;
@@ -89,6 +99,27 @@ const Slider = ({ videos = defaultVideos, autoPlay = false, autoPlayTime = 3000 
           );
         }
         return null;
+=======
+        const commonClassNames = `absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${index === currentIndex ? 'opacity-100' : 'opacity-0'}`;
+        return isGif(src) ? (
+          <img 
+            key={index} 
+            src={src} 
+            alt={`Slide ${index}`} 
+            className={commonClassNames} 
+          />
+        ) : (
+          <video
+            key={index}
+            ref={el => videoRefs.current[index] = el}
+            src={src}
+            muted
+            loop
+            playsInline
+            className={commonClassNames}
+          />
+        );
+>>>>>>> 9f525ab1b220dd2fc97fff06e90a6ab7a540c1d2
       })}
 
       {/* Botón de flecha izquierda */}
@@ -113,11 +144,15 @@ const Slider = ({ videos = defaultVideos, autoPlay = false, autoPlayTime = 3000 
           <div
             key={index}
             onClick={() => setCurrentIndex(index)}
+<<<<<<< HEAD
             className={`w-3 h-3 rounded-full cursor-pointer ${
               currentIndex === index
                 ? 'bg-white shadow-md border-black border'
                 : 'bg-blue-500 shadow-md border-teal-500 border'
             }`}
+=======
+            className={`w-3 h-3 rounded-full cursor-pointer ${currentIndex === index ? 'bg-white shadow-md border-black border' : 'bg-blue-500 shadow-md border-teal-500 border'}`}
+>>>>>>> 9f525ab1b220dd2fc97fff06e90a6ab7a540c1d2
           ></div>
         ))}
       </div>
