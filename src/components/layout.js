@@ -35,15 +35,16 @@ const Layout = ({ children, handleNavigation, loading }) => {
 
       {/* Contenedor interno */}
       <div className="relative z-10 flex flex-col min-h-screen">
-        <Header handleNavigation={handleNavigation} loading={loading} />
-        {showSubNav && <SubNavigation />}
-        <main className="flex-grow pt-4 md:pb-20 pb-2">
-          <div className="mx-auto max-w-full px-4 md:p-10 pb-2">
-            {children}
-          </div>
-        </main>
-        {/* <Footer /> */}
-      </div>
+  <Header handleNavigation={handleNavigation} loading={loading} />
+  {showSubNav && <SubNavigation />}
+  <main className="flex-grow pt-4 md:pb-20 pb-2">
+    <div className="mx-auto w-full h-full px-4 md:p-10 pb-2">
+      {children}
+    </div>
+  </main>
+  {/* <Footer /> */}
+</div>
+
 
       {/* Estilos globales */}
       <style jsx global>{`
