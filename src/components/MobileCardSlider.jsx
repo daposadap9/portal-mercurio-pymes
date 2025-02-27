@@ -48,10 +48,11 @@ const Horizontal3DSlider = () => {
   const rightImage = activeIndex + 1 < images.length ? images[activeIndex + 1] : null;
   const farRightImage = activeIndex + 2 < images.length ? images[activeIndex + 2] : null;
 
+  // Transición suave para todas las propiedades (transform, opacity, etc.)
   const transitionStyle = 'all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
 
   return (
-    <div className="slider-wrapper">
+    <div className="slider-wrapper text-slate-950">
       {/* Flechas de navegación */}
       <button onClick={handlePrev} className="nav-button prev-button">
         <FaChevronLeft size={18} />
