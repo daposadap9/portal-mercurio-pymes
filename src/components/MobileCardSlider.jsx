@@ -2,7 +2,6 @@ import React, { useState, useRef } from 'react';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
 const images = [
-  '/cliente1.png',
   '/cliente10.png',
   '/cliente7.png',
   '/cliente2.png',
@@ -10,6 +9,7 @@ const images = [
   '/cliente5.png',
   '/cliente6.png',
   '/cliente4.png',
+  '/cliente1.png',
 ];
 
 const Horizontal3DSlider = () => {
