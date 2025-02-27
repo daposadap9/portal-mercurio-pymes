@@ -17,7 +17,8 @@ import {
   FaFileInvoiceDollar,
   FaCommentAlt,
   FaListAlt,
-  FaInfoCircle
+  FaInfoCircle,
+  FaPalette
 } from 'react-icons/fa';
 import { useDropdown } from '@/context/DropdownContext';
 import { ThemeContext } from '@/context/ThemeContext';
@@ -272,10 +273,11 @@ const Header = ({ handleNavigation, loading }) => {
 
         {/* Nuevo select para cambiar tema (Desktop) */}
         <div className="hidden lg:flex items-center">
+        <FaPalette className="mr-1 text-base text-teal-600" />
           <select
             value={theme}
             onChange={(e) => setTheme(e.target.value)}
-            className="p-1 rounded text-sm bg-white text-teal-600 border border-teal-100"
+            className="p-1 rounded text-sm bg-white text-teal-600 border border-white"
           >
             <option value="light">Light</option>
             <option value="purple">Dark blue</option>
@@ -341,7 +343,8 @@ const Header = ({ handleNavigation, loading }) => {
               </a>
             </Link>
             {/* Nuevo select para cambiar tema (Mobile) */}
-            <div className="mt-2">
+            <div className="mt-2 flex items-center">
+            <FaPalette className="mr-1 text-base text-teal-600" />
               <select
                 value={theme}
                 onChange={(e) => setTheme(e.target.value)}
