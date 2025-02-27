@@ -67,7 +67,7 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-8 bg-white shadow-2xl rounded-xl relative">
+    <div className="max-w-4xl mx-auto p-8 bg-gray-50 shadow-2xl rounded-xl relative">
       <h1 className="text-2xl font-bold text-center text-teal-600 mb-8">PQRSDF</h1>
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Tipo de solicitud (solo lectura) */}
@@ -197,7 +197,7 @@ const FormularioPQRSDF = ({ tipoSolicitud: tipoSolicitudProp }) => {
             id="anexo"
             name="anexo"
             onChange={handleChange}
-            className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100 shadow-inset-sm text-gray-900"
+            className="mt-1 block w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100 shadow-inset-sm text-gray-700"
           />
         </div>
 

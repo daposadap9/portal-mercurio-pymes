@@ -87,7 +87,7 @@ const PQRSDFPage = () => {
             <h2 className="mt-4 text-xl font-bold text-center group-hover:text-white">
               {card.title}
             </h2>
-            <span className="mt-2 inline-block bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-sm font-semibold border-2 border-transparent group-hover:bg-transparent group-hover:text-white group-hover:border-white transition-colors duration-300">
+            <span className="mt-2 inline-block bg-gray-200 px-3 py-1 rounded-full text-sm font-semibold border-2 border-transparent group-hover:bg-transparent group-hover:text-white group-hover:border-white transition-colors duration-300">
               {card.marker}
             </span>
           </div>

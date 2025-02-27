@@ -55,7 +55,7 @@ const FormularioArmaTuPlan = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-8 bg-white shadow-2xl rounded-xl">
+    <div className="max-w-4xl mx-auto p-8 bg-gray-50 shadow-2xl rounded-xl">
       <h1 className="text-2xl font-bold text-center text-teal-600 mb-8">Arma tu plan</h1>
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Fila 1: Nombres y Apellidos */}
@@ -120,7 +120,7 @@ const FormularioArmaTuPlan = () => {
             value={formData.servicio}
             onChange={handleChange}
             required
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-2"
+            className="mt-1 block w-full rounded-md border-gray-300 text-gray-700 shadow-inset-sm p-2"
           >
             <option value="">Seleccione un servicio</option>
             {serviciosOptions.map((option, idx) => (
@@ -175,7 +175,7 @@ const FormularioArmaTuPlan = () => {
             id="anexo"
             name="anexo"
             onChange={handleChange}
-            className="mt-1 block w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100 shadow-inset-sm text-gray-900"
+            className="mt-1 block w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100 shadow-inset-sm text-gray-700"
           />
         </div>
 
@@ -206,7 +206,7 @@ const FormularioArmaTuPlan = () => {
             value={formData.medioContacto}
             onChange={handleChange}
             required
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-inset-sm p-2"
+            className="mt-1 block w-full rounded-md border-gray-300 text-gray-700 shadow-inset-sm p-2"
           >
             <option value="">Seleccione un medio</option>
             {mediosContactoOptions.map((option, idx) => (

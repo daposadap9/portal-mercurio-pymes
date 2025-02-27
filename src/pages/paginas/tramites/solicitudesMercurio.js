@@ -85,7 +85,7 @@ const SolicitudesMercurio = ({ tipoSolicitud: tipoSolicitudProp }) => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-8 bg-white shadow-2xl rounded-xl relative">
+    <div className="max-w-4xl mx-auto p-8 bg-gray-50 shadow-2xl rounded-xl relative">
       {/* Información y enlace para la política */}
       <p className="mb-4 text-gray-700">
         Autoriza a SERVISOFT S.A. a utilizar los datos personales proporcionados de acuerdo con sus políticas de tratamiento de información. Consulta la política haciendo clic en el siguiente enlace.
@@ -140,7 +140,7 @@ const SolicitudesMercurio = ({ tipoSolicitud: tipoSolicitudProp }) => {
               value={formData.rolRadicador}
               onChange={handleChange}
               disabled={!policyAccepted}
-              className="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
+              className="mt-1 block w-full text-gray-300 rounded-md border border-gray-300 p-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
             >
               <option value="Supervisor del Contrato - Cliente">Supervisor del Contrato - Cliente</option>
             </select>
@@ -179,7 +179,7 @@ const SolicitudesMercurio = ({ tipoSolicitud: tipoSolicitudProp }) => {
               value={formData.clasificacion}
               onChange={handleChange}
               disabled={!policyAccepted}
-              className="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
+              className="mt-1 block w-full text-gray-300 rounded-md border border-gray-300 p-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
             >
               <option value="">Seleccione una clasificación</option>
               <option value="Incidente">Incidente</option>
@@ -196,7 +196,7 @@ const SolicitudesMercurio = ({ tipoSolicitud: tipoSolicitudProp }) => {
               value={formData.versionProducto}
               onChange={handleChange}
               disabled={!policyAccepted}
-              className="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
+              className="mt-1 block w-full text-gray-300 rounded-md border border-gray-300 p-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
             >
               <option value="">Seleccione la versión</option>
               <option value="5.5">5.5</option>

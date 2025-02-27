@@ -1,176 +1,229 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
 const images = [
-  '/cliente1.jpg',
-  '/cliente2.jpg',
-  '/cliente3.jpg',
-  '/cliente4.jpg',
-  '/cliente5.jpg',
-  '/cliente6.jpg',
-  '/cliente7.jpg',
-  '/cliente8.jpg'
+  '/cliente1.png',
+  '/cliente10.png',
+  '/cliente7.png',
+  '/cliente2.png',
+  '/cliente3.png',
+  '/cliente5.png',
+  '/cliente6.png',
+  '/cliente4.png',
 ];
 
-const MobileDraggableSlider = () => {
-  const containerRef = useRef(null);
+const Horizontal3DSlider = () => {
   const [activeIndex, setActiveIndex] = useState(0);
-
-  // Configuración: ancho de cada tarjeta y margen
-  const cardWidth = 180; // Ancho de la tarjeta (px)
-  const cardMargin = 12;  // Margen horizontal (px)
-  const totalCardWidth = cardWidth + cardMargin * 2;
-  const dragThreshold = 50; // Umbral de arrastre en píxeles
-
-  // Variables para el arrastre (drag)
+  const containerRef = useRef(null);
   const isDragging = useRef(false);
   const startX = useRef(0);
-  const scrollLeftStart = useRef(0);
+  const dragThreshold = 50;
 
-  // Desplaza el contenedor a la tarjeta deseada y actualiza el índice activo
-  const scrollToIndex = (index) => {
-    if (containerRef.current) {
-      const scrollPosition = index * totalCardWidth;
-      containerRef.current.scrollTo({ left: scrollPosition, behavior: 'smooth' });
-      setActiveIndex(index);
-    }
-  };
-
-  // Actualiza el índice activo basado en el scroll (cuando no se está arrastrando)
-  const handleScroll = () => {
-    if (containerRef.current && !isDragging.current) {
-      const scrollLeft = containerRef.current.scrollLeft;
-      const index = Math.round(scrollLeft / totalCardWidth);
-      setActiveIndex(index);
-    }
-  };
-
-  useEffect(() => {
-    const container = containerRef.current;
-    container.addEventListener('scroll', handleScroll);
-    return () => container.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  // Manejo de eventos pointer para arrastrar
   const handlePointerDown = (e) => {
     isDragging.current = true;
-    containerRef.current.setPointerCapture(e.pointerId);
     startX.current = e.clientX;
-    scrollLeftStart.current = containerRef.current.scrollLeft;
-  };
-
-  const handlePointerMove = (e) => {
-    if (!isDragging.current) return;
-    const x = e.clientX;
-    const walk = x - startX.current;
-    containerRef.current.scrollLeft = scrollLeftStart.current - walk;
   };
 
   const handlePointerUp = (e) => {
+    if (!isDragging.current) return;
     isDragging.current = false;
-    containerRef.current.releasePointerCapture(e.pointerId);
-    // Calcula la distancia arrastrada
-    const dragDistance = e.clientX - startX.current;
-    let newIndex = activeIndex;
-    if (dragDistance > dragThreshold) {
-      // Si se arrastra hacia la derecha, mostrar el slide anterior
-      newIndex = Math.max(activeIndex - 1, 0);
-    } else if (dragDistance < -dragThreshold) {
-      // Si se arrastra hacia la izquierda, mostrar el siguiente slide
-      newIndex = Math.min(activeIndex + 1, images.length - 1);
+    const deltaX = e.clientX - startX.current;
+    if (deltaX > dragThreshold && activeIndex > 0) {
+      setActiveIndex(activeIndex - 1);
+    } else if (deltaX < -dragThreshold && activeIndex < images.length - 1) {
+      setActiveIndex(activeIndex + 1);
     }
-    scrollToIndex(newIndex);
   };
 
-  // Flechas de navegación
   const handlePrev = () => {
-    const newIndex = Math.max(activeIndex - 1, 0);
-    scrollToIndex(newIndex);
+    if (activeIndex > 0) setActiveIndex(activeIndex - 1);
   };
 
   const handleNext = () => {
-    const newIndex = Math.min(activeIndex + 1, images.length - 1);
-    scrollToIndex(newIndex);
+    if (activeIndex < images.length - 1) setActiveIndex(activeIndex + 1);
   };
 
+  const leftImage = activeIndex - 1 >= 0 ? images[activeIndex - 1] : null;
+  const activeImage = images[activeIndex];
+  const rightImage = activeIndex + 1 < images.length ? images[activeIndex + 1] : null;
+  const farRightImage = activeIndex + 2 < images.length ? images[activeIndex + 2] : null;
+
+  const transitionStyle = 'all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
+
   return (
-    <div className="relative w-full max-w-xl mx-auto overflow-hidden">
+    <div className="slider-wrapper">
       {/* Flechas de navegación */}
-      <button
-        onClick={handlePrev}
-        className="absolute top-1/2 left-2 transform -translate-y-1/2 z-20 bg-white p-2 rounded-full shadow-md"
-      >
+      <button onClick={handlePrev} className="nav-button prev-button">
         <FaChevronLeft size={18} />
       </button>
-      <button
-        onClick={handleNext}
-        className="absolute top-1/2 right-2 transform -translate-y-1/2 z-20 bg-white p-2 rounded-full shadow-md"
-      >
+      <button onClick={handleNext} className="nav-button next-button">
         <FaChevronRight size={18} />
       </button>
 
-      {/* Contenedor scrollable sin barras de desplazamiento */}
       <div
+        className="slider-container"
         ref={containerRef}
-        className="flex snap-x snap-mandatory hide-scrollbar"
-        style={{
-          overflowX: 'auto',
-          scrollBehavior: 'smooth',
-          touchAction: 'pan-y',
-          padding: '0 1rem',
-          msOverflowStyle: 'none', // IE y Edge
-          scrollbarWidth: 'none'   // Firefox
-        }}
         onPointerDown={handlePointerDown}
-        onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
-        onPointerCancel={handlePointerUp}
       >
-        {images.map((img, index) => (
-          <div
-            key={index}
-            className={`
-              flex-shrink-0 snap-center transition-transform duration-300 ease-in-out 
-              ${activeIndex === index ? 'scale-110' : 'scale-100 opacity-80'}
-            `}
-            style={{ 
-              width: `${cardWidth}px`,
-              marginLeft: `${cardMargin}px`,
-              marginRight: `${cardMargin}px`
+        {/* Imagen a la izquierda */}
+        {leftImage && (
+          <img
+            src={leftImage}
+            alt={`Imagen ${activeIndex - 1}`}
+            className="slider-image left-image"
+            style={{
+              transition: transitionStyle,
+              filter: 'drop-shadow(0px 0px 2px rgba(0,0,0,0.4))',
+              opacity: 0.1,
+              zIndex: 1,
             }}
-          >
-            <img
-              src={img}
-              alt={`Cliente ${index + 1}`}
-              className="w-full h-auto object-cover rounded-lg select-none"
-              draggable={false}
-              onDragStart={(e) => e.preventDefault()}
-            />
-          </div>
-        ))}
+          />
+        )}
+
+        {/* Imagen activa */}
+        <img
+          src={activeImage}
+          alt={`Imagen ${activeIndex}`}
+          className="slider-image active-image"
+          style={{
+            transition: transitionStyle,
+            filter: 'drop-shadow(0px 0px 15px rgba(0,0,0,0.8))',
+            opacity: 1,
+            zIndex: 3,
+          }}
+        />
+
+        {/* Imagen inmediata a la derecha */}
+        {rightImage && (
+          <img
+            src={rightImage}
+            alt={`Imagen ${activeIndex + 1}`}
+            className="slider-image right-image"
+            style={{
+              transition: transitionStyle,
+              filter: 'drop-shadow(0px 0px 5px rgba(0,0,0,0.8))',
+              opacity: 0.4,
+              zIndex: 1,
+            }}
+          />
+        )}
+
+        {/* Imagen lejana a la derecha */}
+        {farRightImage && (
+          <img
+            src={farRightImage}
+            alt={`Imagen ${activeIndex + 2}`}
+            className="slider-image far-right-image"
+            style={{
+              transition: transitionStyle,
+              filter: 'drop-shadow(0px 0px 3px rgba(0,0,0,0.5))',
+              opacity: 0.2,
+              zIndex: 0,
+            }}
+          />
+        )}
       </div>
 
-      {/* Indicadores */}
-      <div className="flex justify-center mt-4 space-x-2">
-        {images.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => scrollToIndex(index)}
-            className={`w-2 h-2 rounded-full focus:outline-none ${
-              activeIndex === index ? 'bg-blue-500' : 'bg-gray-300'
-            }`}
-          ></button>
-        ))}
-      </div>
-
-      {/* Oculta las barras de desplazamiento en WebKit */}
       <style jsx>{`
-        .hide-scrollbar::-webkit-scrollbar {
-          display: none;
+        .slider-wrapper {
+          width: 90%;
+          max-width: 1200px;
+          margin: 0 auto;
+          position: relative;
+        }
+        .slider-container {
+          width: 100%;
+          height: 50vh;
+          perspective: 1000px;
+          overflow: hidden;
+          position: relative;
+        }
+        .slider-image {
+          position: absolute;
+          height: auto;
+        }
+        /* Mobile: efecto 3D exagerado pero con menos offset vertical */
+        @media (max-width: 768px) {
+          .slider-image {
+            width: 40vw;
+            max-width: 350px;
+          }
+          .left-image {
+            left: 50%;
+            top: 50%;
+            transform: translate(calc(-50% - 35vw), calc(-50% + 5vh)) scale(0.35);
+          }
+          .active-image {
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%) scale(1);
+          }
+          .right-image {
+            left: 50%;
+            top: 50%;
+            transform: translate(calc(-50% + 35vw), calc(-50% + 5vh)) scale(0.65);
+          }
+          .far-right-image {
+            left: 50%;
+            top: 50%;
+            transform: translate(calc(-50% + 70vw), calc(-50% + 8vh)) scale(0.45);
+          }
+          .nav-button {
+            background: white;
+            color: #000000;
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+          }
+        }
+        /* Desktop: efecto menos extremo para mantener el layout compacto */
+        @media (min-width: 769px) {
+          .slider-image {
+            width: 25vw;
+            max-width: 250px;
+          }
+          .left-image {
+            left: 50%;
+            top: 50%;
+            transform: translate(calc(-50% - 15vw), calc(-50% + 5vh)) scale(0.4);
+          }
+          .active-image {
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%) scale(1);
+          }
+          .right-image {
+            left: 50%;
+            top: 50%;
+            transform: translate(calc(-50% + 15vw), calc(-50% + 5vh)) scale(0.7);
+          }
+          .far-right-image {
+            left: 50%;
+            top: 50%;
+            transform: translate(calc(-50% + 30vw), calc(-50% + 8vh)) scale(0.5);
+          }
+        }
+        .nav-button {
+          position: absolute;
+          top: 50%;
+          transform: translateY(-50%);
+          z-index: 30;
+          background: white;
+          border: none;
+          padding: 0.5rem;
+          border-radius: 9999px;
+          box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+          cursor: pointer;
+          transition: background 0.3s ease;
+        }
+        .prev-button {
+          left: 1rem;
+        }
+        .next-button {
+          right: 1rem;
         }
       `}</style>
     </div>
   );
 };
 
-export default MobileDraggableSlider;
+export default Horizontal3DSlider;
