@@ -134,7 +134,7 @@ const Horizontal3DSlider = () => {
         }
         .slider-container {
           width: 100%;
-          height: 50vh;
+          height: 30vh;
           perspective: 1000px;
           overflow: hidden;
           position: relative;

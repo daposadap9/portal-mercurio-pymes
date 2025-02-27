@@ -15,7 +15,7 @@ export default function Home() {
         <Servicios disabledProvider="diabledProvider" />
       </div>
       <div className="mt-16">
-      <div className={`flex justify-center text-2xl md:text-4xl font-bold transition-all duration-500 ease-in-out text-teal-600 text-center titulo-shadow mb-16`}>
+      <div className={`flex justify-center text-2xl md:text-4xl font-bold transition-all duration-500 ease-in-out text-teal-600 text-center titulo-shadow`}>
       <h1>Nuestros clientes</h1>
       </div>
         <MobileCardSlider/>
