@@ -103,7 +103,7 @@ const MercurioSGDEA = () => {
                   type="text" 
                   name="nombre"
                   placeholder="Nombre:" 
-                  className="border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
+                  className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
                   value={formData.nombre}
                   onChange={handleChange}
                   required
@@ -112,7 +112,7 @@ const MercurioSGDEA = () => {
                   type="text" 
                   name="apellido"
                   placeholder="Apellido:" 
-                  className="border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
+                  className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
                   value={formData.apellido}
                   onChange={handleChange}
                   required
@@ -121,7 +121,7 @@ const MercurioSGDEA = () => {
                   type="text" 
                   name="entidad"
                   placeholder="Entidad y/o empresa:" 
-                  className="border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
+                  className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
                   value={formData.entidad}
                   onChange={handleChange}
                   required
@@ -130,7 +130,7 @@ const MercurioSGDEA = () => {
                   type="email" 
                   name="email"
                   placeholder="E-mail:" 
-                  className="border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
+                  className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
                   value={formData.email}
                   onChange={handleChange}
                   required
@@ -139,7 +139,7 @@ const MercurioSGDEA = () => {
                   type="tel" 
                   name="telefono"
                   placeholder="Teléfono celular:" 
-                  className="border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
+                  className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
                   value={formData.telefono}
                   onChange={handleChange}
                   required
@@ -156,7 +156,7 @@ const MercurioSGDEA = () => {
                   <input 
                     type="date" 
                     name="fecha"
-                    className="border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
+                    className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
                     value={formData.fecha}
                     onChange={handleChange}
                     required
@@ -172,7 +172,7 @@ const MercurioSGDEA = () => {
                 <textarea
                   name="observaciones"
                   placeholder="Ingresa tus observaciones aquí..."
-                  className="border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
+                  className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
                   rows="4"
                   value={formData.observaciones}
                   onChange={handleChange}

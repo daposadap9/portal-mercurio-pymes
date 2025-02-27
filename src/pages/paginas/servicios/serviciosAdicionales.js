@@ -31,27 +31,27 @@ const ServiciosAdicionales = () => {
                 <input 
                   type="text" 
                   placeholder="Nombre:" 
-                  className="border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
                 />
                 <input 
                   type="text" 
                   placeholder="Apellido:" 
-                  className="border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
                 />
                 <input 
                   type="text" 
                   placeholder="Entidad y/o empresa:" 
-                  className="border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
                 />
                 <input 
                   type="email" 
                   placeholder="E-mail:" 
-                  className="border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
                 />
                 <input 
                   type="tel" 
                   placeholder="Teléfono celular:" 
-                  className="border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
                 />
               </div>
 
@@ -62,7 +62,7 @@ const ServiciosAdicionales = () => {
                 </label>
                 <textarea 
                   placeholder="Ingresa tus observaciones aquí..."
-                  className="border p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
                   rows="4"
                 />
               </div>
