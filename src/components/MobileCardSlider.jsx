@@ -89,7 +89,7 @@ const Horizontal3DSlider = () => {
           className="slider-image active-image"
           style={{
             transition: transitionStyle,
-            filter: 'drop-shadow(0px 0px 15px rgba(0,0,0,0.8))',
+            filter: 'drop-shadow(0px 0px 4px rgba(0,0,0,0.8))',
             opacity: 1,
             zIndex: 3,
           }}
