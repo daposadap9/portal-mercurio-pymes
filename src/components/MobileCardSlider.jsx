@@ -125,6 +125,17 @@ const Horizontal3DSlider = () => {
         )}
       </div>
 
+      {/* Indicadores */}
+      <div className="indicator-container">
+        {images.map((_, index) => (
+          <div
+            key={index}
+            className={`indicator ${activeIndex === index ? 'active' : ''}`}
+            onClick={() => setActiveIndex(index)}
+          />
+        ))}
+      </div>
+
       <style jsx>{`
         .slider-wrapper {
           width: 90%;
@@ -171,8 +182,11 @@ const Horizontal3DSlider = () => {
           }
           .nav-button {
             background: white;
-            color: #000000;
+            color: #000;
             box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+          }
+          .indicator-container {
+            bottom: 1rem;
           }
         }
         /* Desktop: efecto menos extremo para mantener el layout compacto */
@@ -220,6 +234,27 @@ const Horizontal3DSlider = () => {
         }
         .next-button {
           right: 1rem;
+        }
+        .indicator-container {
+          position: absolute;
+          bottom: 1rem;
+          left: 50%;
+          transform: translateX(-50%);
+          display: flex;
+          gap: 0.5rem;
+          z-index: 50;
+        }
+        .indicator {
+          width: 10px;
+          height: 10px;
+          border-radius: 50%;
+          background: rgba(255, 255, 255, 0.5);
+          cursor: pointer;
+          transition: background 0.3s ease, transform 0.3s ease;
+        }
+        .indicator.active {
+          background: #000;
+          transform: scale(1.2);
         }
       `}</style>
     </div>
