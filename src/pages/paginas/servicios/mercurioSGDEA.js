@@ -76,16 +76,24 @@ const MercurioSGDEA = () => {
         <div className="w-full md:w-[35%]">
           <div className="text-center md:text-left bg-white bg-opacity-0 backdrop-blur-xl p-6 rounded-xl border border-white/30">
             <p className="mb-4 leading-relaxed text-black text-base font-medium">
-              El sgdea mercurio permite a la entidad el cumplimiento de las regulaciones establecidas en la ley 594 de 2000, impidiendo sanciones y asegurando prácticas idóneas de archivo.
+            Mercurio es una solución corporativa para la Gestión Electrónica de Documentos, que automatiza procesos estratégicos de la Gestión Inteligente Documental, con su BPM y ECM de base tecnológica, Permite el cumplimiento de las regulaciones establecidas en la ley 594 de 2000, impidiendo sanciones y asegurando prácticas idóneas de archivo.
             </p>
             <p className="mb-4 leading-relaxed text-black text-base font-medium">
               Facilita la clasificación, la ordenación y un acceso eficiente a los documentos, garantizando una gestión documental estructurada y sin pérdida de información.
             </p>
             <p className="mb-4 leading-relaxed text-black text-base font-medium">
-              En compañía de nuestros partners en almacenamiento en la nube, estamos comprometidos con los más altos estándares de calidad en cuanto al resguardo de documentos físicos y digitales, evitando así cualquier alteración en la información.
+              Estamos comprometidos con los más altos estándares de calidad en cuanto al resguardo de documentos físicos y digitales, evitando así cualquier alteración en la información.
             </p>
             <p className="mb-4 leading-relaxed text-black text-base font-medium">
-              Asimismo, el sgdea mercurio facilita la transcripción del archivo físico a formato digital, asegurando su preservación y consulta a largo plazo mediante altos estándares de gestión electrónica documental.
+            Mercurio SGDEA permite además:
+
+ 
+
+Índices dinámicos ilimitados (metadatos).
+Trámites electrónicos virtuales para gestión con clientes (Formularios)
+Controles de acceso y seguridad
+Validación de anexos relacionados y requeridos
+Control de inventario
             </p>
           </div>
         </div>

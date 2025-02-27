@@ -10,6 +10,8 @@ const images = [
   '/cliente6.png',
   '/cliente4.png',
   '/cliente1.png',
+  '/cliente11.png',
+  '/cliente12.png',
 ];
 
 const Horizontal3DSlider = () => {

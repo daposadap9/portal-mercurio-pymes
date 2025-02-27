@@ -19,9 +19,13 @@ export default function Servicios({disabledProvider }) {
   const cardData = {
     title: 'MERCURIO SGDEA',
     lines: [
-      { text: 'Reduzca hasta un 80% el tiempo en búsqueda de documentos con Mercurio', icon: <FaSearch /> },
-      { text: 'Seguridad y acceso inmediato a tu información con Mercurio', icon: <FaLock /> },
-      { text: 'Digitaliza, automatiza y gestiona sin complicaciones. Mercurio lo hace por ti', icon: <FaRobot /> },
+      { text: 'Radicación y gestión de correspondencia electrónica (R-I-E-N)', icon: <FaSearch /> },
+      { text: 'Rutas Documentales (WorkFlow - BPM)', icon: <FaLock /> },
+      { text: 'Tablas de retención documental', icon: <FaRobot /> },
+      { text: 'Expedientes Electrónicos', icon: <FaSearch /> },
+      { text: 'Robot de notificación y radicación de correos', icon: <FaLock /> },
+      { text: 'Firmas digitales y digitalizadas', icon: <FaRobot /> },
+      { text: 'Puntos de integración (+25 Web services Publicados)', icon: <FaSearch /> },
     ],
     maxLines: 7,
   };
@@ -29,9 +33,10 @@ export default function Servicios({disabledProvider }) {
   const cardData2 = {
     title: 'MERCURIO PYMES',
     lines: [
-      { text: 'Optimiza los procesos de tu empresa con documentos digitales de fácil acceso y búsqueda rápida, digitaliza hoy y trabaja con más eficiencia', icon: <FaFileAlt /> },
-      { text: 'Ahorra costos y gana productividad con Mercurio, el futuro de la gestión documental', icon: <FaMoneyBillWave /> },
-      { text: 'Dile adiós al papeleo y bienvenido a la eficiencia con Mercurio', icon: <FaTrashAlt /> },
+      { text: 'Radicación y recepción de documentos.', icon: <FaFileAlt /> },
+      { text: 'Flujo estándar de aprobación de facturas.', icon: <FaMoneyBillWave /> },
+      { text: 'Flujo estándar de PQRS', icon: <FaTrashAlt /> },
+      { text: 'Control de documentos.', icon: <FaMoneyBillWave /> },
     ],
     maxLines: 7,
   };

@@ -8,10 +8,19 @@ const MercurioPYMES = () => {
         <div className="w-full md:w-[35%]">
           <div className="text-center md:text-left bg-white bg-opacity-0 backdrop-blur-xl p-6 rounded-xl border border-white/30">
             <p className="mb-4 leading-relaxed text-black text-base font-normal">
-              Mercurio pymes es un software de gestión electrónica de documentos diseñado para estructurar y almacenar la información de pequeñas y medianas empresas, disminuyendo costos y propiciando un ambiente intuitivo y amigable que garantice el éxito en la gestión documental.
+            Es un servicio innovador y estratégico que facilita y pone al acceso de todos la Gestión Documental. Diseñado para estructurar y almacenar la información de Grandes, medianas y pequeñas empresas, disminuyendo costos y propiciando un ambiente intuitivo y amigable que garantice el éxito en la gestión documental.
             </p>
             <p className="mb-4 leading-relaxed text-black text-base font-normal">
-              Con mercurio pymes podrás crear expedientes, indexar todos los tipos de documentos que produce tu empresa y, sobre todo, conservarlos en sólo lugar sin aumentar el riesgo de pérdida ni quedarte sin espacio suficiente.
+            Con mercurio PYMES podrás crear expedientes, indexar todos los tipos de documentos que produce tu empresa y, sobre todo, conservarlos en sólo lugar sin aumentar el riesgo de pérdida ni quedarte sin espacio suficiente. Disminuye costos y propicia un ambiente intuitivo y amigable que garantiza el éxito en la gestión documental.
+            </p>
+            <p className="mb-4 leading-relaxed text-black text-base font-normal">
+            Además podrás:
+
+ 
+
+Controlar tus documentos.
+Consultar tus documentos.
+Conservar documentos en expedientes electrónicos
             </p>
           </div>
         </div>
