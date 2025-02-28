@@ -100,7 +100,7 @@ Conservar documentos en expedientes electrónicos
                   <button 
                     className="btn-wave w-full p-2 rounded-md text-white font-bold transition-all duration-300 bg-blue-500 hover:bg-blue-600"
                   >
-                    Desde 1 Usuario Corporativos - $250.000
+                    Desde 1 Usuario Corporativo - $250.000
                   </button>
                   <button 
                     className="btn-wave w-full p-2 rounded-md text-white font-bold transition-all duration-300 bg-purple-500 hover:bg-purple-600"
