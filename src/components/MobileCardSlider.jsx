@@ -14,7 +14,7 @@ const images = [
   '/cliente12.png',
 ];
 
-// Pre-cargar las imágenes para mostrarlas de forma constante
+// Pre-cargar las imágenes para evitar parpadeos
 images.forEach((src) => {
   const img = new Image();
   img.src = src;
@@ -93,7 +93,7 @@ const Horizontal3DSlider = () => {
     }
   }, [activeIndex, pauseAutoSlide]);
 
-  // Determinamos las imágenes en cada posición
+  // Determinamos las imágenes a mostrar
   const leftImage = activeIndex - 1 >= 0 ? images[activeIndex - 1] : null;
   const activeImage = images[activeIndex];
   const rightImage = activeIndex + 1 < images.length ? images[activeIndex + 1] : null;
@@ -115,6 +115,7 @@ const Horizontal3DSlider = () => {
         onPointerDown={handlePointerDown}
         onPointerUp={handlePointerUp}
       >
+        {/* Imagen a la izquierda */}
         {leftImage && (
           <img
             src={leftImage}
@@ -129,17 +130,20 @@ const Horizontal3DSlider = () => {
           />
         )}
 
+        {/* Imagen activa */}
         <img
           src={activeImage}
           alt={`Imagen ${activeIndex}`}
           className="slider-image active-image"
           style={{
+            filter: 'drop-shadow(0px 0px 4px rgba(0,0,0,0.8))',
             opacity: 1,
             zIndex: 3,
             transition: 'none',
           }}
         />
 
+        {/* Imagen inmediata a la derecha */}
         {rightImage && (
           <img
             src={rightImage}
@@ -154,6 +158,7 @@ const Horizontal3DSlider = () => {
           />
         )}
 
+        {/* Imagen lejana a la derecha */}
         {farRightImage && (
           <img
             src={farRightImage}
@@ -200,7 +205,6 @@ const Horizontal3DSlider = () => {
         .slider-image {
           position: absolute;
           height: auto;
-          transition: none;
         }
         /* Mobile */
         @media (max-width: 768px) {
