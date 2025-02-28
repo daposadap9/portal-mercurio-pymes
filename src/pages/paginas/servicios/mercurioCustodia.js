@@ -99,32 +99,32 @@ const MercurioCustodia = () => {
                   <button 
                     className="btn-wave w-full p-2 rounded-md text-white font-bold transition-all duration-300 bg-blue-500 hover:bg-blue-600"
                   >
-                    Desde 0 hasta 5 cajas - $210.000
+                    Desde 0 hasta 5 Cajas X-300 - $210.000
                   </button>
                   <button 
                     className="btn-wave w-full p-2 rounded-md text-white font-bold transition-all duration-300 bg-purple-500 hover:bg-purple-600"
                   >
-                    Desde 6 hasta 10 cajas - $384.000
+                    Desde 6 hasta 10 Cajas X-300 - $384.000
                   </button>
                   <button 
                     className="btn-wave w-full p-2 rounded-md text-white font-bold transition-all duration-300 bg-amber-500 hover:bg-amber-600"
                   >
-                    Desde 11 hasta 20 cajas - $696.000
+                    Desde 11 hasta 20 Cajas X-300 - $696.000
                   </button>
                   <button 
                     className="btn-wave w-full p-2 rounded-md text-white font-bold transition-all duration-300 bg-yellow-500 hover:bg-yellow-600"
                   >
-                    Desde 21 hasta 30 cajas - $936.000
+                    Desde 21 hasta 30 Cajas X-300 - $936.000
                   </button>
                   <button 
                     className="btn-wave w-full p-2 rounded-md text-white font-bold transition-all duration-300 bg-red-500 hover:bg-red-600"
                   >
-                    Desde 31 hasta 40 cajas - $1.104.000
+                    Desde 31 hasta 40 Cajas X-300 - $1.104.000
                   </button>
                   <button 
                     className="btn-wave w-full p-2 rounded-md text-white font-bold transition-all duration-300 bg-black hover:bg-gray-800"
                   >
-                    Desde 31 hasta 50 cajas - $1.200.000
+                    Desde 31 hasta 50 Cajas X-300 - $1.200.000
                   </button>
                 </div>
                 <div className="md:w-1/2 flex items-end mt-4">

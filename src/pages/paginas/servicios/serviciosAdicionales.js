@@ -8,13 +8,7 @@ const ServiciosAdicionales = () => {
         <div className="w-full md:w-[35%]">
           <div className="text-center md:text-left bg-white bg-opacity-0 backdrop-blur-xl p-6 rounded-xl border border-white/30">
             <p className="mb-4 leading-relaxed text-black text-base font-normal">
-              Con Servisoft S.A. dile adiós al papel desordenado y al riesgo de pérdida. Con nuestra digitalización documental, toda tu información estará organizada y protegida.
-            </p>
-            <p className="mb-4 leading-relaxed text-black text-base font-normal">
-              La seguridad, accesibilidad y eficiencia en un sólo servicio. Digitalizamos tu archivo físico para que trabajes sin límites.
-            </p>
-            <p className="mb-4 leading-relaxed text-black text-base font-normal">
-              Te apoyamos con el cumplimiento de normativas legales y protegemos tu información con copias digitales seguras y respaldadas.
+            Proveemos los insumos necesarios para que encuentres todo lo que necesitas en la digitalización y custodia de tus documentos en el mismo lugar.
             </p>
           </div>
         </div>
