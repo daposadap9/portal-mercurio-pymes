@@ -3,15 +3,17 @@
 @tailwind utilities;
 
 /* Modo Light (por defecto) */
+
+
 :root,
+
 .light {
   --background: #ffffff;
   /* Colores base */
   --bg-white: #ffffff;
   --text-black: #000000;
   
-  /* Bordes semitransparentes */
-  --border-white-30: rgba(255, 255, 255, 0.3);
+  --border-white-30: rgba(49, 46, 46, 0.3);
   
   /* Tonos Teal */
   --text-teal-600: #319795;
@@ -45,7 +47,6 @@
   --red-500:   #EF4444;
   --red-600:   #DC2626;
   
-  /* Variables para body en light */
   --foreground: var(--text-black);
   --background: var(--bg-white);
 }
@@ -184,3 +185,74 @@ select:disabled::placeholder {
   color: var(--text-gray-900); /* Usa la variable definida en .light para color negro */
   opacity: 1;               /* Asegura que el placeholder tenga opacidad completa */
 }
+.blue-light{
+  --background: #f0f8ff;
+  --bg-white: #ffffff;
+  --text-black: #1a1a1a;
+  
+  --border-white-30: rgba(255, 255, 255, 0.3);
+  
+  /* Tonos Teal reinterpretados con azul frío */
+  --text-teal-600: #0277bd;
+  --text-teal-500: #039be5;
+  --text-teal-700: #01579b;
+  --teal-50:  #e1f5fe;
+  --teal-100: #b3e5fc;
+  --teal-200: #81d4fa;
+  
+  /* Paleta de grises */
+  --gray-50:   #f8f9fa;
+  --gray-100:  #f1f3f5;
+  --gray-200:  #e9ecef;
+  --gray-300:  #dee2e6;
+  --gray-400:  #ced4da;
+  --gray-500:  #adb5bd;
+  --gray-600:  #868e96;
+  --gray-700:  #495057;
+  --gray-800:  #343a40;
+  --gray-900:  #212529;
+  
+  /* Otros colores */
+  --blue-500:  #0288d1;
+  --blue-600:  #0277bd;
+  --purple-500: #7e57c2;
+  --purple-600: #673ab7;
+  --amber-500: #ffc107;
+  --amber-600: #ffb300;
+  --yellow-500: #ffeb3b;
+  --yellow-600: #fdd835;
+  --red-500:   #e53935;
+  --red-600:   #d32f2f;
+  
+  --foreground: var(--text-black);
+  --background: var(--bg-white);
+}
+
+.purple {
+  /* Fondo degradado con tonos más intensos y profundos */
+  --background: linear-gradient(135deg, #012A4A, #013A63);
+  --bg-white: #013A63;
+  --text-black: #E0F7FA;
+  --foreground: #E0F7FA;
+
+  --gray-50:   #012A4A;
+  --gray-100:  #013A63;
+  --gray-200:  #024C82;
+  --gray-300:  #035CA0;
+  --gray-400:  #046BBE;
+  --gray-500:  #057ADA;
+  --gray-600:  #068AE8;
+  --gray-700:  #6eb9f3;
+  --gray-800:  #33B5FF;
+  --gray-900:  #080808;
+
+  --text-teal-600: #A0E7E5;
+  --text-teal-500: #8EE3E1;
+  --text-teal-700: #75CBC8;
+
+  color: var(--foreground);
+  box-shadow: 0 0 10px rgba(1,42,74,0.5), 0 0 20px rgba(1,58,99,0.3);
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+  transition: all 0.3s ease;
+}
+

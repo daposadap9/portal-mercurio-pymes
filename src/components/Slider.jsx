@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import Image from 'next/image';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
 const defaultVideos = ["/imagen1.mp4", "/imagen2.mp4", "/imagen3.mp4"];
@@ -68,12 +69,14 @@ const Slider = ({ videos = defaultVideos, autoPlay = false, autoPlayTime = 3000 
         const mediaType = getMediaType(src);
         if (mediaType === 'image') {
           return (
-            <img 
-              key={index} 
-              src={src} 
-              alt={`Slide ${index}`} 
-              className={commonClassNames} 
-            />
+            <div key={index} className={commonClassNames}>
+              <Image 
+                src={src} 
+                alt={`Slide ${index}`} 
+                layout="fill" 
+                objectFit="cover"
+              />
+            </div>
           );
         } else if (mediaType === 'video') {
           return (

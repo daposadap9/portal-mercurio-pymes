@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useState, useEffect, useContext } from 'react';
+import Image from 'next/image';
 import { 
   FaHome, 
   FaConciergeBell, 
@@ -40,12 +41,11 @@ const Header = ({ handleNavigation, loading }) => {
     setDropdownActive(prev => ({ ...prev, ...nuevoEstado }));
   };
 
-  // Cuando cambie el estado de servicios, actualiza el contexto
+  // Actualiza el contexto al cambiar los dropdowns
   useEffect(() => {
     actualizarDropdown({ services: showServicesDropdown });
   }, [showServicesDropdown]);
 
-  // Actualiza el contexto cuando cambie el dropdown de Trámites
   useEffect(() => {
     actualizarDropdown({ tramites: showTramitesDropdown });
   }, [showTramitesDropdown]);
@@ -90,7 +90,7 @@ const Header = ({ handleNavigation, loading }) => {
     }))
   ];
 
-  // Opciones para el dropdown de TRÁMITES en Desktop (sin "TODOS LOS TRÁMITES")
+  // Opciones para el dropdown de TRÁMITES en Desktop
   const desktopTramitesDropdownItems = [
     { label: "PAGA TU FACTURA", action: () => alert("Pagar factura"), icon: <FaFileInvoiceDollar className="mr-2" /> },
     { label: "PQRSDF", href: "/paginas/tramites/pqrsdf", icon: <FaCommentAlt className="mr-2" /> },
@@ -98,7 +98,7 @@ const Header = ({ handleNavigation, loading }) => {
     { label: "CONSULTA ESTADO DE SOLICITUD", href: "/paginas/tramites/estadoSolicitud", icon: <FaInfoCircle className="mr-2" /> }
   ];
 
-  // Opciones para el menú de TRÁMITES en Mobile (incluye "TODOS LOS TRÁMITES")
+  // Opciones para el menú de TRÁMITES en Mobile
   const mobileTramitesDropdownItems = [
     { label: "TODOS LOS TRÁMITES", href: "/paginas/tramites", icon: <FaAngleRight className="mr-2" /> },
     ...desktopTramitesDropdownItems.map(item => ({
@@ -119,7 +119,7 @@ const Header = ({ handleNavigation, loading }) => {
   // Determina si el enlace corresponde a la ruta actual
   const isActive = (href) => router.pathname === href;
 
-  // Clases base para los enlaces (estilo sutil con blanco y teal-600)
+  // Clases base para los enlaces
   const baseLinkClass =
     "flex items-center font-semibold p-1 transition-transform duration-300 ease-in-out text-teal-600";
   const baseLinkClass2 =
@@ -145,11 +145,13 @@ const Header = ({ handleNavigation, loading }) => {
       <nav className="max-w-7xl mx-auto px-4 h-full flex justify-between items-center relative">
         {/* Contenedor del logo con ancho fijo y overflow-hidden */}
         <div className="flex items-center" style={{ minWidth: '180px', height: '100%' }}>
-          <div className="w-48 h-full overflow-hidden">
-            <img 
+          <div className="w-48 h-full overflow-hidden relative">
+            <Image 
               src="/logo-servisoft-30years.webp" 
               alt="Logo Servisoft" 
-              className="w-full h-full object-contain"
+              layout="fill"
+              objectFit="contain"
+              priority
             />
           </div>
         </div>
@@ -271,9 +273,9 @@ const Header = ({ handleNavigation, loading }) => {
           </Link>
         </div>
 
-        {/* Nuevo select para cambiar tema (Desktop) */}
+        {/* Select para cambiar tema (Desktop) */}
         <div className="hidden lg:flex items-center">
-        <FaPalette className="mr-1 text-base text-teal-600" />
+          <FaPalette className="mr-1 text-base text-teal-600" />
           <select
             value={theme}
             onChange={(e) => setTheme(e.target.value)}
@@ -342,9 +344,9 @@ const Header = ({ handleNavigation, loading }) => {
                 <FaSignInAlt className="mr-1 text-base" /> INGRESAR
               </a>
             </Link>
-            {/* Nuevo select para cambiar tema (Mobile) */}
+            {/* Select para cambiar tema (Mobile) */}
             <div className="mt-2 flex items-center">
-            <FaPalette className="mr-1 text-base text-teal-600" />
+              <FaPalette className="mr-1 text-base text-teal-600" />
               <select
                 value={theme}
                 onChange={(e) => setTheme(e.target.value)}
