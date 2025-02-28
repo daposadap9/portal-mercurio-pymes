@@ -220,7 +220,7 @@ export default function Servicios({disabledProvider }) {
           titleColorClass="text-green-700"
           iconColorClass="text-green-500"
           showViewMore={true}
-          onViewMore={() => alert('¡Mostrando más detalles!')}
+          onViewMore={() => router.push("/paginas/servicios/serviciosAdicionales")}
           viewMoreText="Descubre más"
         />
       </div>
