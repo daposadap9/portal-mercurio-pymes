@@ -14,13 +14,15 @@ const images = [
   '/cliente12.png',
 ];
 
-// Pre-cargar las imágenes para evitar parpadeos
-images.forEach((src) => {
-  const img = new Image();
-  img.src = src;
-});
-
 const Horizontal3DSlider = () => {
+  // Pre-cargar las imágenes en el cliente
+  useEffect(() => {
+    images.forEach((src) => {
+      const img = new Image();
+      img.src = src;
+    });
+  }, []);
+
   const [activeIndex, setActiveIndex] = useState(0);
   const containerRef = useRef(null);
   const isDragging = useRef(false);
@@ -101,7 +103,6 @@ const Horizontal3DSlider = () => {
 
   return (
     <div className="slider-wrapper text-slate-950">
-      {/* Botones de navegación */}
       <button onClick={handlePrev} className="nav-button prev-button">
         <FaChevronLeft size={18} />
       </button>
@@ -115,7 +116,6 @@ const Horizontal3DSlider = () => {
         onPointerDown={handlePointerDown}
         onPointerUp={handlePointerUp}
       >
-        {/* Imagen a la izquierda */}
         {leftImage && (
           <img
             src={leftImage}
@@ -130,7 +130,6 @@ const Horizontal3DSlider = () => {
           />
         )}
 
-        {/* Imagen activa */}
         <img
           src={activeImage}
           alt={`Imagen ${activeIndex}`}
@@ -143,7 +142,6 @@ const Horizontal3DSlider = () => {
           }}
         />
 
-        {/* Imagen inmediata a la derecha */}
         {rightImage && (
           <img
             src={rightImage}
@@ -158,7 +156,6 @@ const Horizontal3DSlider = () => {
           />
         )}
 
-        {/* Imagen lejana a la derecha */}
         {farRightImage && (
           <img
             src={farRightImage}
@@ -174,7 +171,6 @@ const Horizontal3DSlider = () => {
         )}
       </div>
 
-      {/* Indicadores */}
       <div className="indicator-container">
         {images.map((_, index) => (
           <div
@@ -206,7 +202,7 @@ const Horizontal3DSlider = () => {
           position: absolute;
           height: auto;
         }
-        /* Mobile */
+        /* Estilos para mobile */
         @media (max-width: 768px) {
           .slider-image {
             width: 40vw;
@@ -241,7 +237,7 @@ const Horizontal3DSlider = () => {
             bottom: 1rem;
           }
         }
-        /* Desktop */
+        /* Estilos para desktop */
         @media (min-width: 769px) {
           .slider-image {
             width: 25vw;
