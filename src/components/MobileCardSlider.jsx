@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
 const images = [
@@ -14,6 +14,12 @@ const images = [
   '/cliente12.png',
 ];
 
+// Pre-cargar las imágenes para mostrarlas de forma constante
+images.forEach((src) => {
+  const img = new Image();
+  img.src = src;
+});
+
 const Horizontal3DSlider = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const containerRef = useRef(null);
@@ -21,85 +27,81 @@ const Horizontal3DSlider = () => {
   const startX = useRef(0);
   const dragThreshold = 50;
 
-  // Referencias para el intervalo de auto slide y el timeout de pausa
+  // Refs para el auto slide y pausa
   const autoSlideIntervalRef = useRef(null);
   const pauseTimeoutRef = useRef(null);
 
-  // Función que inicia el auto slide
-  const startAutoSlide = () => {
+  const startAutoSlide = useCallback(() => {
     autoSlideIntervalRef.current = setInterval(() => {
       setActiveIndex((prevIndex) =>
         prevIndex < images.length - 1 ? prevIndex + 1 : 0
       );
     }, 1500);
-  };
+  }, []);
 
-  // Iniciamos el auto slide cuando se monta el componente
   useEffect(() => {
     startAutoSlide();
     return () => {
       if (autoSlideIntervalRef.current) clearInterval(autoSlideIntervalRef.current);
       if (pauseTimeoutRef.current) clearTimeout(pauseTimeoutRef.current);
     };
-  }, []);
+  }, [startAutoSlide]);
 
-  // Función para pausar el auto slide cuando se interactúa
-  const pauseAutoSlide = () => {
+  const pauseAutoSlide = useCallback(() => {
     if (autoSlideIntervalRef.current) {
       clearInterval(autoSlideIntervalRef.current);
       autoSlideIntervalRef.current = null;
     }
-    if (pauseTimeoutRef.current) {
-      clearTimeout(pauseTimeoutRef.current);
-    }
+    if (pauseTimeoutRef.current) clearTimeout(pauseTimeoutRef.current);
     pauseTimeoutRef.current = setTimeout(() => {
       startAutoSlide();
     }, 3000);
-  };
+  }, [startAutoSlide]);
 
-  const handlePointerDown = (e) => {
+  const handlePointerDown = useCallback((e) => {
     isDragging.current = true;
     startX.current = e.clientX;
-  };
+  }, []);
 
-  const handlePointerUp = (e) => {
-    if (!isDragging.current) return;
-    isDragging.current = false;
-    const deltaX = e.clientX - startX.current;
-    if (deltaX > dragThreshold && activeIndex > 0) {
-      setActiveIndex(activeIndex - 1);
-      pauseAutoSlide();
-    } else if (deltaX < -dragThreshold && activeIndex < images.length - 1) {
-      setActiveIndex(activeIndex + 1);
-      pauseAutoSlide();
-    }
-  };
+  const handlePointerUp = useCallback(
+    (e) => {
+      if (!isDragging.current) return;
+      isDragging.current = false;
+      const deltaX = e.clientX - startX.current;
+      if (deltaX > dragThreshold && activeIndex > 0) {
+        setActiveIndex((prev) => prev - 1);
+        pauseAutoSlide();
+      } else if (deltaX < -dragThreshold && activeIndex < images.length - 1) {
+        setActiveIndex((prev) => prev + 1);
+        pauseAutoSlide();
+      }
+    },
+    [activeIndex, pauseAutoSlide]
+  );
 
-  const handlePrev = () => {
+  const handlePrev = useCallback(() => {
     if (activeIndex > 0) {
-      setActiveIndex(activeIndex - 1);
+      setActiveIndex((prev) => prev - 1);
       pauseAutoSlide();
     }
-  };
+  }, [activeIndex, pauseAutoSlide]);
 
-  const handleNext = () => {
+  const handleNext = useCallback(() => {
     if (activeIndex < images.length - 1) {
-      setActiveIndex(activeIndex + 1);
+      setActiveIndex((prev) => prev + 1);
       pauseAutoSlide();
     }
-  };
+  }, [activeIndex, pauseAutoSlide]);
 
+  // Determinamos las imágenes en cada posición
   const leftImage = activeIndex - 1 >= 0 ? images[activeIndex - 1] : null;
   const activeImage = images[activeIndex];
   const rightImage = activeIndex + 1 < images.length ? images[activeIndex + 1] : null;
   const farRightImage = activeIndex + 2 < images.length ? images[activeIndex + 2] : null;
 
-  // Transición suave para todas las propiedades (transform, opacity, etc.)
-  const transitionStyle = 'all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
-
   return (
     <div className="slider-wrapper text-slate-950">
-      {/* Flechas de navegación */}
+      {/* Botones de navegación */}
       <button onClick={handlePrev} className="nav-button prev-button">
         <FaChevronLeft size={18} />
       </button>
@@ -113,60 +115,55 @@ const Horizontal3DSlider = () => {
         onPointerDown={handlePointerDown}
         onPointerUp={handlePointerUp}
       >
-        {/* Imagen a la izquierda */}
         {leftImage && (
           <img
             src={leftImage}
             alt={`Imagen ${activeIndex - 1}`}
             className="slider-image left-image"
             style={{
-              transition: transitionStyle,
               filter: 'drop-shadow(0px 0px 2px rgba(0,0,0,0.4))',
               opacity: 0.1,
               zIndex: 1,
+              transition: 'none',
             }}
           />
         )}
 
-        {/* Imagen activa */}
         <img
           src={activeImage}
           alt={`Imagen ${activeIndex}`}
           className="slider-image active-image"
           style={{
-            transition: transitionStyle,
-            filter: 'drop-shadow(0px 0px 4px rgba(0,0,0,0.8))',
             opacity: 1,
             zIndex: 3,
+            transition: 'none',
           }}
         />
 
-        {/* Imagen inmediata a la derecha */}
         {rightImage && (
           <img
             src={rightImage}
             alt={`Imagen ${activeIndex + 1}`}
             className="slider-image right-image"
             style={{
-              transition: transitionStyle,
               filter: 'drop-shadow(0px 0px 5px rgba(0,0,0,0.8))',
               opacity: 0.4,
               zIndex: 1,
+              transition: 'none',
             }}
           />
         )}
 
-        {/* Imagen lejana a la derecha */}
         {farRightImage && (
           <img
             src={farRightImage}
             alt={`Imagen ${activeIndex + 2}`}
             className="slider-image far-right-image"
             style={{
-              transition: transitionStyle,
               filter: 'drop-shadow(0px 0px 3px rgba(0,0,0,0.5))',
               opacity: 0.2,
               zIndex: 0,
+              transition: 'none',
             }}
           />
         )}
@@ -203,8 +200,9 @@ const Horizontal3DSlider = () => {
         .slider-image {
           position: absolute;
           height: auto;
+          transition: none;
         }
-        /* Mobile: se usan offsets en vw para evitar que los logos se crucen, con separación aumentada */
+        /* Mobile */
         @media (max-width: 768px) {
           .slider-image {
             width: 40vw;
@@ -239,7 +237,7 @@ const Horizontal3DSlider = () => {
             bottom: 1rem;
           }
         }
-        /* Desktop: offsets menos extremos para mantener el layout compacto */
+        /* Desktop */
         @media (min-width: 769px) {
           .slider-image {
             width: 25vw;
@@ -266,7 +264,6 @@ const Horizontal3DSlider = () => {
             transform: translate(calc(-50% + 40vw), calc(-50% + 8vh)) scale(0.5);
           }
         }
-        /* Aumentar separación entre logos para pantallas entre 769px y 1123px */
         @media (min-width: 769px) and (max-width: 1123px) {
           .left-image {
             transform: translate(calc(-50% - 25vw), calc(-50% + 5vh)) scale(0.4);
@@ -292,7 +289,6 @@ const Horizontal3DSlider = () => {
           border-radius: 9999px;
           box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
           cursor: pointer;
-          transition: background 0.3s ease;
         }
         .prev-button {
           left: 1rem;
