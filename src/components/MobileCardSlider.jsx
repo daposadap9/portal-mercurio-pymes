@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
 const images = [
@@ -20,6 +20,14 @@ const Horizontal3DSlider = () => {
   const isDragging = useRef(false);
   const startX = useRef(0);
   const dragThreshold = 50;
+
+  // Auto slide: cada 3 segundos se cambia el índice de forma cíclica
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveIndex((prevIndex) => (prevIndex < images.length - 1 ? prevIndex + 1 : 0));
+    }, 1500);
+    return () => clearInterval(interval);
+  }, []);
 
   const handlePointerDown = (e) => {
     isDragging.current = true;
@@ -157,7 +165,7 @@ const Horizontal3DSlider = () => {
           position: absolute;
           height: auto;
         }
-        /* Mobile: efecto 3D exagerado pero con menos offset vertical */
+        /* Mobile: se usan offsets en vw para evitar que los logos se crucen, con separación aumentada */
         @media (max-width: 768px) {
           .slider-image {
             width: 40vw;
@@ -166,7 +174,7 @@ const Horizontal3DSlider = () => {
           .left-image {
             left: 50%;
             top: 50%;
-            transform: translate(calc(-50% - 35vw), calc(-50% + 5vh)) scale(0.35);
+            transform: translate(calc(-50% - 35vw), -50%) scale(0.35);
           }
           .active-image {
             left: 50%;
@@ -176,12 +184,12 @@ const Horizontal3DSlider = () => {
           .right-image {
             left: 50%;
             top: 50%;
-            transform: translate(calc(-50% + 35vw), calc(-50% + 5vh)) scale(0.65);
+            transform: translate(calc(-50% + 35vw), -50%) scale(0.65);
           }
           .far-right-image {
             left: 50%;
             top: 50%;
-            transform: translate(calc(-50% + 70vw), calc(-50% + 8vh)) scale(0.45);
+            transform: translate(calc(-50% + 70vw), -50%) scale(0.45);
           }
           .nav-button {
             background: white;
@@ -192,7 +200,7 @@ const Horizontal3DSlider = () => {
             bottom: 1rem;
           }
         }
-        /* Desktop: efecto menos extremo para mantener el layout compacto */
+        /* Desktop: offsets menos extremos para mantener el layout compacto */
         @media (min-width: 769px) {
           .slider-image {
             width: 25vw;
@@ -201,7 +209,7 @@ const Horizontal3DSlider = () => {
           .left-image {
             left: 50%;
             top: 50%;
-            transform: translate(calc(-50% - 15vw), calc(-50% + 5vh)) scale(0.4);
+            transform: translate(calc(-50% - 20vw), calc(-50% + 5vh)) scale(0.4);
           }
           .active-image {
             left: 50%;
@@ -211,12 +219,27 @@ const Horizontal3DSlider = () => {
           .right-image {
             left: 50%;
             top: 50%;
-            transform: translate(calc(-50% + 15vw), calc(-50% + 5vh)) scale(0.7);
+            transform: translate(calc(-50% + 20vw), calc(-50% + 5vh)) scale(0.7);
           }
           .far-right-image {
             left: 50%;
             top: 50%;
-            transform: translate(calc(-50% + 30vw), calc(-50% + 8vh)) scale(0.5);
+            transform: translate(calc(-50% + 40vw), calc(-50% + 8vh)) scale(0.5);
+          }
+        }
+        /* Aumentar separación entre logos para pantallas entre 769px y 1123px */
+        @media (min-width: 769px) and (max-width: 1123px) {
+          .left-image {
+            transform: translate(calc(-50% - 25vw), calc(-50% + 5vh)) scale(0.4);
+          }
+          .active-image {
+            transform: translate(-50%, -50%) scale(1);
+          }
+          .right-image {
+            transform: translate(calc(-50% + 25vw), calc(-50% + 5vh)) scale(0.7);
+          }
+          .far-right-image {
+            transform: translate(calc(-50% + 50vw), calc(-50% + 8vh)) scale(0.5);
           }
         }
         .nav-button {
