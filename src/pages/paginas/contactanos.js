@@ -1,6 +1,15 @@
 // pages/contactanos.js
 import React from 'react';
+import Image from 'next/image';
 import { FaBriefcase, FaMapMarkerAlt, FaWhatsapp, FaEnvelope } from 'react-icons/fa';
+
+// Array con las rutas de las imágenes de cada contacto
+const images = [
+  '/sandra.webp',
+  '/fredy.webp',
+  '/erika.webp',
+  '/simon.webp'
+];
 
 const contacts = [
   {
@@ -8,32 +17,28 @@ const contacts = [
     department: "CUENTAS CORPORATIVAS",
     city: "BOGOTÁ D.C",
     phone: "3002187751",
-    email: "SPEÑA@SERVISOFT.COM.CO",
-    photo: "/sandra.webp" // Asegúrate de tener esta imagen en public
+    email: "SPEÑA@SERVISOFT.COM.CO"
   },
   {
     name: "FREDY PEÑA",
     department: "CUENTAS CORPORATIVAS",
     city: "BOGOTÁ D.C",
     phone: "3008676350",
-    email: "FPEÑA@SERVISOFT.COM.CO",
-    photo: "/fredy.webp"
+    email: "FPEÑA@SERVISOFT.COM.CO"
   },
   {
     name: "ERIKA CORTÉS",
     department: "CUENTAS CORPORATIVAS",
     city: "BOGOTÁ D.C",
     phone: "3134850593",
-    email: "ECORTES@SERVISOFT.COM.CO",
-    photo: "/erika.webp"
+    email: "ECORTES@SERVISOFT.COM.CO"
   },
   {
     name: "SIMÓN ESCOBAR",
     department: "CUENTAS CORPORATIVAS",
     city: "MEDELLÍN",
     phone: "3008676122",
-    email: "SESCOBAR@SERVISOFT.COM.CO",
-    photo: "/simon.webp"
+    email: "SESCOBAR@SERVISOFT.COM.CO"
   }
 ];
 
@@ -47,15 +52,18 @@ const Contactanos = () => {
             key={index} 
             className="bg-white rounded-lg shadow-2xl p-10 flex flex-col items-center transition-transform hover:scale-105 overflow-hidden"
           >
-            <img 
-              src={contact.photo} 
-              alt={contact.name} 
-              className="w-40 h-40 object-cover rounded-full mb-4"
-            />
+            <div className="relative w-40 h-40 mb-4">
+              <Image 
+                src={images[index]} 
+                alt={contact.name} 
+                layout="fill"
+                objectFit="cover"
+                className="rounded-full"
+              />
+            </div>
             <h3 className="text-2xl font-bold text-teal-600 mb-2 text-center">
               {contact.name}
             </h3>
-            {/* Contenedor de la información */}
             <div className="w-full px-1">
               <div className="flex items-center mb-1 break-words">
                 <FaBriefcase className="text-teal-500 mr-2" />
