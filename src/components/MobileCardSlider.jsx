@@ -21,13 +21,41 @@ const Horizontal3DSlider = () => {
   const startX = useRef(0);
   const dragThreshold = 50;
 
-  // Auto slide: cada 3 segundos se cambia el índice de forma cíclica
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveIndex((prevIndex) => (prevIndex < images.length - 1 ? prevIndex + 1 : 0));
+  // Referencias para el intervalo de auto slide y el timeout de pausa
+  const autoSlideIntervalRef = useRef(null);
+  const pauseTimeoutRef = useRef(null);
+
+  // Función que inicia el auto slide
+  const startAutoSlide = () => {
+    autoSlideIntervalRef.current = setInterval(() => {
+      setActiveIndex((prevIndex) =>
+        prevIndex < images.length - 1 ? prevIndex + 1 : 0
+      );
     }, 1500);
-    return () => clearInterval(interval);
+  };
+
+  // Iniciamos el auto slide cuando se monta el componente
+  useEffect(() => {
+    startAutoSlide();
+    return () => {
+      if (autoSlideIntervalRef.current) clearInterval(autoSlideIntervalRef.current);
+      if (pauseTimeoutRef.current) clearTimeout(pauseTimeoutRef.current);
+    };
   }, []);
+
+  // Función para pausar el auto slide cuando se interactúa
+  const pauseAutoSlide = () => {
+    if (autoSlideIntervalRef.current) {
+      clearInterval(autoSlideIntervalRef.current);
+      autoSlideIntervalRef.current = null;
+    }
+    if (pauseTimeoutRef.current) {
+      clearTimeout(pauseTimeoutRef.current);
+    }
+    pauseTimeoutRef.current = setTimeout(() => {
+      startAutoSlide();
+    }, 3000);
+  };
 
   const handlePointerDown = (e) => {
     isDragging.current = true;
@@ -40,17 +68,25 @@ const Horizontal3DSlider = () => {
     const deltaX = e.clientX - startX.current;
     if (deltaX > dragThreshold && activeIndex > 0) {
       setActiveIndex(activeIndex - 1);
+      pauseAutoSlide();
     } else if (deltaX < -dragThreshold && activeIndex < images.length - 1) {
       setActiveIndex(activeIndex + 1);
+      pauseAutoSlide();
     }
   };
 
   const handlePrev = () => {
-    if (activeIndex > 0) setActiveIndex(activeIndex - 1);
+    if (activeIndex > 0) {
+      setActiveIndex(activeIndex - 1);
+      pauseAutoSlide();
+    }
   };
 
   const handleNext = () => {
-    if (activeIndex < images.length - 1) setActiveIndex(activeIndex + 1);
+    if (activeIndex < images.length - 1) {
+      setActiveIndex(activeIndex + 1);
+      pauseAutoSlide();
+    }
   };
 
   const leftImage = activeIndex - 1 >= 0 ? images[activeIndex - 1] : null;
@@ -142,7 +178,10 @@ const Horizontal3DSlider = () => {
           <div
             key={index}
             className={`indicator ${activeIndex === index ? 'active' : ''}`}
-            onClick={() => setActiveIndex(index)}
+            onClick={() => {
+              setActiveIndex(index);
+              pauseAutoSlide();
+            }}
           />
         ))}
       </div>
