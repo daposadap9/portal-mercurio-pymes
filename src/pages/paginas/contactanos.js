@@ -1,9 +1,8 @@
 // pages/contactanos.js
-import React from 'react';
-import Image from 'next/image';
+import React, { useEffect } from 'react';
 import { FaBriefcase, FaMapMarkerAlt, FaWhatsapp, FaEnvelope } from 'react-icons/fa';
 
-// Array con las rutas de las imágenes de cada contacto
+// Array con las rutas de las imágenes (asegúrate de que los archivos estén en la carpeta public)
 const images = [
   '/sandra.webp',
   '/fredy.webp',
@@ -43,6 +42,14 @@ const contacts = [
 ];
 
 const Contactanos = () => {
+  // Pre-cargar las imágenes para evitar retrasos en su visualización
+  useEffect(() => {
+    images.forEach((src) => {
+      const img = new Image();
+      img.src = src;
+    });
+  }, []);
+
   return (
     <div className="min-h-full max-w-6xl mx-auto flex flex-col items-center justify-center p-6">
       <h1 className="text-3xl font-bold text-teal-600 text-center mb-8">Contáctanos</h1>
@@ -52,15 +59,11 @@ const Contactanos = () => {
             key={index} 
             className="bg-white rounded-lg shadow-2xl p-10 flex flex-col items-center transition-transform hover:scale-105 overflow-hidden"
           >
-            <div className="relative w-40 h-40 mb-4">
-              <Image 
-                src={images[index]} 
-                alt={contact.name} 
-                layout="fill"
-                objectFit="cover"
-                className="rounded-full"
-              />
-            </div>
+            <img 
+              src={images[index]} 
+              alt={contact.name} 
+              className="w-40 h-40 object-cover rounded-full mb-4"
+            />
             <h3 className="text-2xl font-bold text-teal-600 mb-2 text-center">
               {contact.name}
             </h3>
