@@ -274,19 +274,21 @@ const resolvers = {
           await transaction.commit();
 
           // Realizar la petición SOAP al webservice
+          // Cargar las variables de entorno
+
           const soapBody = `<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:rut="http://www.servisoft.com.co/Mercurio/Servicios/Schema/RutaService">
             <soapenv:Header/>
             <soapenv:Body>
               <rut:DocumentoRutaIniciarFlujoRequest>
-                  <rut:idDocumento>${idDocumento}</rut:idDocumento>
-                  <rut:tipDocumento>R</rut:tipDocumento>
-                  <rut:idCondicion></rut:idCondicion>
+                <rut:idDocumento>${idDocumento}</rut:idDocumento>
+                <rut:tipDocumento>R</rut:tipDocumento>
+                <rut:idCondicion></rut:idCondicion>
               </rut:DocumentoRutaIniciarFlujoRequest>
             </soapenv:Body>
           </soapenv:Envelope>`;
 
           try {
-            const soapResponse = await axios.post('http://181.143.104.85:5050/mercurio/RutaService', soapBody, {
+            const soapResponse = await axios.post(process.env.SOAP_URL, soapBody, {
               headers: { 
                 'Content-Type': 'text/xml',
                 'SOAPAction': '' // Algunos servicios SOAP requieren esto, aunque sea vacío
@@ -295,8 +297,8 @@ const resolvers = {
             console.log('SOAP request successful:', soapResponse.data);
           } catch (soapError) {
             console.error('Error making SOAP request:', soapError);
-            // Dependiendo de tus necesidades, podrías optar por lanzar un error o simplemente loguearlo
           }
+
 
           return {
             success: true,
