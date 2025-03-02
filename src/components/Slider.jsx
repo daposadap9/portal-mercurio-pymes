@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
-const defaultVideos = ["/imagen1.mp4", "/imagen2.mp4", "/imagen3.mp4"];
+const defaultVideos = ['/imagen1.mp4', '/imagen2.mp4', '/imagen3.mp4'];
 
 const Slider = ({ videos = defaultVideos, autoPlay = false, autoPlayTime = 3000 }) => {
   if (!videos || videos.length === 0) {
@@ -47,11 +47,16 @@ const Slider = ({ videos = defaultVideos, autoPlay = false, autoPlayTime = 3000 
   // Controla la reproducción de los videos activos
   useEffect(() => {
     videoRefs.current.forEach((video, index) => {
-      // Solo se procesa si el elemento es un video (no aplica para imágenes)
+      // Solo se procesa si el elemento es un video
       if (video) {
         if (index === currentIndex) {
           video.currentTime = 0;
-          video.play().catch(error => console.error("Error al reproducir el video:", error));
+          video.play().catch(error => {
+            // Si el error es AbortError, lo ignoramos
+            if (error.name !== 'AbortError') {
+              console.error("Error al reproducir el video:", error);
+            }
+          });
         } else {
           video.pause();
           video.currentTime = 0;
@@ -89,6 +94,7 @@ const Slider = ({ videos = defaultVideos, autoPlay = false, autoPlayTime = 3000 
               className={commonClassNames}
             >
               <source src={src} type="video/mp4" />
+              Tu navegador no soporta el elemento de video.
             </video>
           );
         }
