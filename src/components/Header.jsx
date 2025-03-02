@@ -147,7 +147,7 @@ const Header = ({ handleNavigation, loading }) => {
         <div className="flex items-center" style={{ minWidth: '180px', height: '100%' }}>
           <div className="w-48 h-full overflow-hidden relative">
             <Image 
-              src="/logo-servisoft-30years.webp" 
+              src="/logo-servisoft-30years.png" 
               alt="Logo Servisoft" 
               layout="fill"
               objectFit="contain"

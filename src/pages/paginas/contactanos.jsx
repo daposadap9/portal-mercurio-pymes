@@ -34,10 +34,10 @@ const contacts = [
 ];
 
 const images = [
-  '/sandra.webp',
-  '/fredy.webp',
-  '/erika.webp',
-  '/simon.webp'
+  '/sandra.png',
+  '/fredy.png',
+  '/erika.png',
+  '/simon.png'
 ];
 
 const Contactanos = () => {
