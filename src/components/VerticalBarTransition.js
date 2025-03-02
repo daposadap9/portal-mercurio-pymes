@@ -76,7 +76,7 @@ const VerticalBarTransition = ({ onComplete }) => {
           }}
         >
           <img 
-            src="/logo-servisoft-30years.webp" 
+            src="/logo-servisoft-30years.PNG" 
             alt="Logo Servisoft" 
             className="w-[40rem] h-[40rem] object-contain"
           />

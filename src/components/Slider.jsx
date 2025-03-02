@@ -2,36 +2,29 @@ import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
-const defaultVideos = ['/imagen1.mp4', '/imagen2.mp4', '/imagen3.mp4'];
+const defaultMedia = ['/video1.mp4', '/video2.mp4', '/video3.mp4']; // Asegúrate de que estas rutas sean correctas
 
-const Slider = ({ videos = defaultVideos, autoPlay = false, autoPlayTime = 3000 }) => {
-  if (!videos || videos.length === 0) {
-    videos = defaultVideos;
-  }
-
+const Slider = ({ media = defaultMedia, autoPlay = false, autoPlayTime = 3000 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const videoRefs = useRef([]);
 
-  // Función para determinar el tipo de medio según su extensión
+  // Determina el tipo de medio según su extensión
   const getMediaType = (src) => {
     const ext = src.split('.').pop().toLowerCase();
-    if (ext === 'gif' || ext === 'webp') {
-      return 'image';
-    } else if (ext === 'mp4') {
-      return 'video';
-    }
+    if (ext === 'mp4') return 'video';
+    // Puedes agregar otras extensiones de imagen si es necesario
     return 'image';
   };
 
   const nextSlide = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % videos.length);
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % media.length);
   };
 
   const prevSlide = () => {
-    setCurrentIndex((prevIndex) => (prevIndex - 1 + videos.length) % videos.length);
+    setCurrentIndex((prevIndex) => (prevIndex - 1 + media.length) % media.length);
   };
 
-  // Cambio automático de slide
+  // Cambio automático de slide si autoPlay es true
   useEffect(() => {
     let interval = null;
     if (autoPlay) {
@@ -42,21 +35,15 @@ const Slider = ({ videos = defaultVideos, autoPlay = false, autoPlayTime = 3000 
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [autoPlay, autoPlayTime, videos.length]);
+  }, [autoPlay, autoPlayTime, media.length]);
 
-  // Controla la reproducción de los videos activos
+  // Reproduce el video activo y pausa los demás
   useEffect(() => {
     videoRefs.current.forEach((video, index) => {
-      // Solo se procesa si el elemento es un video
       if (video) {
         if (index === currentIndex) {
           video.currentTime = 0;
-          video.play().catch(error => {
-            // Si el error es AbortError, lo ignoramos
-            if (error.name !== 'AbortError') {
-              console.error("Error al reproducir el video:", error);
-            }
-          });
+          video.play().catch(error => console.error("Error al reproducir el video:", error));
         } else {
           video.pause();
           video.currentTime = 0;
@@ -67,11 +54,12 @@ const Slider = ({ videos = defaultVideos, autoPlay = false, autoPlayTime = 3000 
 
   return (
     <div className="relative w-full h-60 sm:h-80 md:h-[32rem] overflow-hidden rounded-md shadow-lg">
-      {videos.map((src, index) => {
+      {media.map((src, index) => {
         const commonClassNames = `absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${
           index === currentIndex ? 'opacity-100' : 'opacity-0'
         }`;
         const mediaType = getMediaType(src);
+
         if (mediaType === 'image') {
           return (
             <div key={index} className={commonClassNames}>
@@ -91,6 +79,7 @@ const Slider = ({ videos = defaultVideos, autoPlay = false, autoPlayTime = 3000 
               muted
               loop
               playsInline
+              preload="metadata"
               className={commonClassNames}
             >
               <source src={src} type="video/mp4" />
@@ -119,7 +108,7 @@ const Slider = ({ videos = defaultVideos, autoPlay = false, autoPlayTime = 3000 
 
       {/* Indicadores */}
       <div className="absolute bottom-8 left-0 right-0 flex justify-center space-x-2 z-10">
-        {videos.map((_, index) => (
+        {media.map((_, index) => (
           <div
             key={index}
             onClick={() => setCurrentIndex(index)}
