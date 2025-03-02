@@ -83,12 +83,13 @@ const Slider = ({ videos = defaultVideos, autoPlay = false, autoPlayTime = 3000 
             <video
               key={index}
               ref={el => videoRefs.current[index] = el}
-              src={src}
               muted
               loop
               playsInline
               className={commonClassNames}
-            />
+            >
+              <source src={src} type="video/mp4" />
+            </video>
           );
         }
         return null;
