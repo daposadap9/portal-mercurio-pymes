@@ -287,7 +287,10 @@ const resolvers = {
 
           try {
             const soapResponse = await axios.post('http://181.143.104.85:5050/mercurio/RutaService', soapBody, {
-              headers: { 'Content-Type': 'text/xml' }
+              headers: { 
+                'Content-Type': 'text/xml',
+                'SOAPAction': '' // Algunos servicios SOAP requieren esto, aunque sea vacío
+              }
             });
             console.log('SOAP request successful:', soapResponse.data);
           } catch (soapError) {
