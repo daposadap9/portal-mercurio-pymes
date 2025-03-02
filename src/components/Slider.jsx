@@ -1,20 +1,31 @@
 import React, { useState, useEffect, useRef } from 'react';
-import Image from 'next/image';
+import { CldImage } from 'next-cloudinary';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
-const defaultMedia = ['/video1.mp4', '/video2.mp4', '/video3.mp4']; // Asegúrate de que estas rutas sean correctas
+// Se obtiene el Cloud Name desde la variable de entorno pública
+const CLOUD_NAME = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+
+// Definimos un arreglo de medios. En este ejemplo, son videos (también podrías tener imágenes)
+// Cada objeto tiene una propiedad "type" y "publicId". Usa únicamente el publicId (sin ruta completa).
+const defaultMedia = [
+  { type: 'video', publicId: 'imagen1' },
+  { type: 'video', publicId: 'imagen2' },
+  { type: 'video', publicId: 'imagen3' }
+  // Ejemplo de imagen:
+  // { type: 'image', publicId: 'photo1' }
+];
+
+/**
+ * Función para construir la URL optimizada de un video usando Cloudinary.
+ * Se aplican transformaciones: calidad automática, formato automático y recorte para llenar el contenedor.
+ */
+const buildVideoUrl = (publicId) => {
+  return `https://res.cloudinary.com/${CLOUD_NAME}/video/upload/q_auto,f_auto,c_fill/${publicId}.mp4`;
+};
 
 const Slider = ({ media = defaultMedia, autoPlay = false, autoPlayTime = 3000 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const videoRefs = useRef([]);
-
-  // Determina el tipo de medio según su extensión
-  const getMediaType = (src) => {
-    const ext = src.split('.').pop().toLowerCase();
-    if (ext === 'mp4') return 'video';
-    // Puedes agregar otras extensiones de imagen si es necesario
-    return 'image';
-  };
+  const videoRef = useRef(null);
 
   const nextSlide = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % media.length);
@@ -24,7 +35,7 @@ const Slider = ({ media = defaultMedia, autoPlay = false, autoPlayTime = 3000 })
     setCurrentIndex((prevIndex) => (prevIndex - 1 + media.length) % media.length);
   };
 
-  // Cambio automático de slide si autoPlay es true
+  // Auto transición de slides si autoPlay está activado
   useEffect(() => {
     let interval = null;
     if (autoPlay) {
@@ -37,54 +48,55 @@ const Slider = ({ media = defaultMedia, autoPlay = false, autoPlayTime = 3000 })
     };
   }, [autoPlay, autoPlayTime, media.length]);
 
-  // Reproduce el video activo y pausa los demás
+  // Reproduce automáticamente el video del slide activo
   useEffect(() => {
-    videoRefs.current.forEach((video, index) => {
-      if (video) {
-        if (index === currentIndex) {
-          video.currentTime = 0;
-          video.play().catch(error => console.error("Error al reproducir el video:", error));
-        } else {
-          video.pause();
-          video.currentTime = 0;
-        }
-      }
-    });
-  }, [currentIndex]);
+    const currentItem = media[currentIndex];
+    if (currentItem.type === 'video' && videoRef.current) {
+      videoRef.current.currentTime = 0;
+      videoRef.current.play().catch((error) =>
+        console.error("Error reproduciendo el video:", error)
+      );
+    }
+  }, [currentIndex, media]);
 
   return (
     <div className="relative w-full h-60 sm:h-80 md:h-[32rem] overflow-hidden rounded-md shadow-lg">
-      {media.map((src, index) => {
-        const commonClassNames = `absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${
+      {media.map((item, index) => {
+        // Aplica clases para transición de opacidad entre slides
+        const commonClassNames = `absolute inset-0 w-full h-full transition-opacity duration-1000 ease-in-out ${
           index === currentIndex ? 'opacity-100' : 'opacity-0'
         }`;
-        const mediaType = getMediaType(src);
 
-        if (mediaType === 'image') {
+        if (item.type === 'image') {
+          // Para imágenes, se usa CldImage para optimización
           return (
             <div key={index} className={commonClassNames}>
-              <Image 
-                src={src} 
-                alt={`Slide ${index}`} 
-                layout="fill" 
-                objectFit="cover"
+              <CldImage
+                cloudName={CLOUD_NAME}
+                publicId={item.publicId}
+                alt={`Slide ${index}`}
+                width={800}
+                height={600}
+                style={{ objectFit: 'cover', width: '100%', height: '100%' }}
+                transformation={[{ quality: 'auto', fetch_format: 'auto' }]}
               />
             </div>
           );
-        } else if (mediaType === 'video') {
+        } else if (item.type === 'video') {
+          // Para videos, se usa un elemento <video> nativo con la URL optimizada
           return (
-            <video
-              key={index}
-              ref={el => videoRefs.current[index] = el}
-              muted
-              loop
-              playsInline
-              preload="metadata"
-              className={commonClassNames}
-            >
-              <source src={src} type="video/mp4" />
-              Tu navegador no soporta el elemento de video.
-            </video>
+            <div key={index} className={commonClassNames}>
+              <video
+                ref={index === currentIndex ? videoRef : null}
+                src={buildVideoUrl(item.publicId)}
+                autoPlay
+                muted
+                loop
+                playsInline
+                controls={false}
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              />
+            </div>
           );
         }
         return null;
