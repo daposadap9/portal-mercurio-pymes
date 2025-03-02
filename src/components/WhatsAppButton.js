@@ -56,7 +56,7 @@ const SocialWhatsAppPanel = ({
           `}
           style={{ textShadow: '1px 1px 3px rgba(0,0,0,0.2)' }}
         >
-          <img src="/servisoft.webp" alt="Servisoft" className="w-6 h-6 object-contain" />
+          <img src="/servisoft.png" alt="Servisoft" className="w-6 h-6 object-contain" />
         </a>
       </div>
     </div>
