@@ -174,7 +174,7 @@ const resolvers = {
           requestTx.input('bolAnexo', sql.VarChar, 'N');
           requestTx.input('valAnexo', sql.Int, 0);
           requestTx.input('bolRespuesta', sql.Int, 0);
-          requestTx.input('obsDocumento', sql.VarChar, documentInfoGeneral);
+          requestTx.input('obsDocumento', sql.VarChar, documentInfo);
           requestTx.input('revisado', sql.VarChar, '');
           requestTx.input('bolRuta', sql.VarChar, 'S');
           requestTx.input('idAsunto', sql.VarChar, "AP001");
@@ -188,7 +188,7 @@ const resolvers = {
           requestTx.input('idUsuarioFirma', sql.VarChar, null);
           requestTx.input('claveFirma', sql.VarChar, '');
           requestTx.input('fecFirma', sql.DateTime, null);
-          requestTx.input('desDocumento', sql.VarChar, documentInfo);
+          requestTx.input('desDocumento', sql.VarChar, documentInfoGeneral);
           requestTx.input('idUsuarioRad', sql.VarChar, 'DPOSADA');
           requestTx.input('radicOrigen', sql.VarChar, '');
           requestTx.input('idTipoEntidad', sql.VarChar, 'TE07');
