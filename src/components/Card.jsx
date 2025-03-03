@@ -1,6 +1,7 @@
 // components/Card.jsx
-import React from 'react';
+import React, { useContext } from 'react';
 import { FaDollarSign } from 'react-icons/fa';
+import { ThemeContext } from '../context/ThemeContext'; // Ajusta la ruta según tu estructura
 
 const Card = ({ 
   title, 
@@ -18,14 +19,24 @@ const Card = ({
   onViewMore = () => {},
   viewMoreText = "Ver más"
 }) => {
+  const { theme } = useContext(ThemeContext);
+
+  // Selecciona la clase de fondo según el tema actual:
+  const bgClass =
+    theme === 'dark'
+      ? 'bg-custom-gradient'
+      : theme === 'purple'
+      ? 'bg-custom-gradient2'
+      : 'bg-custom-gradient3';
+
   const displayLines = lines.slice(0, maxLines);
 
   return (
     <div 
       className={`
         md:self-stretch relative rounded-xl shadow-2xl p-6
-        min-w-[300px] max-w-[300px] flex flex-col items-center transition-transform duration-200 hover:scale-105 border-2 ${borderColorClass}
-        bg-white border border-white/30
+        min-w-[300px] max-w-[300px] flex flex-col items-center transition-transform duration-200 hover:scale-105 border-2 
+        ${borderColorClass} ${bgClass} border border-white/30
       `}
     >
       {/* Badge opcional */}

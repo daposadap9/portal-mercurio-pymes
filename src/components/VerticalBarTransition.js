@@ -1,12 +1,20 @@
 import React, { useRef, useEffect } from 'react';
+import { useRouter } from 'next/router';
 
 const VerticalBarTransition = ({ onComplete }) => {
   const bar1Ref = useRef(null);
   const bar2Ref = useRef(null);
   const bar3Ref = useRef(null);
   const completedAnimations = useRef(0);
+  const router = useRouter();
 
   useEffect(() => {
+    // Si estamos en la página radicadoExitoso, no ejecutar la transición
+    if (router.pathname === '/radicadoExitoso') {
+      onComplete?.();
+      return;
+    }
+
     const bars = [bar1Ref.current, bar2Ref.current, bar3Ref.current];
     
     const handleAnimationEnd = (e) => {
@@ -27,7 +35,12 @@ const VerticalBarTransition = ({ onComplete }) => {
         bar?.removeEventListener('animationend', handleAnimationEnd);
       });
     };
-  }, [onComplete]);
+  }, [onComplete, router.pathname]);
+
+  // Si estamos en la página radicadoExitoso, no renderizar las barras
+  if (router.pathname === '/radicadoExitoso') {
+    return null;
+  }
 
   return (
     <div className="fixed inset-0 z-20">

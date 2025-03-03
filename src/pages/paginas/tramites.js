@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import Link from 'next/link';
 import { 
   FaFileInvoiceDollar, 
@@ -7,12 +7,22 @@ import {
   FaInfoCircle 
 } from 'react-icons/fa';
 import { useDropdown } from '@/context/DropdownContext';
+import { ThemeContext } from '@/context/ThemeContext';
 
 const Tramites = () => {
   const { dropdownActive } = useDropdown();
-    
-    // Eliminar el estado local y usar directamente el contexto
-    const isAnyDropdownActive = dropdownActive.services || dropdownActive.tramites;
+  const { theme } = useContext(ThemeContext);
+
+  // Define el fondo según el tema
+  const cardBgClass =
+    theme === 'dark'
+      ? 'bg-custom-gradient'
+      : theme === 'purple'
+      ? 'bg-custom-gradient2'
+      : 'bg-custom-gradient3';
+
+  const isAnyDropdownActive = dropdownActive.services || dropdownActive.tramites;
+
   const cards = [
     { 
       title: "PAGA TU FACTURA", 
@@ -47,30 +57,41 @@ const Tramites = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {cards.map((card, index) => (
             <div 
-              key={index} 
-              className="cursor-pointer bg-white rounded-lg shadow-lg p-6 flex flex-col items-center group transition-transform transform hover:scale-105 hover:bg-teal-600 transition-colors duration-300"
+              key={index}
+              className={`
+                cursor-pointer rounded-lg shadow-lg p-6 flex flex-col items-center group 
+                transition-transform transform hover:scale-105 transition-colors duration-300
+                relative overflow-hidden
+              `}
             >
-              {/* Contenedor para el ícono con efecto de sombra en hover */}
-              <div className="transition-all duration-300 group-hover:drop-shadow-[0_0_3px_rgba(0,0,0,0.9)]">
-                {card.icon}
-              </div>
-              <h3 className="mt-4 text-center text-lg font-bold group-hover:text-white">
-                {card.title}
-              </h3>
-              {card.action ? (
-                <button 
-                  onClick={card.action}
-                  className="mt-6 bg-teal-500 text-white px-4 py-2 rounded-md transition-colors duration-300 group-hover:bg-transparent group-hover:text-white group-hover:border group-hover:border-white"
-                >
-                  {card.buttonText}
-                </button>
-              ) : (
-                <Link href={card.href} legacyBehavior>
-                  <a className="mt-6 bg-teal-500 text-white px-4 py-2 rounded-md transition-colors duration-300 group-hover:bg-transparent group-hover:text-white group-hover:border group-hover:border-white">
+              {/* Capa de fondo dinámico (según cardBgClass) */}
+              <div className={`absolute inset-0 ${cardBgClass} transition-opacity duration-300 group-hover:opacity-0`}></div>
+              {/* Capa de fondo sólido teal que aparece en hover */}
+              <div className="absolute inset-0 bg-teal-600 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+              
+              {/* Contenido centrado en primer plano */}
+              <div className="relative z-10 w-full flex flex-col items-center text-center">
+                <div className="transition-all duration-300 group-hover:drop-shadow-[0_0_3px_rgba(0,0,0,0.9)]">
+                  {card.icon}
+                </div>
+                <h3 className="mt-4 text-lg font-bold group-hover:text-white">
+                  {card.title}
+                </h3>
+                {card.action ? (
+                  <button 
+                    onClick={card.action}
+                    className="mt-6 bg-teal-500 text-white px-4 py-2 rounded-md transition-colors duration-300 group-hover:bg-transparent group-hover:text-white group-hover:border group-hover:border-white"
+                  >
                     {card.buttonText}
-                  </a>
-                </Link>
-              )}
+                  </button>
+                ) : (
+                  <Link href={card.href} legacyBehavior>
+                    <a className="mt-6 bg-teal-500 text-white px-4 py-2 rounded-md transition-colors duration-300 group-hover:bg-transparent group-hover:text-white group-hover:border group-hover:border-white">
+                      {card.buttonText}
+                    </a>
+                  </Link>
+                )}
+              </div>
             </div>
           ))}
         </div>

@@ -1,6 +1,7 @@
 // pages/pqrsdf.js
-import React from 'react';
+import React, { useContext } from 'react';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 import { 
   FaPenFancy, 
   FaAngry, 
@@ -9,11 +10,21 @@ import {
   FaGavel, 
   FaSmileBeam 
 } from 'react-icons/fa';
+import { ThemeContext } from '@/context/ThemeContext'; // Ajusta la ruta según tu estructura
 
 const PQRSDFPage = () => {
   const router = useRouter();
+  const { theme } = useContext(ThemeContext);
 
-  // Cada tarjeta tiene un título (para mostrar en pantalla) y un "tipo" que se enviará
+  // Define el fondo dinámico según el tema
+  const cardBgClass =
+    theme === 'dark'
+      ? 'bg-custom-gradient'
+      : theme === 'purple'
+      ? 'bg-custom-gradient2'
+      : 'bg-custom-gradient3';
+
+  // Cada tarjeta tiene un título, tipo, marker y un icono
   const cards = [
     { 
       title: "Ingresa una Petición",
@@ -63,7 +74,7 @@ const PQRSDFPage = () => {
 
   return (
     <div className="min-h-full p-4 flex flex-col items-center">
-      {/* Alineamos el texto a la derecha y lo hacemos más notorio */}
+      {/* Mensaje superior */}
       <div className="mb-9">
         <p className="text-lg text-teal-600 font-extrabold p-6 rounded-md">
           Aquí podrás registrar tus peticiones, quejas, reclamos o recursos, 
@@ -78,24 +89,37 @@ const PQRSDFPage = () => {
           <div
             key={index}
             onClick={() => handleCardClick(card.tipo)}
-            className="cursor-pointer bg-white border rounded-xl shadow-lg p-6 flex flex-col items-center group transition-transform transform hover:scale-105 hover:bg-teal-600 transition-colors duration-300"
+            className={`
+              cursor-pointer 
+              relative overflow-hidden 
+              border rounded-xl shadow-lg p-6 flex flex-col items-center group 
+              transition-transform transform hover:scale-105 
+              transition-colors duration-300
+            `}
           >
-            {/* Icono con sombra intensificada en hover */}
-            <div className="transition-all duration-300 group-hover:drop-shadow-[0_0_3px_rgba(0,0,0,0.9)]">
-              {card.icon}
+            {/* Capa de fondo dinámico (según el tema) */}
+            <div className={`absolute inset-0 ${cardBgClass} transition-opacity duration-300 group-hover:opacity-0`}></div>
+            {/* Capa de fondo sólido teal que aparece en hover */}
+            <div className="absolute inset-0 bg-teal-600 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+            
+            {/* Contenido en primer plano, centrado */}
+            <div className="relative z-10 w-full flex flex-col items-center text-center">
+              <div className="transition-all duration-300 group-hover:drop-shadow-[0_0_3px_rgba(0,0,0,0.9)]">
+                {card.icon}
+              </div>
+              <h2 className="mt-4 text-xl font-bold group-hover:text-white">
+                {card.title}
+              </h2>
+              <span className="mt-2 inline-block bg-gray-200 px-3 py-1 rounded-full text-sm font-semibold border-2 border-transparent group-hover:bg-transparent group-hover:text-white group-hover:border-white transition-colors duration-300">
+                {card.marker}
+              </span>
             </div>
-            <h2 className="mt-4 text-xl font-bold text-center group-hover:text-white">
-              {card.title}
-            </h2>
-            <span className="mt-2 inline-block bg-gray-200 px-3 py-1 rounded-full text-sm font-semibold border-2 border-transparent group-hover:bg-transparent group-hover:text-white group-hover:border-white transition-colors duration-300">
-              {card.marker}
-            </span>
           </div>
         ))}
       </div>
       <div className="mb-9 mt-12">
         <p className="text-lg text-teal-600 font-extrabold p-6 rounded-md">
-          Si estás conectado(a) desde una red corporativa conexión VPN, deshabilita el proxy para que este formulario funcione de manera correcta.
+          Si estás conectado(a) desde una red corporativa o mediante conexión VPN, deshabilita el proxy para que este formulario funcione correctamente.
         </p>
       </div>
     </div>

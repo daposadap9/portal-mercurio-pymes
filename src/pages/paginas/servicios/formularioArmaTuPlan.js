@@ -281,7 +281,7 @@ const FormularioArmaTuPlan = () => {
               <input
                 type="checkbox"
                 id="modalAceptaPolitica"
-                className="h-4 w-4 text-teal-600 text-gray-900"
+                className="h-4 w-4"
                 checked={formData.aceptaPolitica}
                 onChange={(e) =>
                   setFormData({ ...formData, aceptaPolitica: e.target.checked })

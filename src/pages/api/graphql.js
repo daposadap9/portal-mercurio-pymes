@@ -55,7 +55,7 @@ async function getNextRadicado() {
 const typeDefs = gql`
   type Mutation {
     setSiguienteRadicadoNew: String!
-    insertMertRecibido(documentInfo: String!): InsertMertRecibidoPayload!
+    insertMertRecibido(documentInfo: String!, documentInfoGeneral: String!): InsertMertRecibidoPayload!
   }
   type InsertMertRecibidoPayload {
     success: Boolean!
@@ -74,7 +74,7 @@ const resolvers = {
       return await getNextRadicado();
     },
     // Mutation para insertar en MERT_RECIBIDO y posteriormente enviar la petición SOAP
-    async insertMertRecibido(_, { documentInfo }) {
+    async insertMertRecibido(_, { documentInfo, documentInfoGeneral }) {
       // Primero, obtenemos el radicado a utilizar
       const idDocumento = await getNextRadicado();
 
@@ -174,7 +174,7 @@ const resolvers = {
           requestTx.input('bolAnexo', sql.VarChar, 'N');
           requestTx.input('valAnexo', sql.Int, 0);
           requestTx.input('bolRespuesta', sql.Int, 0);
-          requestTx.input('obsDocumento', sql.VarChar, documentInfo);
+          requestTx.input('obsDocumento', sql.VarChar, documentInfoGeneral);
           requestTx.input('revisado', sql.VarChar, '');
           requestTx.input('bolRuta', sql.VarChar, 'S');
           requestTx.input('idAsunto', sql.VarChar, "AP001");

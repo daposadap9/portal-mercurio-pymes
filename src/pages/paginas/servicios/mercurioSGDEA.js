@@ -5,8 +5,8 @@ import { useRouter } from 'next/router';
 
 // Mutation que realiza todo el proceso de radicación
 const INSERT_MERT_RECIBIDO = gql`
-  mutation InsertMertRecibido($documentInfo: String!) {
-    insertMertRecibido(documentInfo: $documentInfo) {
+  mutation InsertMertRecibido($documentInfo: String!, $documentInfoGeneral: String!) {
+    insertMertRecibido(documentInfo: $documentInfo, documentInfoGeneral: $documentInfoGeneral) {
       success
       message
       idDocumento
@@ -23,7 +23,8 @@ const MercurioSGDEA = () => {
     email: "",
     telefono: "",
     fecha: "",
-    observaciones: ""
+    observaciones: "",
+    opcionSeleccionada: ""
   });
   
   const [newRadicado, setNewRadicado] = useState(null);
@@ -37,14 +38,27 @@ const MercurioSGDEA = () => {
     }));
   };
 
+  const handleOptionSelect = (opcion) => {
+    setFormData(prev => ({
+      ...prev,
+      opcionSeleccionada: opcion
+    }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    // Validaciones
+    if (!formData.nombre || !formData.apellido || !formData.entidad || !formData.email || !formData.telefono || !formData.fecha) {
+      alert("Por favor, complete todos los campos obligatorios.");
+      return;
+    }
     try {
       // Construimos un string con toda la información del formulario
       const documentInfo = `${formData.nombre} - ${formData.apellido} - ${formData.entidad} - ${formData.email} - ${formData.telefono} - ${formData.fecha} - ${formData.observaciones}`;
+      const documentInfoGeneral = "Mercurio SGDEA";
       
       // Llamamos a la mutation para radicar: esta mutation internamente obtiene el siguiente radicado y realiza todas las inserciones
-      const { data } = await insertMertRecibido({ variables: { documentInfo } });
+      const { data } = await insertMertRecibido({ variables: { documentInfo, documentInfoGeneral } });
       const result = data.insertMertRecibido;
       
       if (result.success) {
@@ -57,6 +71,7 @@ const MercurioSGDEA = () => {
             fecha: formData.fecha,
             observaciones: formData.observaciones,
             documentInfo: documentInfo,
+            documentInfoGeneral: documentInfoGeneral,
             radicado: result.idDocumento
           }
         });

@@ -27,6 +27,7 @@ import { ThemeContext } from '@/context/ThemeContext';
 const Header = ({ handleNavigation, loading }) => {
   const router = useRouter();
   const { setDropdownActive } = useDropdown();
+  
 
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isMobileServicesModalOpen, setMobileServicesModalOpen] = useState(false);
@@ -64,13 +65,19 @@ const Header = ({ handleNavigation, loading }) => {
   // Función para alternar temas: light -> purple -> dark -> light...
   const toggleTheme = () => {
     if (theme === 'light') {
-      setTheme('purple');
-    } else if (theme === 'purple') {
-      setTheme('dark');
-    } else {
       setTheme('light');
+    } else if (theme === 'purple') {
+      setTheme('purple');
+    } else {
+      setTheme('dark');
     }
   };
+    const cardBgClass =
+      theme === 'dark'
+        ? 'bg-custom-gradient'
+        : theme === 'purple'
+        ? 'bg-custom-gradient2'
+        : 'bg-custom-gradient3';
 
   // Opciones para el dropdown de SERVICIOS en Desktop
   const desktopServicesDropdownItems = [
@@ -141,7 +148,7 @@ const Header = ({ handleNavigation, loading }) => {
 
   return (
     // Header con fondo blanco, sombra sutil y altura reducida (h-14)
-    <header className="sticky top-0 w-full bg-white shadow-sm border-b border-teal-100 z-50 h-14">
+    <header className={`sticky top-0 w-full border-b border-teal-100 z-50 h-14 shadow-lg ${cardBgClass}`}>
       <nav className="max-w-7xl mx-auto px-4 h-full flex justify-between items-center relative">
         {/* Contenedor del logo con ancho fijo y overflow-hidden */}
         <div className="flex items-center" style={{ minWidth: '180px', height: '100%' }}>

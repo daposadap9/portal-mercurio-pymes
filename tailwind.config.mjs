@@ -1,3 +1,5 @@
+// Hola! Espero que tengas un buen día.
+// Hola, ¿cómo estás?
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
@@ -39,6 +41,9 @@ export default {
         "yellow-600": "var(--yellow-600)",
         "red-500": "var(--red-500)",
         "red-600": "var(--red-600)",
+        'custom-dark-1': '#0b0d0f',
+        'custom-dark-2': '#1a1d21',
+        'custom-dark-3': '#292e36',
       },
       boxShadow: {
         'inset-sm': 'inset 0px 0px 2px 1px rgba(0, 0, 0, 0.13)',
@@ -58,6 +63,11 @@ export default {
           '100%': { opacity: 1, transform: 'translateY(0)' },
         },
       },
+      backgroundImage:{
+        'custom-gradient': 'linear-gradient(130deg, #0b0d0f 20%, #292e36 100%)',
+        'custom-gradient2': 'linear-gradient(130deg, #013A63, #14274E);',
+        'custom-gradient3': 'linear-gradient(240deg, #F6F0F0, #FBFBFB,  #F6F0F0)',
+      }
     },
   },
   plugins: [],
