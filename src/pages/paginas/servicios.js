@@ -1,10 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Card from '@/components/Card';
-import { 
-  FaBoxes, FaBoxOpen, FaChartLine, FaDatabase, FaFileAlt, 
-  FaGavel, FaHandshake, FaHdd, FaLock, FaMoneyBillWave, 
-  FaRobot, FaSearch, FaShieldAlt, FaTrashAlt, FaTruck, FaInstagram 
-} from 'react-icons/fa';
+import { FaCheckCircle } from 'react-icons/fa'; // Icono de viñeta general
 import { useRouter } from 'next/router';
 import { useDropdown } from '@/context/DropdownContext';
 
@@ -19,13 +15,13 @@ export default function Servicios({disabledProvider }) {
   const cardData = {
     title: 'MERCURIO SGDEA',
     lines: [
-      { text: 'Radicación y gestión de correspondencia electrónica (R-I-E-N)', icon: <FaSearch /> },
-      { text: 'Rutas Documentales (WorkFlow - BPM)', icon: <FaLock /> },
-      { text: 'Tablas de retención documental', icon: <FaRobot /> },
-      { text: 'Expedientes Electrónicos', icon: <FaSearch /> },
-      { text: 'Robot de notificación y radicación de correos', icon: <FaLock /> },
-      { text: 'Firmas digitales y digitalizadas', icon: <FaRobot /> },
-      { text: 'Puntos de integración (+25 Web services Publicados)', icon: <FaSearch /> },
+      { text: 'Radicación y gestión de correspondencia electrónica (R-I-E-N)', icon: <FaCheckCircle /> },
+      { text: 'Rutas Documentales (WorkFlow - BPM)', icon: <FaCheckCircle /> },
+      { text: 'Tablas de retención documental', icon: <FaCheckCircle /> },
+      { text: 'Expedientes Electrónicos', icon: <FaCheckCircle /> },
+      { text: 'Robot de notificación y radicación de correos', icon: <FaCheckCircle /> },
+      { text: 'Firmas digitales y digitalizadas', icon: <FaCheckCircle /> },
+      { text: 'Puntos de integración (+25 Web services Publicados)', icon: <FaCheckCircle /> },
     ],
     maxLines: 7,
   };
@@ -33,10 +29,10 @@ export default function Servicios({disabledProvider }) {
   const cardData2 = {
     title: 'MERCURIO PYMES',
     lines: [
-      { text: 'Radicación y recepción de documentos.', icon: <FaFileAlt /> },
-      { text: 'Flujo estándar de aprobación de facturas.', icon: <FaMoneyBillWave /> },
-      { text: 'Flujo estándar de PQRS', icon: <FaTrashAlt /> },
-      { text: 'Control de documentos.', icon: <FaMoneyBillWave /> },
+      { text: 'Radicación y recepción de documentos.', icon: <FaCheckCircle /> },
+      { text: 'Flujo estándar de aprobación de facturas.', icon: <FaCheckCircle /> },
+      { text: 'Flujo estándar de PQRS', icon: <FaCheckCircle /> },
+      { text: 'Control de documentos.', icon: <FaCheckCircle /> },
     ],
     maxLines: 7,
   };
@@ -44,9 +40,9 @@ export default function Servicios({disabledProvider }) {
   const cardData3 = {
     title: 'CUSTODIA',
     lines: [
-      { text: 'Custodiamos desde 1 caja de documentos', icon: <FaBoxOpen /> },
-      { text: 'Nuestra custodia te proporciona tranquilidad al saber que tus documentos están en condiciones óptimas y con un manejo totalmente confidencial', icon: <FaShieldAlt /> },
-      { text: 'Aprovecha la reducción de costos operativos y de personal, al delegar la gestión de tus archivos físicos en expertos', icon: <FaHandshake /> },
+      { text: 'Custodiamos desde 1 caja de documentos', icon: <FaCheckCircle /> },
+      { text: 'Nuestra custodia te proporciona tranquilidad al saber que tus documentos están en condiciones óptimas y con un manejo totalmente confidencial', icon: <FaCheckCircle /> },
+      { text: 'Aprovecha la reducción de costos operativos y de personal, al delegar la gestión de tus archivos físicos en expertos', icon: <FaCheckCircle /> },
     ],
     maxLines: 7,
   };
@@ -54,9 +50,9 @@ export default function Servicios({disabledProvider }) {
   const cardData4 = {
     title: 'DIGITALIZACIÓN',
     lines: [
-      { text: 'La digitalización documental no es un gasto, es una inversión en seguridad, accesibilidad y productividad', icon: <FaChartLine /> },
-      { text: 'Cumple con las normativas legales y protege tu información con copias digitales seguras y respaldadas', icon: <FaGavel /> },
-      { text: 'Convierte tu archivo físico en digital y reduce costos operativos mientras mejoras la eficiencia de tu empresa', icon: <FaFileAlt /> },
+      { text: 'La digitalización documental no es un gasto, es una inversión en seguridad, accesibilidad y productividad', icon: <FaCheckCircle /> },
+      { text: 'Cumple con las normativas legales y protege tu información con copias digitales seguras y respaldadas', icon: <FaCheckCircle /> },
+      { text: 'Convierte tu archivo físico en digital y reduce costos operativos mientras mejoras la eficiencia de tu empresa', icon: <FaCheckCircle /> },
     ],
     maxLines: 7,
   };
@@ -64,11 +60,11 @@ export default function Servicios({disabledProvider }) {
   const cardData5 = {
     title: 'SERVICIOS ADICIONALES',
     lines: [
-      { text: 'Transporte de máx 50 cajas x300', icon: <FaTruck /> },
-      { text: 'Cajas x300', icon: <FaBoxes /> },
-      { text: 'Consultas digitales hasta 5 folios', icon: <FaFileAlt /> },
-      { text: '1TB de almacenamiento', icon: <FaHdd /> },
-      { text: '100 GB de almacenamiento', icon: <FaDatabase /> },
+      { text: 'Transporte de máx 50 cajas x300', icon: <FaCheckCircle /> },
+      { text: 'Cajas x300', icon: <FaCheckCircle /> },
+      { text: 'Consultas digitales hasta 5 folios', icon: <FaCheckCircle /> },
+      { text: '1TB de almacenamiento', icon: <FaCheckCircle /> },
+      { text: '100 GB de almacenamiento', icon: <FaCheckCircle /> },
     ],
     maxLines: 7,
   };
@@ -208,11 +204,11 @@ export default function Servicios({disabledProvider }) {
         <Card 
           title="SERVICIOS ADICIONALES"
           lines={[
-            { text: 'Transporte de máx 50 cajas x300', icon: <FaTruck /> },
-            { text: 'Cajas x300', icon: <FaBoxes /> },
-            { text: 'Consultas digitales hasta 5 folios', icon: <FaFileAlt /> },
-            { text: '1TB de almacenamiento', icon: <FaHdd /> },
-            { text: '100 GB de almacenamiento', icon: <FaDatabase /> }
+            { text: 'Transporte de máx 50 cajas x300', icon: <FaCheckCircle /> },
+            { text: 'Cajas x300', icon: <FaCheckCircle /> },
+            { text: 'Consultas digitales hasta 5 folios', icon: <FaCheckCircle /> },
+            { text: '1TB de almacenamiento', icon: <FaCheckCircle /> },
+            { text: '100 GB de almacenamiento', icon: <FaCheckCircle /> }
           ]}
           maxLines={7}
           borderColorClass="hover:border-green-500"
