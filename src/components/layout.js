@@ -53,6 +53,7 @@ const Layout = ({ children, handleNavigation, loading }) => {
             font-family: 'Exo', sans-serif;
             background-color: white; /* Color de fondo para evitar el negro */
             scroll-behavior: smooth;
+            height: 100%;
           }
           }
         `}</style>
