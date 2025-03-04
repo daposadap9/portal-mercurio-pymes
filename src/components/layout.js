@@ -18,7 +18,7 @@ const Layout = ({ children, handleNavigation, loading }) => {
       <div className="relative min-h-screen text-black font-exo">
         {/* Fondo degradado fijo */}
         <div 
-          className="absolute inset-0 bg-gradient-to-tl from-teal-500 via-white to-white opacity-95 bg-fixed"
+          className="absolute inset-0 bg-gradient-to-tl from-teal-500 via-white to-white opacity-95 bg-fixed min-h-screen"
         ></div>
         
         {/* Capa de cuadros animados fijos: 50 elementos en desktop, 15 en mobile */}
@@ -54,7 +54,7 @@ const Layout = ({ children, handleNavigation, loading }) => {
             font-family: 'Exo', sans-serif;
             background-color: white; /* Color de fondo para evitar el negro */
             scroll-behavior: smooth;
-            min-height: 100vh; /* Asegura que el fondo cubra todo el viewport */
+            min-height: 200vh; /* Asegura que el fondo cubra todo el viewport */
           }
           }
         `}</style>
