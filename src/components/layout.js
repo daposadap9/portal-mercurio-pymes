@@ -17,9 +17,8 @@ const Layout = ({ children, handleNavigation, loading }) => {
     <DropdownProvider>
       <div className="relative min-h-screen text-black font-exo">
         {/* Fondo degradado fijo */}
-        <div
-        className="absolute inset-0 min-h-screen bg-gradient-to-tl from-teal-500 via-white to-white opacity-95 bg-scroll md:bg-fixed"
-        ></div>
+        <div className="fixed inset-0 w-screen h-screen bg-gradient-to-tl from-teal-500 via-white to-white opacity-95 bg-fixed"></div>
+
         
         {/* Capa de cuadros animados fijos: 50 elementos en desktop, 15 en mobile */}
         <ul className="circles fixed inset-0 pointer-events-none">
