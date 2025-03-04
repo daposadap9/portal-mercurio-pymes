@@ -47,7 +47,6 @@ const Layout = ({ children, handleNavigation, loading }) => {
         
         {/* Estilos globales */}
         <style jsx global>{`
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
           * { margin: 0; padding: 0; }
           html, body { 
             font-family: 'Candara';
@@ -56,7 +55,7 @@ const Layout = ({ children, handleNavigation, loading }) => {
           }
             @media (max-width: 768px) {
             html, body {
-              font-family: 'Roboto', sans-serif; /* Fuente alternativa para dispositivos móviles */
+              font-family: 'Candara', sans-serif; /* Fuente alternativa para dispositivos móviles */
             }
           }
         `}</style>
