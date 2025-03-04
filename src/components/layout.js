@@ -17,7 +17,7 @@ const Layout = ({ children, handleNavigation, loading }) => {
     <DropdownProvider>
       <div className="relative min-h-screen text-black font-exo">
         {/* Fondo degradado fijo */}
-        <div className="mt-14 fixed inset-0 w-screen h-screen bg-gradient-to-tl from-teal-500 via-white to-white opacity-95 bg-fixed"></div>
+        <div className="fixed inset-0 w-screen bg-gradient-to-tl from-teal-500 via-white to-white opacity-95 bg-fixed"></div>
 
         
         {/* Capa de cuadros animados fijos: 50 elementos en desktop, 15 en mobile */}
@@ -53,7 +53,6 @@ const Layout = ({ children, handleNavigation, loading }) => {
             font-family: 'Exo', sans-serif;
             background-color: white; /* Color de fondo para evitar el negro */
             scroll-behavior: smooth;
-            min-height: 200vh; /* Asegura que el fondo cubra todo el viewport */
           }
           }
         `}</style>
