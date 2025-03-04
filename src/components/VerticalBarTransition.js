@@ -45,9 +45,11 @@ const VerticalBarTransition = ({ onComplete }) => {
   }
 
   // Selecciona el logo según el tema actual
+  const publicId = 'logo-servisoft-30years-dark'
+  const CLOUD_NAME = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
   const logoSrc =
     theme === 'dark' || theme === 'purple'
-      ? '/logo-servisoft-30years-dark.png'
+      ? `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/f_auto,q_auto/${publicId}.png`
       : '/logo-servisoft-30years.png';
 
   // Ajusta el tamaño del logo oscuro
