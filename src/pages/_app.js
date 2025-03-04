@@ -8,6 +8,7 @@ import { ApolloProvider } from '@apollo/client';
 import client from '../lib/apolloClient';
 import WhatsAppButton from "../components/WhatsAppButton";
 import { ThemeProvider } from '@/context/ThemeContext'; // Importa el ThemeProvider
+import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 
 export default function App({ Component, pageProps }) {
   const router = useRouter();
@@ -50,6 +51,7 @@ export default function App({ Component, pageProps }) {
   return (
     <ApolloProvider client={client}>
       <ThemeProvider>
+      <AppRouterCacheProvider>
         <Layout handleNavigation={handleDelayedNavigation} loading={loading}>
           {loading && <VerticalBarTransition onComplete={() => setLoading(false)} />}
           <Component {...pageProps} />
@@ -59,6 +61,7 @@ export default function App({ Component, pageProps }) {
           phoneNumber="3008676122" 
           message="¡Hola! Quiero más información." 
         />
+      </AppRouterCacheProvider>
       </ThemeProvider>
     </ApolloProvider>
   );
