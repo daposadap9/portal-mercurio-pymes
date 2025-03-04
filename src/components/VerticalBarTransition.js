@@ -1,5 +1,6 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useContext } from 'react';
 import { useRouter } from 'next/router';
+import { ThemeContext } from '@/context/ThemeContext';
 
 const VerticalBarTransition = ({ onComplete }) => {
   const bar1Ref = useRef(null);
@@ -7,6 +8,7 @@ const VerticalBarTransition = ({ onComplete }) => {
   const bar3Ref = useRef(null);
   const completedAnimations = useRef(0);
   const router = useRouter();
+  const { theme } = useContext(ThemeContext);
 
   useEffect(() => {
     // Si estamos en la página radicadoExitoso, no ejecutar la transición
@@ -41,6 +43,17 @@ const VerticalBarTransition = ({ onComplete }) => {
   if (router.pathname === '/radicadoExitoso') {
     return null;
   }
+
+  // Selecciona el logo según el tema actual
+  const logoSrc =
+    theme === 'dark' || theme === 'purple'
+      ? '/logo-servisoft-30years-dark.png'
+      : '/logo-servisoft-30years.png';
+
+  // Ajusta el tamaño del logo oscuro
+  const logoStyle = theme === 'dark' || theme === 'purple'
+    ? { transform: 'scale(1.1)' }
+    : {};
 
   return (
     <div className="fixed inset-0 z-20">
@@ -89,9 +102,10 @@ const VerticalBarTransition = ({ onComplete }) => {
           }}
         >
           <img 
-            src="/logo-servisoft-30years.png" 
+            src={logoSrc} 
             alt="Logo Servisoft" 
             className="w-[40rem] h-[40rem] object-contain"
+            style={logoStyle}
           />
         </div>
         {/* Barra 3: Con sombra solo a la derecha */}

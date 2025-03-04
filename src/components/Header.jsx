@@ -79,6 +79,17 @@ const Header = ({ handleNavigation, loading }) => {
         ? 'bg-custom-gradient2'
         : 'bg-custom-gradient3';
 
+  // Selecciona el logo según el tema actual
+  const logoSrc =
+    theme === 'dark' || theme === 'purple'
+      ? '/logo-servisoft-30years-dark.png'
+      : '/logo-servisoft-30years.png';
+
+  // Ajusta el tamaño del logo oscuro
+  const logoStyle = theme === 'dark' || theme === 'purple'
+    ? { transform: 'scale(2.7)' }
+    : {};
+
   // Opciones para el dropdown de SERVICIOS en Desktop
   const desktopServicesDropdownItems = [
     { label: "MERCURIO SGDEA", href: "/paginas/servicios/mercurioSGDEA", icon: <FaSearch className="mr-2" /> },
@@ -148,17 +159,18 @@ const Header = ({ handleNavigation, loading }) => {
 
   return (
     // Header con fondo blanco, sombra sutil y altura reducida (h-14)
-    <header className={`sticky top-0 w-full border-b border-teal-100 z-50 h-14 shadow-lg ${cardBgClass}`}>
+    <header className={`sticky top-0 w-full border-b border-teal-100 z-50 h-14 shadow-lg ${cardBgClass} transition-colors duration-500`}>
       <nav className="max-w-7xl mx-auto px-4 h-full flex justify-between items-center relative">
         {/* Contenedor del logo con ancho fijo y overflow-hidden */}
         <div className="flex items-center" style={{ minWidth: '180px', height: '100%' }}>
           <div className="w-48 h-full overflow-hidden relative">
             <Image 
-              src="/logo-servisoft-30years.png" 
+              src={logoSrc} 
               alt="Logo Servisoft" 
               layout="fill"
               objectFit="contain"
               priority
+              style={logoStyle}
             />
           </div>
         </div>

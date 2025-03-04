@@ -15,7 +15,7 @@ const Layout = ({ children, handleNavigation, loading }) => {
 
   return (
     <DropdownProvider>
-      <div className="relative min-h-screen text-black font-exo">
+      <div className="relative min-h-screen text-black">
         {/* Fondo degradado fijo */}
         <div className="fixed inset-0 w-screen bg-gradient-to-tl from-teal-500 via-white to-white opacity-95 bg-fixed"></div>
 
@@ -47,13 +47,11 @@ const Layout = ({ children, handleNavigation, loading }) => {
         
         {/* Estilos globales */}
         <style jsx global>{`
-          @import url('https://fonts.googleapis.com/css?family=Exo:400,700');
           * { margin: 0; padding: 0; }
           html, body { 
-            font-family: 'Exo', sans-serif;
+            font-family: 'Candara';
             background-color: white; /* Color de fondo para evitar el negro */
             scroll-behavior: smooth;
-          }
           }
         `}</style>
       </div>
