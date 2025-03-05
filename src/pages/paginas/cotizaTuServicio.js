@@ -56,9 +56,9 @@ const CotizaTuServicio = () => {
   ];
 
   const serviceIcons = {
-    software: <FaLaptopCode className="text-blue-600 mr-2 text-2xl" />,
-    custodia: <FaBoxOpen className="text-green-600 mr-2 text-2xl" />,
-    digitalizacion: <FaRegImage className="text-purple-600 mr-2 text-2xl" />,
+    software: <FaLaptopCode className="text-blue-600 mr-2 text-2xl shadow-icon" />,
+    custodia: <FaBoxOpen className="text-green-600 mr-2 text-2xl shadow-icon" />,
+    digitalizacion: <FaRegImage className="text-purple-600 mr-2 text-2xl shadow-icon" />,
   };
 
   const handleServiceChange = (service, option, index) => {
@@ -112,34 +112,34 @@ const CotizaTuServicio = () => {
     return (
       <div
         className={`p-4 border rounded-lg cursor-pointer relative transition-colors duration-300 ${
-          isSelected ? 'bg-teal-500 border-teal-500 text-white shadow-lg' : 'bg-white hover:bg-teal-500 hover:text-white hover:shadow-lg'
+          isSelected ? 'bg-teal-500 border-teal-500 text-white shadow-md' : 'bg-white hover:bg-teal-500 hover:text-white hover:shadow-md'
         }`}
         onClick={() => toggleCell(service, option, index)}
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center">
             {serviceIcons[service]}
-            <span className="font-bold text-lg text-shadow">{option.label}</span>
+            <span className={`font-bold text-lg ${isSelected ? 'text-shadow' : 'hover:text-shadow'}`}>{option.label}</span>
           </div>
           {isExpanded ? (
-            <FaChevronUp className="text-teal-600 text-shadow text-2xl" />
+            <FaChevronUp className={`text-teal-600 text-2xl ${isSelected ? 'text-shadow' : 'hover:text-shadow'}`} />
           ) : (
-            <FaChevronDown className="text-teal-600 text-shadow text-2xl" />
+            <FaChevronDown className={`text-teal-600 text-2xl ${isSelected ? 'text-shadow' : 'hover:text-shadow'}`} />
           )}
         </div>
         {isExpanded && (
           <div className="mt-2 text-sm">
             <div className="flex items-center">
-              <FaMoneyBillWave className="text-green-500 mr-2 text-shadow text-2xl" />
-              <span className="font-bold text-xl text-shadow">Precio:</span>
-              <span className="ml-2 text-2xl font-extrabold text-shadow">
+              <FaMoneyBillWave className={`text-green-500 mr-2 text-2xl ${isSelected ? 'text-shadow' : 'hover:text-shadow'}`} />
+              <span className={`font-bold text-xl ${isSelected ? 'text-shadow' : 'hover:text-shadow'}`}>Precio:</span>
+              <span className={`ml-2 text-2xl font-extrabold ${isSelected ? 'text-shadow' : 'hover:text-shadow'}`}>
                 ${Number(option.value).toLocaleString('es-ES', { maximumFractionDigits: 0 })}
               </span>
             </div>
             <div className="flex items-center mt-1">
-              <FaRocket className="text-red-500 mr-2 text-shadow text-2xl" />
-              <span className="font-bold text-xl text-shadow">Startup:</span>
-              <span className="ml-2 text-2xl font-extrabold text-shadow">
+              <FaRocket className={`text-red-500 mr-2 text-2xl ${isSelected ? 'text-shadow' : 'hover:text-shadow'}`} />
+              <span className={`font-bold text-xl ${isSelected ? 'text-shadow' : 'hover:text-shadow'}`}>Startup:</span>
+              <span className={`ml-2 text-2xl font-extrabold ${isSelected ? 'text-shadow' : 'hover:text-shadow'}`}>
                 ${Number(option.startup).toLocaleString('es-ES', { maximumFractionDigits: 0 })}
               </span>
             </div>
@@ -170,10 +170,10 @@ const CotizaTuServicio = () => {
         <table className="min-w-full bg-white border border-gray-200 shadow-2xl rounded-lg overflow-hidden">
           <thead className="bg-gradient-to-r from-teal-500 to-teal-600 text-white text-shadow">
             <tr>
-              <th className="py-4 px-6 text-xl">
+              <th className="py-4 px-6 text-xl text-shadow">
                 <div className="flex flex-col items-center">
-                  <span className="text-shadow">Software</span>
-                  <span className="text-sm text-shadow">Cantidad de usuarios</span>
+                  <span>Software</span>
+                  <span className="text-sm">Cantidad de usuarios</span>
                   <button 
                     onClick={() => toggleExplanation('software')}
                     className="mt-1 bg-teal-500 border border-white shadow-lg text-white text-xs px-2 py-1 rounded hover:bg-teal-600 transition-colors"
@@ -181,16 +181,16 @@ const CotizaTuServicio = () => {
                     ¿Qué significa?
                   </button>
                   {explanations.software && (
-                    <span className="text-xs text-gray-300 italic text-shadow">
+                    <span className="text-xs text-gray-300 italic">
                       Representa el número de usuarios licenciados anualmente.
                     </span>
                   )}
                 </div>
               </th>
-              <th className="py-4 px-6 text-xl">
+              <th className="py-4 px-6 text-xl text-shadow">
                 <div className="flex flex-col items-center">
-                  <span className="text-shadow">Custodia</span>
-                  <span className="text-sm text-shadow">Cantidad de cajas</span>
+                  <span>Custodia</span>
+                  <span className="text-sm">Cantidad de cajas</span>
                   <button 
                     onClick={() => toggleExplanation('custodia')}
                     className="mt-1 bg-teal-500 border border-white shadow-lg text-white text-xs px-2 py-1 rounded hover:bg-teal-600 transition-colors"
@@ -198,16 +198,16 @@ const CotizaTuServicio = () => {
                     ¿Qué significa?
                   </button>
                   {explanations.custodia && (
-                    <span className="text-xs text-gray-300 italic text-shadow">
+                    <span className="text-xs text-gray-300 italic">
                       Indica el número de cajas custodiadas anualmente.
                     </span>
                   )}
                 </div>
               </th>
-              <th className="py-4 px-6 text-xl">
+              <th className="py-4 px-6 text-xl text-shadow">
                 <div className="flex flex-col items-center">
-                  <span className="text-shadow">Digitalización</span>
-                  <span className="text-sm text-shadow">Cantidad de imágenes</span>
+                  <span>Digitalización</span>
+                  <span className="text-sm">Cantidad de imágenes</span>
                   <button 
                     onClick={() => toggleExplanation('digitalizacion')}
                     className="mt-1 bg-teal-500 border border-white shadow-lg text-white text-xs px-2 py-1 rounded hover:bg-teal-600 transition-colors"
@@ -215,7 +215,7 @@ const CotizaTuServicio = () => {
                     ¿Qué significa?
                   </button>
                   {explanations.digitalizacion && (
-                    <span className="text-xs text-gray-300 italic text-shadow">
+                    <span className="text-xs text-gray-300 italic">
                       Representa el total de imágenes digitalizadas (valor total).
                     </span>
                   )}
@@ -232,23 +232,23 @@ const CotizaTuServicio = () => {
               </tr>
             ))}
             <tr className="bg-custom-footer">
-              <td colSpan="3" className="py-6 text-center font-bold text-shadow">
+              <td colSpan="3" className="py-6 text-center font-bold">
                 {discount > 0 && (
-                  <div className="mb-2 text-green-600 text-xl text-shadow">
+                  <div className="mb-2 text-green-600 text-xl">
                     ¡Felicidades! Tienes un {(discount * 100).toFixed(0)}% de descuento.
                   </div>
                 )}
                 {discount > 0 ? (
-                  <div className="flex justify-center items-center space-x-4 text-shadow">
-                    <span className="text-3xl line-through text-red-500 text-shadow">
+                  <div className="flex justify-center items-center space-x-4">
+                    <span className="text-3xl line-through text-red-500">
                       ${Math.round(subtotal).toLocaleString('es-ES')}
                     </span>
-                    <span className="text-5xl text-teal-700 text-shadow">
+                    <span className="text-5xl text-teal-700">
                       ${Math.round(total).toLocaleString('es-ES')}
                     </span>
                   </div>
                 ) : (
-                  <div className="text-5xl text-teal-700 text-shadow">
+                  <div className="text-5xl text-teal-700">
                     ${Math.round(total).toLocaleString('es-ES')}
                   </div>
                 )}
