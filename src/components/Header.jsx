@@ -19,7 +19,8 @@ import {
   FaCommentAlt,
   FaListAlt,
   FaInfoCircle,
-  FaPalette
+  FaPalette,
+  FaDollarSign
 } from 'react-icons/fa';
 import { useDropdown } from '@/context/DropdownContext';
 import { ThemeContext } from '@/context/ThemeContext';
@@ -28,21 +29,18 @@ const Header = ({ handleNavigation, loading }) => {
   const router = useRouter();
   const { setDropdownActive } = useDropdown();
   
-
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isMobileServicesModalOpen, setMobileServicesModalOpen] = useState(false);
   const [isMobileTramitesModalOpen, setMobileTramitesModalOpen] = useState(false);
 
-  // Estados para controlar el dropdown en Desktop mediante hover
+  // Estados para controlar los dropdowns en Desktop mediante hover
   const [showServicesDropdown, setShowServicesDropdown] = useState(false);
   const [showTramitesDropdown, setShowTramitesDropdown] = useState(false);
 
-  // Función para actualizar el contexto directamente cuando cambien los estados
   const actualizarDropdown = (nuevoEstado) => {
     setDropdownActive(prev => ({ ...prev, ...nuevoEstado }));
   };
 
-  // Actualiza el contexto al cambiar los dropdowns
   useEffect(() => {
     actualizarDropdown({ services: showServicesDropdown });
   }, [showServicesDropdown]);
@@ -62,32 +60,31 @@ const Header = ({ handleNavigation, loading }) => {
 
   const { theme, setTheme } = useContext(ThemeContext);
 
-  // Función para alternar temas: light -> purple -> dark -> light...
+  // Alterna temas: light -> purple -> dark -> light...
   const toggleTheme = () => {
     if (theme === 'light') {
-      setTheme('light');
-    } else if (theme === 'purple') {
       setTheme('purple');
-    } else {
+    } else if (theme === 'purple') {
       setTheme('dark');
+    } else {
+      setTheme('light');
     }
   };
-    const cardBgClass =
-      theme === 'dark'
-        ? 'bg-custom-gradient'
-        : theme === 'purple'
-        ? 'bg-custom-gradient2'
-        : 'bg-custom-gradient3';
 
-  // Selecciona el logo según el tema actual
+  const cardBgClass =
+    theme === 'dark'
+      ? 'bg-custom-gradient'
+      : theme === 'purple'
+      ? 'bg-custom-gradient2'
+      : 'bg-custom-gradient3';
+
   const logoSrc =
     theme === 'dark' || theme === 'purple'
       ? '/logo-servisoft-30years-dark.png'
       : '/logo-servisoft-30years.png';
 
-  // Ajusta el tamaño del logo oscuro
   const logoStyle = theme === 'dark' || theme === 'purple'
-    ? { transform: 'scale(2.7)' }
+    ? { transform: 'scale(1.1)' }
     : {};
 
   // Opciones para el dropdown de SERVICIOS en Desktop
@@ -125,7 +122,6 @@ const Header = ({ handleNavigation, loading }) => {
     }))
   ];
 
-  // Filtrar los items en mobile según la ruta actual
   const filteredMobileServicesItems = mobileServicesDropdownItems.filter(
     (item) => !(item.label === "TODOS LOS PLANES" && router.pathname === "/paginas/servicios")
   );
@@ -134,10 +130,8 @@ const Header = ({ handleNavigation, loading }) => {
     (item) => !(item.label === "TODOS LOS TRÁMITES" && router.pathname === "/paginas/tramites")
   );
 
-  // Determina si el enlace corresponde a la ruta actual
   const isActive = (href) => router.pathname === href;
 
-  // Clases base para los enlaces
   const baseLinkClass =
     "flex items-center font-semibold p-1 transition-transform duration-300 ease-in-out text-teal-600";
   const baseLinkClass2 =
@@ -145,9 +139,9 @@ const Header = ({ handleNavigation, loading }) => {
   const activeLinkClass = "bg-teal-600 text-white rounded";
   const inactiveLinkClass = "hover:bg-teal-100 hover:text-teal-600 rounded";
 
+  // Manejador genérico para enlaces (SERVICIOS, CONTACTENOS, etc.)
   const handleLinkClick = (href, callback) => (e) => {
     e.preventDefault();
-    if (isActive(href)) return;
     if (loading) return;
     if (callback) callback();
     if (handleNavigation) {
@@ -157,11 +151,22 @@ const Header = ({ handleNavigation, loading }) => {
     }
   };
 
+  // Manejador para TRÁMITES con retraso para permitir la transición
+  const handleTramitesClick = (href, callback) => (e) => {
+    // No llamamos a preventDefault para permitir que se ejecute el evento
+    e.stopPropagation();
+    if (loading) return;
+    if (callback) callback();
+    setShowTramitesDropdown(false);
+    setTimeout(() => {
+      router.push(href);
+    }, 300); // 300ms de retraso para la transición
+  };
+
   return (
-    // Header con fondo blanco, sombra sutil y altura reducida (h-14)
     <header className={`sticky top-0 w-full border-b border-teal-100 z-50 h-14 shadow-lg ${cardBgClass} transition-colors duration-500`}>
       <nav className="max-w-7xl mx-auto px-4 h-full flex justify-between items-center relative">
-        {/* Contenedor del logo con ancho fijo y overflow-hidden */}
+        {/* Logo */}
         <div className="flex items-center" style={{ minWidth: '180px', height: '100%' }}>
           <div className="w-48 h-full overflow-hidden relative">
             <Image 
@@ -186,7 +191,7 @@ const Header = ({ handleNavigation, loading }) => {
             </a>
           </Link>
 
-          {/* Dropdown de SERVICIOS (Desktop) */}
+          {/* Dropdown de SERVICIOS */}
           <div 
             className="relative inline-block"
             onMouseEnter={() => setShowServicesDropdown(true)}
@@ -201,9 +206,7 @@ const Header = ({ handleNavigation, loading }) => {
               </a>
             </Link>
             {showServicesDropdown && (
-              <div
-                className="absolute left-0 top-full w-64 bg-white shadow rounded border border-teal-50 transition-opacity duration-300 ease-in-out opacity-100 z-50"
-              >
+              <div className="absolute left-0 top-full w-64 bg-white shadow rounded border border-teal-50 transition-opacity duration-300 ease-in-out opacity-100 z-50">
                 <ul>
                   {desktopServicesDropdownItems.map((item, index) => (
                     <li key={index}>
@@ -223,7 +226,17 @@ const Header = ({ handleNavigation, loading }) => {
             )}
           </div>
 
-          {/* Dropdown de TRÁMITES (Desktop) */}
+          {/* Nueva opción: ¡COTIZA TU SERVICIO! */}
+          <Link href="/paginas/cotizaTuServicio" legacyBehavior>
+            <a 
+              onClick={handleLinkClick('/paginas/cotizaTuServicio')}
+              className={`${baseLinkClass} ${isActive('/paginas/cotizaTuServicio') ? activeLinkClass : inactiveLinkClass} text-sm`}
+            >
+              <FaDollarSign className="mr-1 text-base" /> ¡COTIZA TU SERVICIO!
+            </a>
+          </Link>
+
+          {/* Dropdown de TRÁMITES */}
           <div 
             className="relative inline-block"
             onMouseEnter={() => setShowTramitesDropdown(true)}
@@ -231,16 +244,14 @@ const Header = ({ handleNavigation, loading }) => {
           >
             <Link href="/paginas/tramites" legacyBehavior>
               <a 
-                onClick={handleLinkClick('/paginas/tramites')}
+                onClick={handleTramitesClick('/paginas/tramites')}
                 className={`${baseLinkClass} ${isActive('/paginas/tramites') ? activeLinkClass : inactiveLinkClass} text-sm`}
               >
                 <FaFileAlt className="mr-1 text-base" /> TRÁMITES
               </a>
             </Link>
             {showTramitesDropdown && (
-              <div
-                className="absolute left-0 top-full w-64 bg-white shadow rounded border border-teal-50 transition-opacity duration-300 ease-in-out opacity-100 z-50"
-              >
+              <div className="absolute left-0 top-full w-64 bg-white shadow rounded border border-teal-50 transition-opacity duration-300 ease-in-out opacity-100 z-50">
                 <ul>
                   {desktopTramitesDropdownItems.map((item, index) => (
                     <li key={index}>
@@ -292,7 +303,7 @@ const Header = ({ handleNavigation, loading }) => {
           </Link>
         </div>
 
-        {/* Select para cambiar tema (Desktop) */}
+        {/* Selector de tema (Desktop) */}
         <div className="hidden lg:flex items-center">
           <FaPalette className="mr-1 text-base text-teal-600" />
           <select
@@ -338,6 +349,14 @@ const Header = ({ handleNavigation, loading }) => {
             >
               <FaConciergeBell className="mr-1 text-base" /> SERVICIOS
             </button>
+            <Link href="/paginas/cotizaTuServicio" legacyBehavior>
+              <a 
+                onClick={handleLinkClick('/paginas/cotizaTuServicio', () => setMobileMenuOpen(false))}
+                className={`${baseLinkClass2} ${isActive('/paginas/cotizaTuServicio') ? activeLinkClass : inactiveLinkClass} text-sm`}
+              >
+                <FaDollarSign className="mr-1 text-base" /> ¡COTIZA TU SERVICIO!
+              </a>
+            </Link>
             <button 
               onClick={() => {
                 setMobileTramitesModalOpen(true);
@@ -363,7 +382,6 @@ const Header = ({ handleNavigation, loading }) => {
                 <FaSignInAlt className="mr-1 text-base" /> INGRESAR
               </a>
             </Link>
-            {/* Select para cambiar tema (Mobile) */}
             <div className="mt-2 flex items-center">
               <FaPalette className="mr-1 text-base text-teal-600" />
               <select
@@ -385,7 +403,7 @@ const Header = ({ handleNavigation, loading }) => {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white rounded shadow w-11/12 max-w-md p-4 relative animate-fadeIn border border-teal-50">
             <button 
-              onClick={closeMobileServicesModal}
+              onClick={() => setMobileServicesModalOpen(false)}
               className="absolute top-2 right-2 text-teal-600 hover:text-teal-700 transition-colors duration-300"
             >
               <FaTimes size={20} />
