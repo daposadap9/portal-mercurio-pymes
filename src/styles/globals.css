@@ -46,7 +46,7 @@
   --yellow-600: #CA8A04;
   --red-500:   #EF4444;
   --red-600:   #DC2626;
-  
+  --border-white-30: rgba(0, 0, 0, 0.3);
   --foreground: var(--text-black);
   --background: var(--bg-white);
 }
@@ -72,6 +72,7 @@
   --text-teal-600: #A0E7E5;
   --text-teal-500: #8EE3E1;
   --text-teal-700: #75CBC8;
+  --border-white-30: rgba(255, 255, 255, 0.5);
 
   color: var(--foreground);
   box-shadow: 0 0 10px rgba(1,42,74,0.5), 0 0 20px rgba(1,58,99,0.3);
@@ -137,6 +138,7 @@ text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
 
 /* Transición suave para interacciones */
 transition: all 0.3s ease;
+--border-white-30: rgba(255, 255, 255, 0.5);
 
 }
 /* Override para efecto vidrio:

@@ -61,7 +61,7 @@ const Tramites = () => {
               className={`
                 cursor-pointer rounded-lg shadow-lg p-6 flex flex-col items-center group 
                 transition-transform transform hover:scale-105 transition-colors duration-300
-                relative overflow-hidden
+                relative overflow-hidden border-2 border-white/30
               `}
             >
               {/* Capa de fondo dinámico (según cardBgClass) */}

@@ -94,7 +94,7 @@ const PQRSDFPage = () => {
               relative overflow-hidden 
               border rounded-xl shadow-lg p-6 flex flex-col items-center group 
               transition-transform transform hover:scale-105 
-              transition-colors duration-300
+              transition-colors duration-300 border-2 border-white/30
             `}
           >
             {/* Capa de fondo dinámico (según el tema) */}
