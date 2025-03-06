@@ -84,7 +84,7 @@ const Header = ({ handleNavigation, loading }) => {
       : '/logo-servisoft-30years.png';
 
   const logoStyle = theme === 'dark' || theme === 'purple'
-    ? { transform: 'scale(1.1)' }
+    ? { transform: 'scale(2.7)' }
     : {};
 
   // Opciones para el dropdown de SERVICIOS en Desktop

@@ -240,7 +240,7 @@ const MercurioCustodia = () => {
                   </button>
                   <button 
                     type="button"
-                    className={`btn-wave w-full p-2 rounded-md text-white font-bold transition-all duration-300 bg-black hover:bg-gray-800 ${formData.opcionSeleccionada === "Desde 31 hasta 50 Cajas X-300 - $1.200.000" ? "selected" : ""}`}
+                    className={`btn-wave w-full p-2 rounded-md text-white font-bold transition-all duration-300 bg-black hover:bg-yellow-600 ${formData.opcionSeleccionada === "Desde 31 hasta 50 Cajas X-300 - $1.200.000" ? "selected" : ""}`}
                     onClick={() => handleOptionSelect("Desde 31 hasta 50 Cajas X-300 - $1.200.000")}
                   >
                     Desde 31 hasta 50 Cajas X-300 - $1.200.000
