@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { FaArrowLeft } from 'react-icons/fa';
 
-export default function SubNavigation({ aliases = {} }) {
+export default function SubNavigation({ aliases = {}, previousPage }) {
   const router = useRouter();
 
   // Eliminamos la query y separamos los segmentos de la ruta.
@@ -52,19 +52,34 @@ export default function SubNavigation({ aliases = {} }) {
           </span>
         ))}
       </div>
-      {parentBreadcrumb && (
-        <div className="mt-2 md:mt-0">
-          <Link href={parentBreadcrumb.path} legacyBehavior>
+      {/* Si previousPage existe, se muestra; de lo contrario, se muestra parentBreadcrumb */}
+      <div className="mt-2 md:mt-0">
+        {previousPage ? (
+          <Link href={previousPage} legacyBehavior>
             <a
-              onClick={(e) => handleNavigation(e, parentBreadcrumb.path)}
+              onClick={(e) => handleNavigation(e, previousPage)}
               className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-teal-500 to-teal-600 text-white rounded-full shadow hover:from-teal-600 hover:to-teal-500 transition-all duration-300"
             >
               <FaArrowLeft className="text-lg" />
-              <span className="font-bold text-sm">Regresar a {parentBreadcrumb.display}</span>
+              <span className="font-bold text-sm">Regresar a la página anterior</span>
             </a>
           </Link>
-        </div>
-      )}
+        ) : (
+          parentBreadcrumb && (
+            <Link href={parentBreadcrumb.path} legacyBehavior>
+              <a
+                onClick={(e) => handleNavigation(e, parentBreadcrumb.path)}
+                className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-teal-500 to-teal-600 text-white rounded-full shadow hover:from-teal-600 hover:to-teal-500 transition-all duration-300"
+              >
+                <FaArrowLeft className="text-lg" />
+                <span className="font-bold text-sm">
+                  Regresar a {parentBreadcrumb.display}
+                </span>
+              </a>
+            </Link>
+          )
+        )}
+      </div>
     </nav>
   );
 }

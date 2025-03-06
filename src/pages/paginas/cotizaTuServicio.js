@@ -10,6 +10,7 @@ import {
   FaMoneyBillWave
 } from 'react-icons/fa';
 import { ThemeContext } from '@/context/ThemeContext';
+import SubNavigation from '@/components/SubNavigation';
 
 const CotizaTuServicio = () => {
   const router = useRouter();
@@ -193,8 +194,16 @@ const CotizaTuServicio = () => {
     (selectedServices.custodia ? Number(selectedServices.custodia.value) : 0) +
     (selectedServices.digitalizacion ? Number(selectedServices.digitalizacion.value) : 0);
 
+  const handlePayment = () => {
+    router.push({
+      pathname: '/PaymentFormPSE',
+      query: { total, previousPage: '/paginas/cotizaTuServicio' }
+    });
+  };
+
   return (
     <div className="container mx-auto p-4">
+      <SubNavigation previousPage="/paginas/cotizaTuServicio" />
       <h1 className="text-2xl md:text-4xl font-extrabold text-center mb-8">
         ¡Cotiza tu servicio!
       </h1>
@@ -243,6 +252,12 @@ const CotizaTuServicio = () => {
           <div className="mt-4 text-2xl md:text-4xl font-bold">
             <strong>Total:</strong> ${Math.round(total).toLocaleString('es-ES')}
           </div>
+          <button
+            onClick={handlePayment}
+            className="mt-4 bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700 transition-colors duration-200 shadow-md border-white border"
+          >
+            Pagar
+          </button>
         </div>
       </div>
       <div className="hidden lg:block">
@@ -316,6 +331,12 @@ const CotizaTuServicio = () => {
                     ${Math.round(total).toLocaleString('es-ES')}
                   </div>
                 )}
+                <button
+                  onClick={handlePayment}
+                  className="mt-4 bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700 transition-colors duration-200 shadow-md border-white border"
+                >
+                  Pagar
+                </button>
               </td>
             </tr>
           </tbody>

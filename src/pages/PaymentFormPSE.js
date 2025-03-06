@@ -1,10 +1,13 @@
-// components/PaymentFormPSE.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
+import SubNavigation from '@/components/SubNavigation';
 
 const PaymentFormPSE = () => {
+  const router = useRouter();
+  const { total, previousPage } = router.query;
+
   const [formData, setFormData] = useState({
     banco: '',
-    monto: '',
     nombre: '',
     documento: '',
     email: '',
@@ -31,19 +34,21 @@ const PaymentFormPSE = () => {
     // Aquí iría la lógica de procesamiento de pago
     console.log(formData);
     alert('Pago procesado con éxito!');
+    router.push('/paginas/servicios/PaymentSuccess'); // Redirigir a una página de éxito
   };
 
   return (
-    <div className="max-w-lg mx-auto p-8 bg-white shadow-xl rounded-lg">
+    <div className="max-w-lg mx-auto p-8 bg-gray-50 shadow-2xl rounded-xl relative">
+      <SubNavigation previousPage={previousPage} />
       {/* Logo de PSE */}
       <div className="flex justify-center mb-6">
-        <img src="/pse.pmg" alt="Logo PSE" className="h-32" />
+        <img src="/pse.png" alt="Logo PSE" className="h-32" />
       </div>
-      <h2 className="text-2xl font-bold text-center text-teal-600 mb-6">Pago por PSE - (concepto)</h2>
+      <h2 className="text-2xl font-bold text-teal-600 text-center mb-6">Pago por PSE</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Selección de banco */}
         <div>
-          <label htmlFor="banco" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="banco" className="block text-md font-bold text-gray-700">
             Selecciona tu banco
           </label>
           <select 
@@ -52,7 +57,7 @@ const PaymentFormPSE = () => {
             value={formData.banco} 
             onChange={handleChange} 
             required
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500"
+            className="mt-1 block w-full rounded-md shadow-inset-sm border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
           >
             <option value="">Elige un banco</option>
             {bancos.map((banco, idx) => (
@@ -60,25 +65,9 @@ const PaymentFormPSE = () => {
             ))}
           </select>
         </div>
-        {/* Monto */}
-        <div>
-          <label htmlFor="monto" className="block text-sm font-medium text-gray-700">
-            Monto a pagar
-          </label>
-          <input 
-            type="number" 
-            id="monto" 
-            name="monto" 
-            value={formData.monto} 
-            onChange={handleChange} 
-            required
-            placeholder="Ingrese el monto"
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500"
-          />
-        </div>
         {/* Nombre completo */}
         <div>
-          <label htmlFor="nombre" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="nombre" className="block text-md font-bold text-gray-700">
             Nombre completo
           </label>
           <input 
@@ -89,12 +78,12 @@ const PaymentFormPSE = () => {
             onChange={handleChange} 
             required
             placeholder="Tu nombre completo"
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500"
+            className="mt-1 block w-full rounded-md shadow-inset-sm border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
           />
         </div>
         {/* Documento de identidad */}
         <div>
-          <label htmlFor="documento" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="documento" className="block text-md font-bold text-gray-700">
             Documento de identidad
           </label>
           <input 
@@ -105,12 +94,12 @@ const PaymentFormPSE = () => {
             onChange={handleChange} 
             required
             placeholder="Número de documento"
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500"
+            className="mt-1 block w-full rounded-md shadow-inset-sm border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
           />
         </div>
         {/* Email */}
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="email" className="block text-md font-bold text-gray-700">
             Email
           </label>
           <input 
@@ -121,12 +110,12 @@ const PaymentFormPSE = () => {
             onChange={handleChange} 
             required
             placeholder="correo@ejemplo.com"
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500"
+            className="mt-1 block w-full rounded-md shadow-inset-sm border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
           />
         </div>
         {/* Teléfono celular */}
         <div>
-          <label htmlFor="telefono" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="telefono" className="block text-md font-bold text-gray-700">
             Teléfono celular
           </label>
           <input 
@@ -137,14 +126,28 @@ const PaymentFormPSE = () => {
             onChange={handleChange} 
             required
             placeholder="+57 300 0000000"
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500"
+            className="mt-1 block w-full rounded-md shadow-inset-sm border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
+          />
+        </div>
+        {/* Monto a pagar */}
+        <div>
+          <label htmlFor="monto" className="block text-md font-bold text-gray-700">
+            Monto a pagar
+          </label>
+          <input 
+            type="text" 
+            id="monto" 
+            name="monto" 
+            value={total} 
+            readOnly
+            className="mt-1 block w-full rounded-md shadow-inset-sm border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
           />
         </div>
         {/* Botón de Enviar */}
         <div>
           <button 
             type="submit"
-            className="w-full bg-teal-500 text-white font-bold py-3 rounded-md transition-colors duration-300 hover:bg-teal-600"
+            className="w-full bg-teal-600 text-white font-bold py-2 rounded-md transition-colors duration-300 hover:bg-teal-700"
           >
             Pagar con PSE
           </button>

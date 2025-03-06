@@ -12,7 +12,7 @@ const VerticalBarTransition = ({ onComplete }) => {
 
   useEffect(() => {
     // Si estamos en la página radicadoExitoso, no ejecutar la transición
-    if (router.pathname === '/radicadoExitoso') {
+    if (router.pathname === '/radicadoExitoso' || router.pathname === '/PaymentFormPSE') {
       onComplete?.();
       return;
     }
