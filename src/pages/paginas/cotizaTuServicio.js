@@ -69,7 +69,6 @@ const CotizaTuServicio = () => {
     } else {
       const newExpanded = { ...expandedCells };
       Object.keys(newExpanded).forEach(k => {
-        // Reemplazamos startsWith por indexOf
         if (k.indexOf(service + '-') === 0) {
           newExpanded[k] = false;
         }
@@ -115,44 +114,44 @@ const CotizaTuServicio = () => {
         className={`group p-4 border rounded-lg cursor-pointer relative transition-colors duration-300 ${
           isSelected
             ? 'bg-teal-500 border-teal-500 text-white shadow-md'
-            : 'bg-white hover:bg-teal-500 hover:text-white hover:shadow-md'
+            : 'bg-white lg:hover:bg-teal-500 lg:hover:text-white lg:hover:shadow-md'
         }`}
         onClick={() => toggleCell(service, option, index)}
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center">
             {serviceIcons[service]}
-            <span className={`font-bold text-lg ${isSelected ? 'text-shadow' : 'group-hover:text-shadow'}`}>
+            <span className={`font-bold text-lg ${isSelected ? 'text-shadow' : 'lg:group-hover:text-shadow'}`}>
               {option.label}
             </span>
           </div>
           {isExpanded ? (
             <FaChevronUp 
-              className={`text-2xl ${isSelected ? 'text-white text-shadow' : 'text-teal-600 group-hover:text-white group-hover:text-shadow'}`} 
+              className={`text-2xl ${isSelected ? 'text-white text-shadow' : 'text-teal-600 lg:group-hover:text-white lg:group-hover:text-shadow'}`} 
             />
           ) : (
             <FaChevronDown 
-              className={`text-2xl ${isSelected ? 'text-white text-shadow' : 'text-teal-600 group-hover:text-white group-hover:text-shadow'}`} 
+              className={`text-2xl ${isSelected ? 'text-white text-shadow' : 'text-teal-600 lg:group-hover:text-white lg:group-hover:text-shadow'}`} 
             />
           )}
         </div>
         {isExpanded && (
           <div className="mt-2 text-sm">
             <div className="flex items-center">
-              <FaMoneyBillWave className={`text-green-500 mr-2 text-2xl ${isSelected ? 'text-shadow' : 'group-hover:text-shadow'}`} />
-              <span className={`font-bold text-xl ${isSelected ? 'text-shadow' : 'group-hover:text-shadow'}`}>
+              <FaMoneyBillWave className={`text-green-500 mr-2 text-2xl ${isSelected ? 'text-shadow' : 'lg:group-hover:text-shadow'}`} />
+              <span className={`font-bold text-xl ${isSelected ? 'text-shadow' : 'lg:group-hover:text-shadow'}`}>
                 Precio:
               </span>
-              <span className={`ml-2 text-2xl font-extrabold ${isSelected ? 'text-shadow' : 'group-hover:text-shadow'}`}>
+              <span className={`ml-2 text-2xl font-extrabold ${isSelected ? 'text-shadow' : 'lg:group-hover:text-shadow'}`}>
                 ${Number(option.value).toLocaleString('es-ES', { maximumFractionDigits: 0 })}
               </span>
             </div>
             <div className="flex items-center mt-1">
-              <FaRocket className={`text-red-500 mr-2 text-2xl ${isSelected ? 'text-shadow' : 'group-hover:text-shadow'}`} />
-              <span className={`font-bold text-xl ${isSelected ? 'text-shadow' : 'group-hover:text-shadow'}`}>
+              <FaRocket className={`text-red-500 mr-2 text-2xl ${isSelected ? 'text-shadow' : 'lg:group-hover:text-shadow'}`} />
+              <span className={`font-bold text-xl ${isSelected ? 'text-shadow' : 'lg:group-hover:text-shadow'}`}>
                 Startup:
               </span>
-              <span className={`ml-2 text-2xl font-extrabold ${isSelected ? 'text-shadow' : 'group-hover:text-shadow'}`}>
+              <span className={`ml-2 text-2xl font-extrabold ${isSelected ? 'text-shadow' : 'lg:group-hover:text-shadow'}`}>
                 ${Number(option.startup).toLocaleString('es-ES', { maximumFractionDigits: 0 })}
               </span>
             </div>
@@ -178,7 +177,7 @@ const CotizaTuServicio = () => {
 
   return (
     <div className="container mx-auto p-4">
-      {/* Asegúrate de tener este estilo global en tu proyecto */}
+      {/* Estilo global para la sombra de texto */}
       <style jsx global>{`
         .text-shadow {
           text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
