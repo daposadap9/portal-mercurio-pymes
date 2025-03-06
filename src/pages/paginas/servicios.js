@@ -141,6 +141,8 @@ export default function Servicios({disabledProvider }) {
           showViewMore={true}
           onViewMore={() => router.push("/paginas/servicios/mercurioCustodia")}
           viewMoreText="Descubre más"
+          additionalButtonText="Busca tus cajas en nuestro sistema de odin"
+          additionalButtonHref="https://odin.servisoft.com.co/"
         />
         <Card 
           title={cardData4.title} 
@@ -153,46 +155,6 @@ export default function Servicios({disabledProvider }) {
           showViewMore={true}
           onViewMore={() => router.push("/paginas/servicios/mercurioDigitalizacion")}
           viewMoreText="Descubre más"
-        />
-      </div>
-
-      <div className="flex justify-center pt-10 text-2xl md:text-4xl font-bold text-teal-600 text-center titulo-shadow">
-        <h1>¡Nuestros paquetes!</h1>
-      </div>
-      <div className="flex flex-col md:flex-row flex-wrap items-center justify-center pt-5 gap-4">
-        <Card 
-          title={cardData6.title} 
-          lines={cardData6.lines} 
-          maxLines={cardData6.maxLines}
-          borderColorClass="hover:border-blue-500"
-          titleColorClass="text-blue-600"
-          iconColorClass="text-blue-600"
-          showViewMore={true}
-          onViewMore={() => router.push("/paginas/servicios/PaymentFormPSE")}
-          viewMoreText="¡Adquiérelo ahora!"
-        />
-        <Card 
-          title={cardData7.title}
-          lines={cardData7.lines} 
-          maxLines={cardData7.maxLines}
-          borderColorClass="hover:border-yellow-500"  
-          titleColorClass="text-yellow-600"
-          iconColorClass="text-yellow-600"
-          showViewMore={true}
-          onViewMore={() => router.push("/paginas/servicios/PaymentFormPSE")}
-          viewMoreText="¡Adquiérelo ahora!"
-          badgeText="¡Oferta recomendada!"
-        />
-        <Card 
-          title={cardData8.title} 
-          lines={cardData8.lines} 
-          maxLines={cardData8.maxLines}
-          borderColorClass="hover:border-orange-500"
-          titleColorClass="text-orange-600"
-          iconColorClass="text-orange-600"
-          showViewMore={true}
-          onViewMore={() => router.push("/paginas/servicios/formularioArmaTuPlan")}
-          viewMoreText="¡Adquiérelo ahora!"
         />
       </div>
       

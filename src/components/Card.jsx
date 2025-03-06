@@ -17,7 +17,9 @@ const Card = ({
   badgeText = "",
   showViewMore = false,
   onViewMore = () => {},
-  viewMoreText = "Ver más"
+  viewMoreText = "Ver más",
+  additionalButtonText = "",
+  additionalButtonHref = ""
 }) => {
   const { theme } = useContext(ThemeContext);
 
@@ -93,6 +95,20 @@ const Card = ({
           >
             {viewMoreText}
           </button>
+        </div>
+      )}
+
+      {/* Botón adicional opcional */}
+      {additionalButtonText && additionalButtonHref && (
+        <div className="mt-4 w-full">
+          <a 
+            href={additionalButtonHref} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="bg-blue-500 text-white rounded-md px-3 py-2 w-full font-bold transition-colors duration-300 ease-in-out hover:bg-blue-600 text-center block"
+          >
+            {additionalButtonText}
+          </a>
         </div>
       )}
     </div>
