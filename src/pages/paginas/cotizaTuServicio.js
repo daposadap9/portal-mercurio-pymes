@@ -301,7 +301,7 @@ const CotizaTuServicio = () => {
             <tr className="bg-custom-footer">
               <td colSpan="3" className="py-6 text-center font-bold">
                 {discount > 0 && (
-                  <div className="mb-2 text-green-600 text-xl">
+                  <div className="mb-2 text-xl">
                     ¡Felicidades! Tienes un {(discount * 100).toFixed(0)}% de descuento.
                   </div>
                 )}
