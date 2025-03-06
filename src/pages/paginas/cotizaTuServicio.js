@@ -121,7 +121,7 @@ const CotizaTuServicio = () => {
         <div className="flex items-center justify-between">
           <div className="flex items-center">
             {serviceIcons[service]}
-            <span className={`font-bold text-lg ${isSelected ? 'text-shadow' : 'lg:group-hover:text-shadow'}`}>
+            <span className={`font-bold text-base md:text-lg ${isSelected ? 'text-shadow' : 'lg:group-hover:text-shadow'}`}>
               {option.label}
             </span>
           </div>
@@ -139,7 +139,7 @@ const CotizaTuServicio = () => {
           <div className="mt-2 text-sm">
             <div className="flex items-center">
               <FaMoneyBillWave className={`text-green-500 mr-2 text-2xl ${isSelected ? 'text-shadow' : 'lg:group-hover:text-shadow'}`} />
-              <span className={`font-bold text-xl ${isSelected ? 'text-shadow' : 'lg:group-hover:text-shadow'}`}>
+              <span className={`font-bold text-base md:text-xl ${isSelected ? 'text-shadow' : 'lg:group-hover:text-shadow'}`}>
                 Precio:
               </span>
               <span className={`ml-2 text-2xl font-extrabold ${isSelected ? 'text-shadow' : 'lg:group-hover:text-shadow'}`}>
@@ -148,7 +148,7 @@ const CotizaTuServicio = () => {
             </div>
             <div className="flex items-center mt-1">
               <FaRocket className={`text-red-500 mr-2 text-2xl ${isSelected ? 'text-shadow' : 'lg:group-hover:text-shadow'}`} />
-              <span className={`font-bold text-xl ${isSelected ? 'text-shadow' : 'lg:group-hover:text-shadow'}`}>
+              <span className={`font-bold text-base md:text-xl ${isSelected ? 'text-shadow' : 'lg:group-hover:text-shadow'}`}>
                 Startup:
               </span>
               <span className={`ml-2 text-2xl font-extrabold ${isSelected ? 'text-shadow' : 'lg:group-hover:text-shadow'}`}>
@@ -183,25 +183,27 @@ const CotizaTuServicio = () => {
           text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
         }
       `}</style>
-      <h1 className="text-4xl font-extrabold text-center mb-8 text-shadow">¡Cotiza tu servicio!</h1>
+      <h1 className="text-2xl md:text-4xl font-extrabold text-center mb-8 text-shadow">
+        ¡Cotiza tu servicio!
+      </h1>
       <div className="block lg:hidden">
         <div className="grid grid-cols-1 gap-6">
           <div>
-            <h2 className="text-2xl font-bold mb-4 text-center">Software</h2>
+            <h2 className="text-xl md:text-2xl font-bold mb-4 text-center">Software</h2>
             {options.map((option, index) => renderCell('software', option, index))}
           </div>
           <div>
-            <h2 className="text-2xl font-bold mb-4 text-center">Custodia</h2>
+            <h2 className="text-xl md:text-2xl font-bold mb-4 text-center">Custodia</h2>
             {options2.map((option, index) => renderCell('custodia', option, index))}
           </div>
           <div>
-            <h2 className="text-2xl font-bold mb-4 text-center">Digitalización</h2>
+            <h2 className="text-xl md:text-2xl font-bold mb-4 text-center">Digitalización</h2>
             {options3.map((option, index) => renderCell('digitalizacion', option, index))}
           </div>
         </div>
         <div className="mt-8 p-4 border rounded-lg shadow-md">
-          <h2 className="text-2xl font-bold mb-4">Resumen</h2>
-          <ul>
+          <h2 className="text-xl md:text-2xl font-bold mb-4">Resumen</h2>
+          <ul className="text-sm md:text-base">
             {selectedServices.software && (
               <li className="mb-2">
                 <strong>Software:</strong> {selectedServices.software.label} - ${Number(selectedServices.software.value).toLocaleString('es-ES')}
@@ -218,15 +220,15 @@ const CotizaTuServicio = () => {
               </li>
             )}
           </ul>
-          <div className="mt-4">
+          <div className="mt-4 text-sm md:text-base">
             <strong>Subtotal:</strong> ${Math.round(subtotal).toLocaleString('es-ES')}
           </div>
           {discount > 0 && (
-            <div className="mt-2 text-green-600">
+            <div className="mt-2 text-green-600 text-sm md:text-base">
               <strong>Descuento:</strong> {(discount * 100).toFixed(0)}%
             </div>
           )}
-          <div className="mt-4 text-2xl font-bold">
+          <div className="mt-4 text-2xl md:text-4xl font-bold">
             <strong>Total:</strong> ${Math.round(total).toLocaleString('es-ES')}
           </div>
         </div>
