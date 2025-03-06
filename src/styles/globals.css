@@ -3,10 +3,7 @@
 @tailwind utilities;
 
 /* Modo Light (por defecto) */
-
-
 :root,
-
 .light {
   --background: #ffffff;
   /* Colores base */
@@ -32,7 +29,7 @@
   --gray-500:  #6B7280;
   --gray-600:  #4B5563;
   --gray-700:  #374151;
-  --gray-800:  #dbe3ee;
+  --gray-800:  #e3eaf3;
   --gray-900:  #111827;
   
   /* Otros colores */
@@ -66,7 +63,7 @@
   --gray-500:  #057ADA;
   --gray-600:  #068AE8;
   --gray-700:  #6eb9f3;
-  --gray-800:  #6bc4f8;
+  --gray-800:  #33B5FF;
   --gray-900:  #080808;
 
   --text-teal-600: #A0E7E5;
@@ -79,8 +76,6 @@
   text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
   transition: all 0.3s ease;
 }
-
-
 
 .dark {
   --background: #121212;
@@ -141,6 +136,7 @@ transition: all 0.3s ease;
 --border-white-30: rgba(255, 255, 255, 0.5);
 
 }
+
 .blue-light{
   --background: #f0f8ff;
   --bg-white: #ffffff;
@@ -234,7 +230,7 @@ transition: all 0.3s ease;
 
 .table th {
   background-color: var(--table-header-bg);
-  color: var(--table-header-text);
+  color: var (--table-header-text);
 }
 
 .table td {
@@ -305,4 +301,9 @@ select:disabled::placeholder {
 
 .shadow-icon {
   filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.5));
+}
+
+/* Agregar sombras a todos los iconos */
+.icon-shadow {
+  filter: drop-shadow(1px 1px 3px rgba(0, 0, 0, 0.3));
 }

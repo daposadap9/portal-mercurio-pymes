@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import { useRouter } from 'next/router';
 import { 
   FaChevronDown, 
   FaChevronUp, 
@@ -8,8 +9,20 @@ import {
   FaRocket,
   FaMoneyBillWave
 } from 'react-icons/fa';
+import { ThemeContext } from '@/context/ThemeContext';
 
 const CotizaTuServicio = () => {
+  const router = useRouter();
+  const { theme } = useContext(ThemeContext);
+
+  // Selecciona la clase de fondo según el tema actual
+  const bgClass =
+    theme === 'dark'
+      ? 'bg-custom-gradient'
+      : theme === 'purple'
+      ? 'bg-custom-gradient2'
+      : 'bg-custom-gradient3';
+
   const [selectedServices, setSelectedServices] = useState({
     software: null,
     custodia: null,
@@ -56,9 +69,9 @@ const CotizaTuServicio = () => {
   ];
 
   const serviceIcons = {
-    software: <FaLaptopCode className="text-blue-600 mr-2 text-2xl" />,
-    custodia: <FaBoxOpen className="text-green-600 mr-2 text-2xl" />,
-    digitalizacion: <FaRegImage className="text-purple-600 mr-2 text-2xl" />,
+    software: <FaLaptopCode className="text-blue-600 mr-2 text-2xl icon-shadow" />,
+    custodia: <FaBoxOpen className="text-green-600 mr-2 text-2xl icon-shadow" />,
+    digitalizacion: <FaRegImage className="text-purple-600 mr-2 text-2xl icon-shadow" />,
   };
 
   const handleServiceChange = (service, option, index) => {
@@ -111,14 +124,19 @@ const CotizaTuServicio = () => {
 
     return (
       <div
-        className={`group p-4 border rounded-lg cursor-pointer relative transition-colors duration-300 ${
+        className={`group p-4 border rounded-lg cursor-pointer relative transition-colors duration-300 shadow-xl ${
           isSelected
             ? 'bg-teal-500 border-teal-500 text-white shadow-md'
-            : 'bg-white lg:hover:bg-teal-500 lg:hover:text-white lg:hover:shadow-md'
+            : `${bgClass} bg-white lg:hover:bg-teal-500 lg:hover:text-white lg:hover:border-white lg:hover:border lg:hover:shadow-md`
         }`}
         onClick={() => toggleCell(service, option, index)}
       >
-        <div className="flex items-center justify-between">
+        {/* Capa de fondo dinámico (según bgClass) */}
+        {!isSelected && <div className={`absolute inset-0 ${bgClass} transition-opacity duration-300 rounded-md`}></div>}
+        {/* Capa de fondo sólido teal que aparece en hover */}
+        <div className={`absolute inset-0 ${isSelected ? 'bg-teal-500' : 'bg-teal-600 opacity-0 group-hover:opacity-100'} transition-opacity duration-300 rounded-md`}></div>
+        
+        <div className="flex items-center justify-between relative z-10">
           <div className="flex items-center">
             {serviceIcons[service]}
             <span className={`font-bold text-base md:text-lg ${isSelected ? 'text-shadow' : 'lg:group-hover:text-shadow'}`}>
@@ -136,9 +154,9 @@ const CotizaTuServicio = () => {
           )}
         </div>
         {isExpanded && (
-          <div className="mt-2 text-sm">
+          <div className="mt-2 text-sm relative z-10">
             <div className="flex items-center">
-              <FaMoneyBillWave className={`text-green-500 mr-2 text-2xl ${isSelected ? 'text-shadow' : 'lg:group-hover:text-shadow'}`} />
+              <FaMoneyBillWave className={`text-green-500 mr-2 text-2xl icon-shadow ${isSelected ? 'text-shadow' : 'lg:group-hover:text-shadow'}`} />
               <span className={`font-bold text-base md:text-xl ${isSelected ? 'text-shadow' : 'lg:group-hover:text-shadow'}`}>
                 Precio:
               </span>
@@ -147,7 +165,7 @@ const CotizaTuServicio = () => {
               </span>
             </div>
             <div className="flex items-center mt-1">
-              <FaRocket className={`text-red-500 mr-2 text-2xl ${isSelected ? 'text-shadow' : 'lg:group-hover:text-shadow'}`} />
+              <FaRocket className={`text-red-500 mr-2 text-2xl icon-shadow ${isSelected ? 'text-shadow' : 'lg:group-hover:text-shadow'}`} />
               <span className={`font-bold text-base md:text-xl ${isSelected ? 'text-shadow' : 'lg:group-hover:text-shadow'}`}>
                 Startup:
               </span>
@@ -162,7 +180,7 @@ const CotizaTuServicio = () => {
             e.stopPropagation();
             handleServiceChange(service, option, index);
           }}
-          className="mt-2 bg-teal-600 text-white px-3 py-1 rounded hover:bg-teal-700 transition-colors duration-200 shadow-md"
+          className="mt-2 bg-teal-600 text-white px-3 py-1 rounded hover:bg-teal-700 transition-colors duration-200 shadow-md border-white border relative z-10"
         >
           Seleccionar
         </button>
@@ -180,6 +198,9 @@ const CotizaTuServicio = () => {
       {/* Estilo global para la sombra de texto */}
       <style jsx global>{`
         .text-shadow {
+          text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        .icon-shadow {
           text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
         }
       `}</style>
@@ -242,16 +263,11 @@ const CotizaTuServicio = () => {
                   <span>Software</span>
                   <span className="text-sm">Cantidad de usuarios</span>
                   <button 
-                    onClick={() => toggleExplanation('software')}
+                    onClick={() => router.push('/paginas/servicios/mercurioSGDEA')}
                     className="mt-1 bg-teal-500 border border-white shadow-lg text-white text-xs px-2 py-1 rounded hover:bg-teal-600 transition-colors"
                   >
                     ¿Qué significa?
                   </button>
-                  {explanations.software && (
-                    <span className="text-xs text-gray-300 italic">
-                      Representa el número de usuarios licenciados anualmente.
-                    </span>
-                  )}
                 </div>
               </th>
               <th className="py-4 px-6 text-xl text-shadow">
@@ -259,16 +275,11 @@ const CotizaTuServicio = () => {
                   <span>Custodia</span>
                   <span className="text-sm">Cantidad de cajas</span>
                   <button 
-                    onClick={() => toggleExplanation('custodia')}
+                    onClick={() => router.push('/paginas/servicios/mercurioCustodia')}
                     className="mt-1 bg-teal-500 border border-white shadow-lg text-white text-xs px-2 py-1 rounded hover:bg-teal-600 transition-colors"
                   >
                     ¿Qué significa?
                   </button>
-                  {explanations.custodia && (
-                    <span className="text-xs text-gray-300 italic">
-                      Indica el número de cajas custodiadas anualmente.
-                    </span>
-                  )}
                 </div>
               </th>
               <th className="py-4 px-6 text-xl text-shadow">
@@ -276,16 +287,11 @@ const CotizaTuServicio = () => {
                   <span>Digitalización</span>
                   <span className="text-sm">Cantidad de imágenes</span>
                   <button 
-                    onClick={() => toggleExplanation('digitalizacion')}
+                    onClick={() => router.push('/paginas/servicios/mercurioDigitalizacion')}
                     className="mt-1 bg-teal-500 border border-white shadow-lg text-white text-xs px-2 py-1 rounded hover:bg-teal-600 transition-colors"
                   >
                     ¿Qué significa?
                   </button>
-                  {explanations.digitalizacion && (
-                    <span className="text-xs text-gray-300 italic">
-                      Representa el total de imágenes digitalizadas (valor total).
-                    </span>
-                  )}
                 </div>
               </th>
             </tr>
