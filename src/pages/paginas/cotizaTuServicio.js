@@ -115,7 +115,7 @@ const CotizaTuServicio = () => {
         className={`group p-4 border rounded-lg cursor-pointer relative transition-colors duration-300 ${
           isSelected
             ? 'bg-teal-500 border-teal-500 text-white shadow-md'
-            : 'bg-white hover:bg-teal-500/30 hover:text-white hover:shadow-md'
+            : 'bg-white hover:bg-teal-500 hover:text-white hover:shadow-md'
         }`}
         onClick={() => toggleCell(service, option, index)}
       >
