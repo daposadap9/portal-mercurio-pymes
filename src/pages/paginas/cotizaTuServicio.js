@@ -69,7 +69,8 @@ const CotizaTuServicio = () => {
     } else {
       const newExpanded = { ...expandedCells };
       Object.keys(newExpanded).forEach(k => {
-        if (k.startsWith(service + '-')) {
+        // Reemplazamos startsWith por indexOf
+        if (k.indexOf(service + '-') === 0) {
           newExpanded[k] = false;
         }
       });
@@ -114,7 +115,7 @@ const CotizaTuServicio = () => {
         className={`group p-4 border rounded-lg cursor-pointer relative transition-colors duration-300 ${
           isSelected
             ? 'bg-teal-500 border-teal-500 text-white shadow-md'
-            : 'bg-white hover:bg-teal-500 hover:text-white hover:shadow-md'
+            : 'bg-white hover:bg-teal-500/30 hover:text-white hover:shadow-md'
         }`}
         onClick={() => toggleCell(service, option, index)}
       >
@@ -299,7 +300,7 @@ const CotizaTuServicio = () => {
             <tr className="bg-custom-footer">
               <td colSpan="3" className="py-6 text-center font-bold">
                 {discount > 0 && (
-                  <div className="mb-2  text-xl">
+                  <div className="mb-2 text-green-600 text-xl">
                     ¡Felicidades! Tienes un {(discount * 100).toFixed(0)}% de descuento.
                   </div>
                 )}
