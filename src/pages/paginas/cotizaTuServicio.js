@@ -134,7 +134,7 @@ const CotizaTuServicio = () => {
         {/* Capa de fondo dinámico (según bgClass) */}
         {!isSelected && <div className={`absolute inset-0 ${bgClass} transition-opacity duration-300 rounded-md`}></div>}
         {/* Capa de fondo sólido teal que aparece en hover */}
-        <div className={`absolute inset-0 ${isSelected ? 'bg-teal-500' : 'bg-teal-600 opacity-0 group-hover:opacity-100'} transition-opacity duration-300 rounded-md`}></div>
+        <div className={`absolute inset-0 ${isSelected ? 'bg-teal-500' : 'bg-teal-600 opacity-0 lg:group-hover:opacity-100'} transition-opacity duration-300 rounded-md`}></div>
         
         <div className="flex items-center justify-between relative z-10">
           <div className="flex items-center">
@@ -195,16 +195,7 @@ const CotizaTuServicio = () => {
 
   return (
     <div className="container mx-auto p-4">
-      {/* Estilo global para la sombra de texto */}
-      <style jsx global>{`
-        .text-shadow {
-          text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-        }
-        .icon-shadow {
-          text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-        }
-      `}</style>
-      <h1 className="text-2xl md:text-4xl font-extrabold text-center mb-8 text-shadow">
+      <h1 className="text-2xl md:text-4xl font-extrabold text-center mb-8">
         ¡Cotiza tu servicio!
       </h1>
       <div className="block lg:hidden">
