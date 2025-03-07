@@ -196,12 +196,24 @@ const CotizaTuServicio = () => {
     (selectedServices.custodia ? Number(selectedServices.custodia.value) : 0) +
     (selectedServices.digitalizacion ? Number(selectedServices.digitalizacion.value) : 0);
 
-  const handlePayment = () => {
-    router.push({
-      pathname: '/PaymentFormPSE',
-      query: { total, previousPage: '/paginas/cotizaTuServicio' }
-    });
-  };
+    const handlePayment = () => {
+        // Puedes validar si total es 0 o si no se ha seleccionado ningún servicio
+        if (
+          total === 0 ||
+          (!selectedServices.software &&
+            !selectedServices.custodia &&
+            !selectedServices.digitalizacion)
+        ) {
+          alert("Por favor, seleccione al menos un servicio para pagar.");
+          return;
+        }
+      
+        router.push({
+          pathname: '/PaymentFormPSE',
+          query: { total, previousPage: '/paginas/cotizaTuServicio' }
+        });
+      };
+      
 
   return (
     <div className="container mx-auto p-4">

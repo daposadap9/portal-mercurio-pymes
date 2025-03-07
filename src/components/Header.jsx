@@ -153,14 +153,17 @@ const Header = ({ handleNavigation, loading }) => {
 
   // Manejador para TRÁMITES con retraso para permitir la transición
   const handleTramitesClick = (href, callback) => (e) => {
-    // No llamamos a preventDefault para permitir que se ejecute el evento
-    e.stopPropagation();
+    e.preventDefault();
     if (loading) return;
     if (callback) callback();
     setShowTramitesDropdown(false);
-    setTimeout(() => {
-      router.push(href);
-    }, 300); // 300ms de retraso para la transición
+    if (handleNavigation) {
+      handleNavigation(href);
+    } else {
+      setTimeout(() => {
+        router.push(href);
+      }, 1100); // Retardo consistente con el resto de la navegación
+    }
   };
 
   return (
