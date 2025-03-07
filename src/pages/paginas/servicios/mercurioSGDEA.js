@@ -86,10 +86,10 @@ const MercurioSGDEA = () => {
 
   return (
     <div className="min-h-full flex items-center justify-center p-4">
-      <div className="w-full max-w-6xl flex flex-col md:flex-row justify-around gap-4">
+      <div className="w-full max-w-6xl flex flex-col lg:flex-row justify-around gap-4">
         {/* Sección Izquierda: Información */}
-        <div className="w-full md:w-[35%]">
-          <div className="text-center md:text-left bg-white bg-opacity-0 backdrop-blur-xl p-6 rounded-xl border border-white/30">
+        <div className="w-full lg:w-[35%]">
+          <div className="lg:text-left bg-white bg-opacity-0 backdrop-blur-xl p-6 rounded-xl border border-white/30">
             <p className="mb-4 leading-relaxed text-black text-base font-medium">
             Mercurio es una solución corporativa para la Gestión Electrónica de Documentos, que automatiza procesos estratégicos de la Gestión Inteligente Documental, con su BPM y ECM de base tecnológica, Permite el cumplimiento de las regulaciones establecidas en la ley 594 de 2000, impidiendo sanciones y asegurando prácticas idóneas de archivo.
             </p>
@@ -113,7 +113,7 @@ const MercurioSGDEA = () => {
         </div>
 
         {/* Sección Derecha: Formulario */}
-        <div className="w-full md:w-[35%]">
+        <div className="w-full lg:w-[35%]">
           <div className="bg-gray-50 p-6 rounded-lg shadow-lg">
             <h2 className="text-xl font-bold text-teal-600 text-center mb-6">
               Agenda demostración con nuestro equipo comercial

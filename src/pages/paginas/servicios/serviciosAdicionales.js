@@ -83,10 +83,10 @@ const ServiciosAdicionales = () => {
 
   return (
     <div className="min-h-full flex items-center justify-center p-4">
-      <div className="w-full max-w-6xl flex flex-col md:flex-row justify-around gap-4">
+      <div className="w-full max-w-6xl flex flex-col lg:flex-row justify-around gap-4">
         {/* Sección Izquierda: Párrafos */}
-        <div className="w-full md:w-[35%]">
-          <div className="text-center md:text-left bg-white bg-opacity-0 backdrop-blur-xl p-6 rounded-xl border border-white/30">
+        <div className="w-full lg:w-[35%]">
+          <div className="text-center lg:text-left bg-white bg-opacity-0 backdrop-blur-xl p-6 rounded-xl border border-white/30">
             <p className="mb-4 leading-relaxed text-black text-base font-normal">
             Proveemos los insumos necesarios para que encuentres todo lo que necesitas en la digitalización y custodia de tus documentos en el mismo lugar.
             </p>
@@ -94,7 +94,7 @@ const ServiciosAdicionales = () => {
         </div>
 
         {/* Sección Derecha: Formulario */}
-        <div className="w-full md:w-[35%]">
+        <div className="w-full lg:w-[35%]">
           <div className="bg-gray-50 p-6 rounded-lg shadow-lg">
             <h2 className="text-xl font-bold text-teal-600 text-center mb-6">
               ¡Adquiérelo ahora!
@@ -240,7 +240,7 @@ const ServiciosAdicionales = () => {
                   Opción seleccionada: {formData.opcionSeleccionada}
                 </div>
                 {/* Botón de Enviar */}
-                <div className="md:w-1/2 flex items-end mt-4">
+                <div className="lg:w-1/2 flex items-end mt-4">
                   <button type="submit" className="w-full bg-teal-500 text-white font-bold py-2 rounded-md transition-colors duration-300 hover:bg-teal-600">
                     {loading ? "Procesando..." : "Enviar"}
                   </button>

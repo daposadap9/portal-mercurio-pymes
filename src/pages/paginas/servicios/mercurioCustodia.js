@@ -83,10 +83,10 @@ const MercurioCustodia = () => {
 
   return (
     <div className="min-h-full flex items-center justify-center p-4">
-      <div className="w-full max-w-6xl flex flex-col md:flex-row justify-around gap-4">
+      <div className="w-full max-w-6xl flex flex-col lg:flex-row justify-around gap-4">
         {/* Sección Izquierda: Párrafos */}
-        <div className="w-full md:w-[35%]">
-          <div className="text-center md:text-left bg-white bg-opacity-0 backdrop-blur-xl p-6 rounded-xl border border-white/30">
+        <div className="w-full lg:w-[35%]">
+          <div className="lg:text-left bg-white bg-opacity-0 backdrop-blur-xl p-6 rounded-xl border border-white/30">
             <p className="mb-4 text-md font-medium text-black">
               Nuestro servicio de custodia está diseñado para que olvides la preocupación por la gestión de documentos físicos; nosotros nos encargamos de todo mientras tú te concentras en hacer crecer tu negocio.
             </p>
@@ -103,7 +103,7 @@ const MercurioCustodia = () => {
         </div>
 
         {/* Sección Derecha: Formulario */}
-        <div className="w-full md:w-[35%]">
+        <div className="w-full lg:w-[35%]">
           <div className="bg-gray-50 p-6 rounded-lg shadow-lg">
             <h2 className="text-xl font-bold text-teal-600 text-center mb-6">
               Adquiérelo ahora!
@@ -249,7 +249,7 @@ const MercurioCustodia = () => {
                 <div className="mt-4 text-center text-teal-600 font-semibold">
                   Opción seleccionada: {formData.opcionSeleccionada}
                 </div>
-                <div className="md:w-1/2 flex items-end mt-4">
+                <div className="lg:w-1/2 flex items-end mt-4">
                   <button type="submit" className="w-full bg-teal-500 text-white font-bold py-2 rounded-md transition-colors duration-300 hover:bg-teal-600" disabled={loading}>
                     {loading ? "Procesando..." : "Enviar"}
                   </button>
