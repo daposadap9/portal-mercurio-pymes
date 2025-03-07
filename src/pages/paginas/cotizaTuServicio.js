@@ -270,7 +270,7 @@ const CotizaTuServicio = () => {
                   <span>Software</span>
                   <span className="text-sm">Cantidad de usuarios</span>
                   <button 
-                    onClick={() => router.push('/paginas/servicios/mercurioSGDEA')}
+                    onClick={() => router.push('/paginas/servicios/mercurioPYMES')}
                     className="mt-1 bg-teal-500 border border-white shadow-lg text-white text-xs px-2 py-1 rounded hover:bg-teal-600 transition-colors"
                   >
                     ¿Qué significa?
