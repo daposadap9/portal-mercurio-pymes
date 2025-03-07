@@ -240,7 +240,7 @@ const CotizaTuServicio = () => {
           <ul className="text-sm md:text-base">
             {selectedServices.software && (
               <li className="mb-2">
-                <strong>Software:</strong> {selectedServices.software.label} - ${Number(selectedServices.software.value).toLocaleString('es-ES')}
+                <strong>Software:</strong> {selectedServices.software.label} - ${Number(selectedServices.software.value).toLocaleString('es-ES')} + Startup - ${Number(selectedServices.software.startup).toLocaleString('es-ES')}
               </li>
             )}
             {selectedServices.custodia && (
