@@ -24,15 +24,11 @@ const CotizaTuServicio = () => {
       ? 'bg-custom-gradient2'
       : 'bg-custom-gradient3';
 
-  // Lazy initializer: si ya existe la selección guardada, se carga desde localStorage
-  const [selectedServices, setSelectedServices] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('selectedServices');
-      return saved ? JSON.parse(saved) : { software: null, custodia: null, digitalizacion: null };
-    }
-    return { software: null, custodia: null, digitalizacion: null };
-  });
+  // Valor por defecto (igual en servidor y cliente)
+  const defaultSelectedServices = { software: null, custodia: null, digitalizacion: null };
 
+  // Inicializamos siempre con el valor por defecto
+  const [selectedServices, setSelectedServices] = useState(defaultSelectedServices);
   const [expandedCells, setExpandedCells] = useState({});
   const [total, setTotal] = useState(0);
   const [discount, setDiscount] = useState(0);
@@ -41,6 +37,25 @@ const CotizaTuServicio = () => {
     custodia: false,
     digitalizacion: false,
   });
+  
+  // Bandera para saber que ya se ejecutó el useEffect (solo en cliente)
+  const [mounted, setMounted] = useState(false);
+
+  // En el primer efecto (solo en cliente) actualizamos el estado desde localStorage
+  useEffect(() => {
+    setMounted(true);
+    const saved = localStorage.getItem('selectedServices');
+    if (saved) {
+      setSelectedServices(JSON.parse(saved));
+    }
+  }, []);
+
+  // Guardamos en localStorage cada vez que selectedServices cambie
+  useEffect(() => {
+    if (mounted) {
+      localStorage.setItem('selectedServices', JSON.stringify(selectedServices));
+    }
+  }, [selectedServices, mounted]);
 
   const toggleExplanation = (service) => {
     setExplanations(prev => ({ ...prev, [service]: !prev[service] }));
@@ -79,13 +94,6 @@ const CotizaTuServicio = () => {
     digitalizacion: <FaRegImage className="text-purple-600 mr-2 text-2xl icon-shadow" />,
   };
 
-  // Cada vez que cambia la selección, se guarda en localStorage
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('selectedServices', JSON.stringify(selectedServices));
-    }
-  }, [selectedServices]);
-
   const handleServiceChange = (service, option, index) => {
     const key = `${service}-${index}`;
     if (selectedServices[service]?.label === option.label) {
@@ -113,29 +121,43 @@ const CotizaTuServicio = () => {
     setExpandedCells(prev => ({ ...prev, [key]: !prev[key] }));
   };
 
+  // Cálculo ajustado del total y descuento:
   useEffect(() => {
-    const priceSoftware = selectedServices.software ? Number(selectedServices.software.value) : 0;
-    const priceCustodia = selectedServices.custodia ? Number(selectedServices.custodia.value) : 0;
-    const priceDigitalizacion = selectedServices.digitalizacion ? Number(selectedServices.digitalizacion.value) : 0;
-    const startupSoftware = selectedServices.software ? Number(selectedServices.software.startup) : 0;
-    const subtotal = priceSoftware + priceCustodia + priceDigitalizacion + startupSoftware;
-    const count = [selectedServices.software, selectedServices.custodia, selectedServices.digitalizacion].filter(s => s !== null).length;
-    let disc = 0;
-    if (count === 3) {
-      disc = 0.1;
-    } else if (count === 2) {
-      disc = 0.07;
+    // Para software, total es la suma de su valor + startup.
+    let softwareTotal = selectedServices.software
+      ? Number(selectedServices.software.value) + Number(selectedServices.software.startup)
+      : 0;
+    let custodiaTotal = selectedServices.custodia ? Number(selectedServices.custodia.value) : 0;
+    let digitalizacionTotal = selectedServices.digitalizacion ? Number(selectedServices.digitalizacion.value) : 0;
+    
+    let count = 0;
+    if (selectedServices.software) count++;
+    if (selectedServices.custodia) count++;
+    if (selectedServices.digitalizacion) count++;
+    
+    if (count === 1 && selectedServices.software) {
+      // Si sólo se escoge software, no hay descuento.
+      setDiscount(0);
+      setTotal(softwareTotal);
+    } else {
+      // En otro caso, se aplica descuento al subtotal (que incluye la suma de todos los servicios)
+      let subtotal = softwareTotal + custodiaTotal + digitalizacionTotal;
+      let disc = 0;
+      if (count === 3) {
+        disc = 0.1;
+      } else if (count === 2) {
+        disc = 0.07;
+      }
+      setDiscount(disc);
+      setTotal(subtotal - subtotal * disc);
     }
-    setDiscount(disc);
-    setTotal(subtotal - subtotal * disc);
   }, [selectedServices]);
 
-  // En renderCell forzamos que, si el servicio está seleccionado, la celda se considere expandida
   const renderCell = (service, option, index) => {
     const cellKey = `${service}-${index}`;
     const isExpanded = expandedCells[cellKey];
     const isSelected = selectedServices[service]?.label === option.label;
-    const expanded = isSelected || isExpanded; // si está seleccionado, se muestra expandida
+    const expanded = isSelected || isExpanded;
 
     return (
       <div
@@ -146,12 +168,10 @@ const CotizaTuServicio = () => {
         }`}
         onClick={() => toggleCell(service, option, index)}
       >
-        {/* Capa de fondo dinámica */}
         {!isSelected && (
           <div className={`absolute inset-0 ${bgClass} transition-opacity duration-300 rounded-md`}></div>
         )}
         <div className={`absolute inset-0 ${isSelected ? 'bg-teal-500' : 'bg-teal-600 opacity-0 lg:group-hover:opacity-100'} transition-opacity duration-300 rounded-md`}></div>
-        
         <div className="flex items-center justify-between relative z-10">
           <div className="flex items-center">
             {serviceIcons[service]}
@@ -161,12 +181,10 @@ const CotizaTuServicio = () => {
           </div>
           {isSelected ? (
             <FaChevronUp className="text-2xl text-white text-shadow" />
+          ) : expanded ? (
+            <FaChevronUp className="text-2xl text-teal-600 lg:group-hover:text-white lg:group-hover:text-shadow" />
           ) : (
-            expanded ? (
-              <FaChevronUp className="text-2xl text-teal-600 lg:group-hover:text-white lg:group-hover:text-shadow" />
-            ) : (
-              <FaChevronDown className="text-2xl text-teal-600 lg:group-hover:text-white lg:group-hover:text-shadow" />
-            )
+            <FaChevronDown className="text-2xl text-teal-600 lg:group-hover:text-white lg:group-hover:text-shadow" />
           )}
         </div>
         {expanded && (
@@ -209,7 +227,8 @@ const CotizaTuServicio = () => {
   const subtotal =
     (selectedServices.software ? Number(selectedServices.software.value) : 0) +
     (selectedServices.custodia ? Number(selectedServices.custodia.value) : 0) +
-    (selectedServices.digitalizacion ? Number(selectedServices.digitalizacion.value) : 0);
+    (selectedServices.digitalizacion ? Number(selectedServices.digitalizacion.value) : 0) +
+    (selectedServices.software ? Number(selectedServices.software.startup) : 0);
 
   const handlePayment = () => {
     if (
@@ -218,13 +237,13 @@ const CotizaTuServicio = () => {
         !selectedServices.custodia &&
         !selectedServices.digitalizacion)
     ) {
-      alert("Por favor, seleccione al menos un servicio para pagar.");
+      alert('Por favor, seleccione al menos un servicio para pagar.');
       return;
     }
   
     router.push({
       pathname: '/PaymentFormPSE',
-      query: { total, previousPage: '/paginas/cotizaTuServicio' }
+      query: { total, previousPage: '/paginas/cotizaTuServicio' },
     });
   };
 
@@ -240,11 +259,11 @@ const CotizaTuServicio = () => {
             <div className="flex flex-col justify-center items-center">
               <h2 className="text-xl md:text-2xl font-bold mb-4 text-center">Software</h2>
               <span className="text-sm text-center block mb-2">Cantidad de usuarios</span>
-              <button 
+              <button
                 onClick={() =>
                   router.push({
                     pathname: '/paginas/servicios/mercurioPYMES',
-                    query: { previousPage: '/paginas/cotizaTuServicio' }
+                    query: { previousPage: '/paginas/cotizaTuServicio' },
                   })
                 }
                 className="mb-4 bg-teal-600 text-white px-3 py-1 rounded-full hover:bg-teal-700 transition-colors duration-200 shadow-md border-white border flex items-center justify-center"
@@ -258,11 +277,11 @@ const CotizaTuServicio = () => {
             <div className="flex flex-col justify-center items-center">
               <h2 className="text-xl md:text-2xl font-bold mb-4 text-center">Custodia</h2>
               <span className="text-sm text-center block mb-2">Cantidad de cajas</span>
-              <button 
+              <button
                 onClick={() =>
                   router.push({
                     pathname: '/paginas/servicios/mercurioCustodia',
-                    query: { previousPage: '/paginas/cotizaTuServicio' }
+                    query: { previousPage: '/paginas/cotizaTuServicio' },
                   })
                 }
                 className="mb-4 bg-teal-600 text-white px-3 py-1 rounded-full hover:bg-teal-700 transition-colors duration-200 shadow-md border-white border flex items-center justify-center"
@@ -276,11 +295,11 @@ const CotizaTuServicio = () => {
             <div className="flex flex-col justify-center items-center">
               <h2 className="text-xl md:text-2xl font-bold mb-4 text-center">Digitalización</h2>
               <span className="text-sm text-center block mb-2">Cantidad de imágenes</span>
-              <button 
+              <button
                 onClick={() =>
                   router.push({
                     pathname: '/paginas/servicios/mercurioDigitalizacion',
-                    query: { previousPage: '/paginas/cotizaTuServicio' }
+                    query: { previousPage: '/paginas/cotizaTuServicio' },
                   })
                 }
                 className="mb-4 bg-teal-600 text-white px-3 py-1 rounded-full hover:bg-teal-700 transition-colors duration-200 shadow-md border-white border flex items-center justify-center"
@@ -338,11 +357,11 @@ const CotizaTuServicio = () => {
                 <div className="flex flex-col items-center">
                   <span>Software</span>
                   <span className="text-sm">Cantidad de usuarios</span>
-                  <button 
+                  <button
                     onClick={() =>
                       router.push({
                         pathname: '/paginas/servicios/mercurioPYMES',
-                        query: { previousPage: '/paginas/cotizaTuServicio' }
+                        query: { previousPage: '/paginas/cotizaTuServicio' },
                       })
                     }
                     className="mt-1 bg-teal-500 border border-white shadow-lg text-white text-xs px-2 py-1 rounded hover:bg-teal-600 transition-colors"
@@ -355,11 +374,11 @@ const CotizaTuServicio = () => {
                 <div className="flex flex-col items-center">
                   <span>Custodia</span>
                   <span className="text-sm">Cantidad de cajas</span>
-                  <button 
+                  <button
                     onClick={() =>
                       router.push({
                         pathname: '/paginas/servicios/mercurioCustodia',
-                        query: { previousPage: '/paginas/cotizaTuServicio' }
+                        query: { previousPage: '/paginas/cotizaTuServicio' },
                       })
                     }
                     className="mt-1 bg-teal-500 border border-white shadow-lg text-white text-xs px-2 py-1 rounded hover:bg-teal-600 transition-colors"
@@ -372,11 +391,11 @@ const CotizaTuServicio = () => {
                 <div className="flex flex-col items-center">
                   <span>Digitalización</span>
                   <span className="text-sm">Cantidad de imágenes</span>
-                  <button 
+                  <button
                     onClick={() =>
                       router.push({
                         pathname: '/paginas/servicios/mercurioDigitalizacion',
-                        query: { previousPage: '/paginas/cotizaTuServicio' }
+                        query: { previousPage: '/paginas/cotizaTuServicio' },
                       })
                     }
                     className="mt-1 bg-teal-500 border border-white shadow-lg text-white text-xs px-2 py-1 rounded hover:bg-teal-600 transition-colors"
