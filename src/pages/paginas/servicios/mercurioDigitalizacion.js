@@ -200,45 +200,45 @@ const MercurioDigitalizacion = () => {
                   `}</style>
                   <button 
                     type="button"
-                    className={`btn-wave w-full p-2 rounded-md text-white font-bold transition-all duration-300 bg-blue-500 hover:bg-blue-600 ${formData.opcionSeleccionada === "Desde 0 hasta 5 cajas - $210.000" ? "selected" : ""}`}
-                    onClick={() => handleOptionSelect("Desde 0 hasta 5 cajas - $210.000")}
+                    className={`btn-wave w-full p-2 rounded-md text-white font-bold transition-all duration-300 bg-blue-500 hover:bg-blue-600 ${formData.opcionSeleccionada === "Desde 10667 imágenes - $1.866.667" ? "selected" : ""}`}
+                    onClick={() => handleOptionSelect("Desde 10667 imágenes - $1.866.667")}
                   >
-                    Desde 0 hasta 5 cajas - $210.000
+                    Desde 10667 imágenes - $1.866.667
                   </button>
                   <button 
                     type="button"
-                    className={`btn-wave w-full p-2 rounded-md text-white font-bold transition-all duration-300 bg-purple-500 hover:bg-purple-600 ${formData.opcionSeleccionada === "Desde 6 hasta 10 cajas - $384.000" ? "selected" : ""}`}
-                    onClick={() => handleOptionSelect("Desde 6 hasta 10 cajas - $384.000")}
+                    className={`btn-wave w-full p-2 rounded-md text-white font-bold transition-all duration-300 bg-purple-500 hover:bg-purple-600 ${formData.opcionSeleccionada === "Desde 21333 imágenes - $3.626.667" ? "selected" : ""}`}
+                    onClick={() => handleOptionSelect("Desde 21333 imágenes - $3.626.667")}
                   >
-                    Desde 6 hasta 10 cajas - $384.000
+                    Desde 21333 imágenes - $3.626.667
                   </button>
                   <button 
                     type="button"
-                    className={`btn-wave w-full p-2 rounded-md text-white font-bold transition-all duration-300 bg-amber-500 hover:bg-amber-600 ${formData.opcionSeleccionada === "Desde 11 hasta 20 cajas - $696.000" ? "selected" : ""}`}
-                    onClick={() => handleOptionSelect("Desde 11 hasta 20 cajas - $696.000")}
+                    className={`btn-wave w-full p-2 rounded-md text-white font-bold transition-all duration-300 bg-amber-500 hover:bg-amber-600 ${formData.opcionSeleccionada === "Desde 42667 imágenes - $7.040.000" ? "selected" : ""}`}
+                    onClick={() => handleOptionSelect("Desde 42667 imágenes - $7.040.000")}
                   >
-                    Desde 11 hasta 20 cajas - $696.000
+                    Desde 42667 imágenes - $7.040.000
                   </button>
                   <button 
                     type="button"
-                    className={`btn-wave w-full p-2 rounded-md text-white font-bold transition-all duration-300 bg-yellow-500 hover:bg-yellow-600 ${formData.opcionSeleccionada === "Desde 21 hasta 30 cajas - $936.000" ? "selected" : ""}`}
-                    onClick={() => handleOptionSelect("Desde 21 hasta 30 cajas - $936.000")}
+                    className={`btn-wave w-full p-2 rounded-md text-white font-bold transition-all duration-300 bg-yellow-500 hover:bg-yellow-600 ${formData.opcionSeleccionada === "Desde 64000 imágenes - $10.240.000" ? "selected" : ""}`}
+                    onClick={() => handleOptionSelect("Desde 64000 imágenes - $10.240.000")}
                   >
-                    Desde 21 hasta 30 cajas - $936.000
+                    Desde 64000 imágenes - $10.240.000
                   </button>
                   <button 
                     type="button"
-                    className={`btn-wave w-full p-2 rounded-md text-white font-bold transition-all duration-300 bg-red-500 hover:bg-red-600 ${formData.opcionSeleccionada === "Desde 31 hasta 40 cajas - $1.104.000" ? "selected" : ""}`}
-                    onClick={() => handleOptionSelect("Desde 31 hasta 40 cajas - $1.104.000")}
+                    className={`btn-wave w-full p-2 rounded-md text-white font-bold transition-all duration-300 bg-red-500 hover:bg-red-600 ${formData.opcionSeleccionada === "Desde 85333 imágenes - $13.226.667" ? "selected" : ""}`}
+                    onClick={() => handleOptionSelect("Desde 85333 imágenes - $13.226.667")}
                   >
-                    Desde 31 hasta 40 cajas - $1.104.000
+                    Desde 85333 imágenes - $13.226.667
                   </button>
                   <button 
                     type="button"
-                    className={`btn-wave w-full p-2 rounded-md text-white font-bold transition-all duration-300 bg-black hover:bg-yellow-600 ${formData.opcionSeleccionada === "Desde 31 hasta 50 cajas - $1.200.000" ? "selected" : ""}`}
-                    onClick={() => handleOptionSelect("Desde 31 hasta 50 cajas - $1.200.000")}
+                    className={`btn-wave w-full p-2 rounded-md text-white font-bold transition-all duration-300 bg-black hover:bg-yellow-600 ${formData.opcionSeleccionada === "Desde 106667 imágenes - $16.000.000" ? "selected" : ""}`}
+                    onClick={() => handleOptionSelect("Desde 106667 imágenes - $16.000.000")}
                   >
-                    Desde 31 hasta 50 cajas - $1.200.000
+                    Desde 106667 imágenes - $16.000.000
                   </button>
                 </div>
                 <div className="mt-4 text-center text-teal-600 font-semibold">
