@@ -10,7 +10,6 @@ import {
   FaMoneyBillWave
 } from 'react-icons/fa';
 import { ThemeContext } from '@/context/ThemeContext';
-import SubNavigation from '@/components/SubNavigation';
 
 const CotizaTuServicio = () => {
   const router = useRouter();
@@ -52,21 +51,21 @@ const CotizaTuServicio = () => {
   ];
 
   const options2 = [
-    { label: '5 cajas', value: 210000, startup: 750000 },
-    { label: '10 cajas', value: 384000, startup: 3000000 },
-    { label: '20 cajas', value: 696000, startup: 6750000 },
-    { label: '30 cajas', value: 936000, startup: 8200000 },
-    { label: '40 cajas', value: 1104000, startup: 10800000 },
-    { label: '50 cajas', value: 1200000, startup: 14000000 },
+    { label: '5 cajas', value: 210000 },
+    { label: '10 cajas', value: 384000 },
+    { label: '20 cajas', value: 696000 },
+    { label: '30 cajas', value: 936000 },
+    { label: '40 cajas', value: 1104000 },
+    { label: '50 cajas', value: 1200000 },
   ];
 
   const options3 = [
-    { label: '10667 imágenes', value: 1866666.67, startup: 750000 },
-    { label: '21333 imágenes', value: 3626666.67, startup: 3000000 },
-    { label: '42667 imágenes', value: 7040000, startup: 6750000 },
-    { label: '64000 imágenes', value: 10240000, startup: 8200000 },
-    { label: '85333 imágenes', value: 13226666.67, startup: 10800000 },
-    { label: '106667 imágenes', value: 16000000, startup: 14000000 },
+    { label: '10667 imágenes', value: 1866666.67 },
+    { label: '21333 imágenes', value: 3626666.67},
+    { label: '42667 imágenes', value: 7040000,},
+    { label: '64000 imágenes', value: 10240000 },
+    { label: '85333 imágenes', value: 13226666.67 },
+    { label: '106667 imágenes', value: 16000000 },
   ];
 
   const serviceIcons = {
@@ -106,7 +105,8 @@ const CotizaTuServicio = () => {
     const priceSoftware = selectedServices.software ? Number(selectedServices.software.value) : 0;
     const priceCustodia = selectedServices.custodia ? Number(selectedServices.custodia.value) : 0;
     const priceDigitalizacion = selectedServices.digitalizacion ? Number(selectedServices.digitalizacion.value) : 0;
-    const subtotal = priceSoftware + priceCustodia + priceDigitalizacion;
+    const startupSoftware = selectedServices.software ? Number(selectedServices.software.startup) : 0;
+    const subtotal = priceSoftware + priceCustodia + priceDigitalizacion + startupSoftware;
     const count = [selectedServices.software, selectedServices.custodia, selectedServices.digitalizacion].filter(s => s !== null).length;
     let disc = 0;
     if (count === 3) {
@@ -165,15 +165,17 @@ const CotizaTuServicio = () => {
                 ${Number(option.value).toLocaleString('es-ES', { maximumFractionDigits: 0 })}
               </span>
             </div>
-            <div className="flex items-center mt-1">
-              <FaRocket className={`text-red-500 mr-2 text-2xl icon-shadow ${isSelected ? 'text-shadow' : 'lg:group-hover:text-shadow'}`} />
-              <span className={`font-bold text-base md:text-xl ${isSelected ? 'text-shadow' : 'lg:group-hover:text-shadow'}`}>
-                Startup:
-              </span>
-              <span className={`ml-2 text-2xl font-extrabold ${isSelected ? 'text-shadow' : 'lg:group-hover:text-shadow'}`}>
-                ${Number(option.startup).toLocaleString('es-ES', { maximumFractionDigits: 0 })}
-              </span>
-            </div>
+            {service === 'software' && option.startup && (
+              <div className="flex items-center mt-1">
+                <FaRocket className={`text-red-500 mr-2 text-2xl icon-shadow ${isSelected ? 'text-shadow' : 'lg:group-hover:text-shadow'}`} />
+                <span className={`font-bold text-base md:text-xl ${isSelected ? 'text-shadow' : 'lg:group-hover:text-shadow'}`}>
+                  Startup:
+                </span>
+                <span className={`ml-2 text-2xl font-extrabold ${isSelected ? 'text-shadow' : 'lg:group-hover:text-shadow'}`}>
+                  ${Number(option.startup).toLocaleString('es-ES', { maximumFractionDigits: 0 })}
+                </span>
+              </div>
+            )}
           </div>
         )}
         <button
@@ -203,7 +205,6 @@ const CotizaTuServicio = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <SubNavigation previousPage="/paginas/cotizaTuServicio" />
       <h1 className="text-2xl md:text-4xl font-extrabold text-center mb-8">
         ¡Cotiza tu servicio!
       </h1>
@@ -345,5 +346,6 @@ const CotizaTuServicio = () => {
     </div>
   );
 };
+CotizaTuServicio.previousPage = '/paginas/cotizaTuServicio';
 
 export default CotizaTuServicio;

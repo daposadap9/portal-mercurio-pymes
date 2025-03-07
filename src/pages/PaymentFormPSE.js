@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+// pages/paginas/PaymentFormPSE.jsx
+import React, { useState } from 'react';
 import { useRouter } from 'next/router';
-import SubNavigation from '@/components/SubNavigation';
 
 const PaymentFormPSE = () => {
   const router = useRouter();
-  const { total, previousPage } = router.query;
+  const { total } = router.query; // ya no extraemos previousPage desde el query aquí
 
   const [formData, setFormData] = useState({
     banco: '',
@@ -33,14 +33,13 @@ const PaymentFormPSE = () => {
     e.preventDefault();
     // Aquí iría la lógica de procesamiento de pago
     console.log(formData);
-    alert('Pago procesado con éxito!');
+    alert('¡Pago procesado con éxito!');
     router.push('/paginas/servicios/PaymentSuccess'); // Redirigir a una página de éxito
   };
 
   return (
     <div className="max-w-lg mx-auto p-8 bg-gray-50 shadow-2xl rounded-xl relative">
-      <SubNavigation previousPage={previousPage} />
-      {/* Logo de PSE */}
+      {/* Nota: Se eliminó la instancia local de <SubNavigation /> */}
       <div className="flex justify-center mb-6">
         <img src="/pse.png" alt="Logo PSE" className="h-32" />
       </div>
@@ -57,7 +56,7 @@ const PaymentFormPSE = () => {
             value={formData.banco} 
             onChange={handleChange} 
             required
-            className="mt-1 block w-full rounded-md shadow-inset-sm border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
+            className="mt-1 block w-full rounded-md border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
           >
             <option value="">Elige un banco</option>
             {bancos.map((banco, idx) => (
@@ -78,7 +77,7 @@ const PaymentFormPSE = () => {
             onChange={handleChange} 
             required
             placeholder="Tu nombre completo"
-            className="mt-1 block w-full rounded-md shadow-inset-sm border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
+            className="mt-1 block w-full rounded-md border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
           />
         </div>
         {/* Documento de identidad */}
@@ -94,7 +93,7 @@ const PaymentFormPSE = () => {
             onChange={handleChange} 
             required
             placeholder="Número de documento"
-            className="mt-1 block w-full rounded-md shadow-inset-sm border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
+            className="mt-1 block w-full rounded-md border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
           />
         </div>
         {/* Email */}
@@ -110,7 +109,7 @@ const PaymentFormPSE = () => {
             onChange={handleChange} 
             required
             placeholder="correo@ejemplo.com"
-            className="mt-1 block w-full rounded-md shadow-inset-sm border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
+            className="mt-1 block w-full rounded-md border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
           />
         </div>
         {/* Teléfono celular */}
@@ -126,7 +125,7 @@ const PaymentFormPSE = () => {
             onChange={handleChange} 
             required
             placeholder="+57 300 0000000"
-            className="mt-1 block w-full rounded-md shadow-inset-sm border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
+            className="mt-1 block w-full rounded-md border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
           />
         </div>
         {/* Monto a pagar */}
@@ -140,7 +139,7 @@ const PaymentFormPSE = () => {
             name="monto" 
             value={total} 
             readOnly
-            className="mt-1 block w-full rounded-md shadow-inset-sm border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
+            className="mt-1 block w-full rounded-md border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
           />
         </div>
         {/* Botón de Enviar */}
@@ -156,5 +155,6 @@ const PaymentFormPSE = () => {
     </div>
   );
 };
+PaymentFormPSE.previousPage = '/paginas/cotizaTuServicio'
 
 export default PaymentFormPSE;
