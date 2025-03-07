@@ -100,16 +100,15 @@ const MercurioSGDEA = () => {
               Estamos comprometidos con los más altos estándares de calidad en cuanto al resguardo de documentos físicos y digitales, evitando así cualquier alteración en la información.
             </p>
             <p className="mb-4 leading-relaxed text-black text-base font-medium">
-            Mercurio SGDEA permite además:
-
- 
-
-Índices dinámicos ilimitados (metadatos).
-Trámites electrónicos virtuales para gestión con clientes (Formularios)
-Controles de acceso y seguridad
-Validación de anexos relacionados y requeridos
-Control de inventario
+              Mercurio SGDEA permite además:
             </p>
+            <ul className="list-disc list-inside text-black text-base font-medium">
+              <li>Índices dinámicos ilimitados (metadatos).</li>
+              <li>Trámites electrónicos virtuales para gestión con clientes (Formularios).</li>
+              <li>Controles de acceso y seguridad.</li>
+              <li>Validación de anexos relacionados y requeridos.</li>
+              <li>Control de inventario.</li>
+            </ul>
           </div>
         </div>
 

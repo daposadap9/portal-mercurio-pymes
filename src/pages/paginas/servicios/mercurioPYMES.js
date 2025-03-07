@@ -95,13 +95,12 @@ const MercurioPYMES = () => {
             </p>
             <p className="mb-4 leading-relaxed text-black text-base font-normal">
               Además podrás:
-              <br />
-              Controlar tus documentos.
-              <br />
-              Consultar tus documentos.
-              <br />
-              Conservar documentos en expedientes electrónicos.
             </p>
+            <ul className="list-disc list-inside text-black text-base font-normal">
+              <li>Controlar tus documentos.</li>
+              <li>Consultar tus documentos.</li>
+              <li>Conservar documentos en expedientes electrónicos.</li>
+            </ul>
           </div>
         </div>
 
