@@ -270,11 +270,16 @@ const CotizaTuServicio = () => {
                   <span>Software</span>
                   <span className="text-sm">Cantidad de usuarios</span>
                   <button 
-                    onClick={() => router.push('/paginas/servicios/mercurioPYMES')}
+                    onClick={() =>
+                        router.push({
+                        pathname: '/paginas/servicios/mercurioPYMES',
+                        query: { previousPage: '/paginas/cotizaTuServicio' }
+                        })
+                    }
                     className="mt-1 bg-teal-500 border border-white shadow-lg text-white text-xs px-2 py-1 rounded hover:bg-teal-600 transition-colors"
-                  >
+                    >
                     ¿Qué significa?
-                  </button>
+                    </button>
                 </div>
               </th>
               <th className="py-4 px-6 text-xl text-shadow">
@@ -282,11 +287,16 @@ const CotizaTuServicio = () => {
                   <span>Custodia</span>
                   <span className="text-sm">Cantidad de cajas</span>
                   <button 
-                    onClick={() => router.push('/paginas/servicios/mercurioCustodia')}
+                    onClick={() =>
+                        router.push({
+                        pathname: '/paginas/servicios/mercurioCustodia',
+                        query: { previousPage: '/paginas/cotizaTuServicio' }
+                        })
+                    }
                     className="mt-1 bg-teal-500 border border-white shadow-lg text-white text-xs px-2 py-1 rounded hover:bg-teal-600 transition-colors"
-                  >
+                    >
                     ¿Qué significa?
-                  </button>
+                    </button>
                 </div>
               </th>
               <th className="py-4 px-6 text-xl text-shadow">
@@ -294,11 +304,16 @@ const CotizaTuServicio = () => {
                   <span>Digitalización</span>
                   <span className="text-sm">Cantidad de imágenes</span>
                   <button 
-                    onClick={() => router.push('/paginas/servicios/mercurioDigitalizacion')}
+                    onClick={() =>
+                        router.push({
+                        pathname: '/paginas/servicios/mercurioDigitalizacion',
+                        query: { previousPage: '/paginas/cotizaTuServicio' }
+                        })
+                    }
                     className="mt-1 bg-teal-500 border border-white shadow-lg text-white text-xs px-2 py-1 rounded hover:bg-teal-600 transition-colors"
-                  >
+                    >
                     ¿Qué significa?
-                  </button>
+                    </button>
                 </div>
               </th>
             </tr>

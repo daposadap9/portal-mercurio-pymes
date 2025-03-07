@@ -1,4 +1,3 @@
-// Layout.jsx
 import React from 'react';
 import { useRouter } from 'next/router';
 import Header from './Header';
@@ -8,11 +7,9 @@ import { DropdownProvider } from '@/context/DropdownContext';
 
 const Layout = ({ children, handleNavigation, loading }) => {
   const router = useRouter();
-  const pathSegments = router.asPath.split('/').filter(seg => seg !== '');
-  const showSubNav = pathSegments.length > 1;
-
-  // Se extrae previousPage: si viene en la query, se usa; de lo contrario, se busca en la propiedad estática de la página.
   const previousPageProp = router.query.previousPage || children?.type?.previousPage || null;
+  const pathSegments = router.asPath.split('/').filter(seg => seg !== '');
+  const showSubNav = pathSegments.length > 1 || previousPageProp;
 
   // Función para generar un delay aleatorio negativo
   const randomDelay = () => `-${Math.random() * 15}s`;

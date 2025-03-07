@@ -12,7 +12,7 @@ export default function SubNavigation({ aliases = {}, previousPage }) {
 
   // Mostramos solo los segmentos a partir del primero.
   const displaySegments = pathSegments.slice(1);
-  if (displaySegments.length < 2) return null;
+  if (displaySegments.length < 2 && !previousPage) return null;
 
   const basePath = '/' + pathSegments[0];
   const breadcrumbs = displaySegments.map((seg, i) => {
