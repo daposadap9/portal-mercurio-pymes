@@ -5,9 +5,9 @@ import { FaArrowLeft } from 'react-icons/fa';
 export default function SubNavigation({ aliases = {}, previousPage }) {
   const router = useRouter();
 
-  // Eliminamos la query y separamos los segmentos de la ruta.
-  const pathWithoutQuery = router.asPath.split('?')[0];
-  const pathSegments = pathWithoutQuery.split('/').filter(seg => seg !== '');
+  // Limpiamos la ruta actual (quitando la query)
+  const currentPath = router.asPath.split('?')[0];
+  const pathSegments = currentPath.split('/').filter(seg => seg !== '');
   if (pathSegments.length === 0) return null;
 
   // Mostramos solo los segmentos a partir del primero.
@@ -15,11 +15,32 @@ export default function SubNavigation({ aliases = {}, previousPage }) {
   if (displaySegments.length < 2 && !previousPage) return null;
 
   const basePath = '/' + pathSegments[0];
-  const breadcrumbs = displaySegments.map((seg, i) => {
+  let breadcrumbs = displaySegments.map((seg, i) => {
     const crumbPath = basePath + '/' + displaySegments.slice(0, i + 1).join('/');
     const displayName = aliases[seg] || (seg.charAt(0).toUpperCase() + seg.slice(1));
     return { path: crumbPath, display: displayName };
   });
+
+  // Si se pasó previousPage, la limpiamos (quitamos query) y reemplazamos los breadcrumbs
+  let cleanedPreviousPage = null;
+  if (previousPage) {
+    cleanedPreviousPage = previousPage.split('?')[0];
+    const prevSegments = cleanedPreviousPage.split('/').filter(seg => seg !== '');
+    const previousCrumb = {
+      path: cleanedPreviousPage,
+      display: aliases[prevSegments[prevSegments.length - 1]] ||
+               (prevSegments[prevSegments.length - 1].charAt(0).toUpperCase() +
+                prevSegments[prevSegments.length - 1].slice(1))
+    };
+    const currentCrumb =
+      breadcrumbs.length > 0
+        ? breadcrumbs[breadcrumbs.length - 1]
+        : { path: currentPath, display: currentPath.split('/').pop() || '' };
+
+    // Reemplazamos el array completo de breadcrumbs por solo dos elementos:
+    // el de la página anterior (limpia) y el de la página actual.
+    breadcrumbs = [previousCrumb, currentCrumb];
+  }
 
   const parentBreadcrumb = breadcrumbs.length > 1 ? breadcrumbs[breadcrumbs.length - 2] : null;
 
@@ -27,7 +48,7 @@ export default function SubNavigation({ aliases = {}, previousPage }) {
   const handleNavigation = (e, href) => {
     e.preventDefault();
     if (typeof window !== 'undefined') {
-      window.skipAnimation = true; // Marcamos para saltar la animación.
+      window.skipAnimation = true;
     }
     router.push(href);
   };
@@ -52,12 +73,11 @@ export default function SubNavigation({ aliases = {}, previousPage }) {
           </span>
         ))}
       </div>
-      {/* Si previousPage existe, se muestra; de lo contrario, se muestra parentBreadcrumb */}
       <div className="mt-2 md:mt-0">
         {previousPage ? (
-          <Link href={previousPage} legacyBehavior>
+          <Link href={cleanedPreviousPage} legacyBehavior>
             <a
-              onClick={(e) => handleNavigation(e, previousPage)}
+              onClick={(e) => handleNavigation(e, cleanedPreviousPage)}
               className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-teal-500 to-teal-600 text-white rounded-full shadow hover:from-teal-600 hover:to-teal-500 transition-all duration-300"
             >
               <FaArrowLeft className="text-lg" />

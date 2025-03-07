@@ -24,20 +24,24 @@ const CotizaTuServicio = () => {
       ? 'bg-custom-gradient2'
       : 'bg-custom-gradient3';
 
-  const [selectedServices, setSelectedServices] = useState({
-    software: null,
-    custodia: null,
-    digitalizacion: null,
+  // Lazy initializer: si ya existe la selección guardada, se carga desde localStorage
+  const [selectedServices, setSelectedServices] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('selectedServices');
+      return saved ? JSON.parse(saved) : { software: null, custodia: null, digitalizacion: null };
+    }
+    return { software: null, custodia: null, digitalizacion: null };
   });
+
   const [expandedCells, setExpandedCells] = useState({});
   const [total, setTotal] = useState(0);
   const [discount, setDiscount] = useState(0);
-
   const [explanations, setExplanations] = useState({
     software: false,
     custodia: false,
     digitalizacion: false,
   });
+
   const toggleExplanation = (service) => {
     setExplanations(prev => ({ ...prev, [service]: !prev[service] }));
   };
@@ -62,8 +66,8 @@ const CotizaTuServicio = () => {
 
   const options3 = [
     { label: '10667 imágenes', value: 1866666.67 },
-    { label: '21333 imágenes', value: 3626666.67},
-    { label: '42667 imágenes', value: 7040000,},
+    { label: '21333 imágenes', value: 3626666.67 },
+    { label: '42667 imágenes', value: 7040000 },
     { label: '64000 imágenes', value: 10240000 },
     { label: '85333 imágenes', value: 13226666.67 },
     { label: '106667 imágenes', value: 16000000 },
@@ -74,6 +78,13 @@ const CotizaTuServicio = () => {
     custodia: <FaBoxOpen className="text-green-600 mr-2 text-2xl icon-shadow" />,
     digitalizacion: <FaRegImage className="text-purple-600 mr-2 text-2xl icon-shadow" />,
   };
+
+  // Cada vez que cambia la selección, se guarda en localStorage
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('selectedServices', JSON.stringify(selectedServices));
+    }
+  }, [selectedServices]);
 
   const handleServiceChange = (service, option, index) => {
     const key = `${service}-${index}`;
@@ -119,10 +130,12 @@ const CotizaTuServicio = () => {
     setTotal(subtotal - subtotal * disc);
   }, [selectedServices]);
 
+  // En renderCell forzamos que, si el servicio está seleccionado, la celda se considere expandida
   const renderCell = (service, option, index) => {
     const cellKey = `${service}-${index}`;
     const isExpanded = expandedCells[cellKey];
     const isSelected = selectedServices[service]?.label === option.label;
+    const expanded = isSelected || isExpanded; // si está seleccionado, se muestra expandida
 
     return (
       <div
@@ -133,9 +146,10 @@ const CotizaTuServicio = () => {
         }`}
         onClick={() => toggleCell(service, option, index)}
       >
-        {/* Capa de fondo dinámico (según bgClass) */}
-        {!isSelected && <div className={`absolute inset-0 ${bgClass} transition-opacity duration-300 rounded-md`}></div>}
-        {/* Capa de fondo sólido teal que aparece en hover */}
+        {/* Capa de fondo dinámica */}
+        {!isSelected && (
+          <div className={`absolute inset-0 ${bgClass} transition-opacity duration-300 rounded-md`}></div>
+        )}
         <div className={`absolute inset-0 ${isSelected ? 'bg-teal-500' : 'bg-teal-600 opacity-0 lg:group-hover:opacity-100'} transition-opacity duration-300 rounded-md`}></div>
         
         <div className="flex items-center justify-between relative z-10">
@@ -145,17 +159,17 @@ const CotizaTuServicio = () => {
               {option.label}
             </span>
           </div>
-          {isExpanded ? (
-            <FaChevronUp 
-              className={`text-2xl ${isSelected ? 'text-white text-shadow' : 'text-teal-600 lg:group-hover:text-white lg:group-hover:text-shadow'}`} 
-            />
+          {isSelected ? (
+            <FaChevronUp className="text-2xl text-white text-shadow" />
           ) : (
-            <FaChevronDown 
-              className={`text-2xl ${isSelected ? 'text-white text-shadow' : 'text-teal-600 lg:group-hover:text-white lg:group-hover:text-shadow'}`} 
-            />
+            expanded ? (
+              <FaChevronUp className="text-2xl text-teal-600 lg:group-hover:text-white lg:group-hover:text-shadow" />
+            ) : (
+              <FaChevronDown className="text-2xl text-teal-600 lg:group-hover:text-white lg:group-hover:text-shadow" />
+            )
           )}
         </div>
-        {isExpanded && (
+        {expanded && (
           <div className="mt-2 text-sm relative z-10">
             <div className="flex items-center">
               <FaMoneyBillWave className={`text-green-500 mr-2 text-2xl icon-shadow ${isSelected ? 'text-shadow' : 'lg:group-hover:text-shadow'}`} />
@@ -198,7 +212,6 @@ const CotizaTuServicio = () => {
     (selectedServices.digitalizacion ? Number(selectedServices.digitalizacion.value) : 0);
 
   const handlePayment = () => {
-    // Puedes validar si total es 0 o si no se ha seleccionado ningún servicio
     if (
       total === 0 ||
       (!selectedServices.software &&
@@ -220,60 +233,60 @@ const CotizaTuServicio = () => {
       <h1 className="text-2xl md:text-4xl font-extrabold text-center mb-8">
         ¡Cotiza tu servicio!
       </h1>
+      {/* Vista para dispositivos móviles */}
       <div className="block lg:hidden">
         <div className="grid grid-cols-1 gap-6">
           <div>
-            <div className='flex flex-col justify-center items-center'>
-            <h2 className="text-xl md:text-2xl font-bold mb-4 text-center">Software</h2>
-            <span className="text-sm text-center block mb-2">Cantidad de usuarios</span>
-            <button 
-            onClick={() =>
-                router.push({
-                pathname: '/paginas/servicios/mercurioPYMES',
-                query: { previousPage: '/paginas/cotizaTuServicio' }
-                })
-            }
-              className="mb-4 bg-teal-600 text-white px-3 py-1 rounded-full hover:bg-teal-700 transition-colors duration-200 shadow-md border-white border flex items-center justify-center"
-            >
-              <FaInfoCircle className="mr-2" /> ¿Qué significa?
-            </button>
+            <div className="flex flex-col justify-center items-center">
+              <h2 className="text-xl md:text-2xl font-bold mb-4 text-center">Software</h2>
+              <span className="text-sm text-center block mb-2">Cantidad de usuarios</span>
+              <button 
+                onClick={() =>
+                  router.push({
+                    pathname: '/paginas/servicios/mercurioPYMES',
+                    query: { previousPage: '/paginas/cotizaTuServicio' }
+                  })
+                }
+                className="mb-4 bg-teal-600 text-white px-3 py-1 rounded-full hover:bg-teal-700 transition-colors duration-200 shadow-md border-white border flex items-center justify-center"
+              >
+                <FaInfoCircle className="mr-2" /> ¿Qué significa?
+              </button>
             </div>
-
             {options.map((option, index) => renderCell('software', option, index))}
           </div>
           <div>
-            <div className='flex flex-col justify-center items-center'>
-            <h2 className="text-xl md:text-2xl font-bold mb-4 text-center">Custodia</h2>
-            <span className="text-sm text-center block mb-2">Cantidad de cajas</span>
-            <button 
-               onClick={() =>
-                router.push({
-                pathname: '/paginas/servicios/mercurioCustodia',
-                query: { previousPage: '/paginas/cotizaTuServicio' }
-                })
-            }
-              className="mb-4 bg-teal-600 text-white px-3 py-1 rounded-full hover:bg-teal-700 transition-colors duration-200 shadow-md border-white border flex items-center justify-center"
-            >
-              <FaInfoCircle className="mr-2" /> ¿Qué significa?
-            </button>
+            <div className="flex flex-col justify-center items-center">
+              <h2 className="text-xl md:text-2xl font-bold mb-4 text-center">Custodia</h2>
+              <span className="text-sm text-center block mb-2">Cantidad de cajas</span>
+              <button 
+                onClick={() =>
+                  router.push({
+                    pathname: '/paginas/servicios/mercurioCustodia',
+                    query: { previousPage: '/paginas/cotizaTuServicio' }
+                  })
+                }
+                className="mb-4 bg-teal-600 text-white px-3 py-1 rounded-full hover:bg-teal-700 transition-colors duration-200 shadow-md border-white border flex items-center justify-center"
+              >
+                <FaInfoCircle className="mr-2" /> ¿Qué significa?
+              </button>
             </div>
             {options2.map((option, index) => renderCell('custodia', option, index))}
           </div>
           <div>
-            <div className='flex flex-col justify-center items-center'>
-            <h2 className="text-xl md:text-2xl font-bold mb-4 text-center">Digitalización</h2>
-            <span className="text-sm text-center block mb-2">Cantidad de imágenes</span>
-            <button 
-              onClick={() =>
-                router.push({
-                pathname: '/paginas/servicios/mercurioDigitalizacion',
-                query: { previousPage: '/paginas/cotizaTuServicio' }
-                })
-            }
-              className="mb-4 bg-teal-600 text-white px-3 py-1 rounded-full hover:bg-teal-700 transition-colors duration-200 shadow-md border-white border flex items-center justify-center"
-            >
-              <FaInfoCircle className="mr-2" /> ¿Qué significa?
-            </button>
+            <div className="flex flex-col justify-center items-center">
+              <h2 className="text-xl md:text-2xl font-bold mb-4 text-center">Digitalización</h2>
+              <span className="text-sm text-center block mb-2">Cantidad de imágenes</span>
+              <button 
+                onClick={() =>
+                  router.push({
+                    pathname: '/paginas/servicios/mercurioDigitalizacion',
+                    query: { previousPage: '/paginas/cotizaTuServicio' }
+                  })
+                }
+                className="mb-4 bg-teal-600 text-white px-3 py-1 rounded-full hover:bg-teal-700 transition-colors duration-200 shadow-md border-white border flex items-center justify-center"
+              >
+                <FaInfoCircle className="mr-2" /> ¿Qué significa?
+              </button>
             </div>
             {options3.map((option, index) => renderCell('digitalizacion', option, index))}
           </div>
@@ -316,6 +329,7 @@ const CotizaTuServicio = () => {
           </button>
         </div>
       </div>
+      {/* Vista para desktop */}
       <div className="hidden lg:block">
         <table className="min-w-full bg-white border border-gray-200 shadow-2xl rounded-lg overflow-hidden">
           <thead className="bg-gradient-to-r from-teal-500 to-teal-600 text-white text-shadow">
@@ -326,15 +340,15 @@ const CotizaTuServicio = () => {
                   <span className="text-sm">Cantidad de usuarios</span>
                   <button 
                     onClick={() =>
-                        router.push({
+                      router.push({
                         pathname: '/paginas/servicios/mercurioPYMES',
                         query: { previousPage: '/paginas/cotizaTuServicio' }
-                        })
+                      })
                     }
                     className="mt-1 bg-teal-500 border border-white shadow-lg text-white text-xs px-2 py-1 rounded hover:bg-teal-600 transition-colors"
-                    >
+                  >
                     ¿Qué significa?
-                    </button>
+                  </button>
                 </div>
               </th>
               <th className="py-4 px-6 text-xl text-shadow">
@@ -343,15 +357,15 @@ const CotizaTuServicio = () => {
                   <span className="text-sm">Cantidad de cajas</span>
                   <button 
                     onClick={() =>
-                        router.push({
+                      router.push({
                         pathname: '/paginas/servicios/mercurioCustodia',
                         query: { previousPage: '/paginas/cotizaTuServicio' }
-                        })
+                      })
                     }
                     className="mt-1 bg-teal-500 border border-white shadow-lg text-white text-xs px-2 py-1 rounded hover:bg-teal-600 transition-colors"
-                    >
+                  >
                     ¿Qué significa?
-                    </button>
+                  </button>
                 </div>
               </th>
               <th className="py-4 px-6 text-xl text-shadow">
@@ -360,15 +374,15 @@ const CotizaTuServicio = () => {
                   <span className="text-sm">Cantidad de imágenes</span>
                   <button 
                     onClick={() =>
-                        router.push({
+                      router.push({
                         pathname: '/paginas/servicios/mercurioDigitalizacion',
                         query: { previousPage: '/paginas/cotizaTuServicio' }
-                        })
+                      })
                     }
                     className="mt-1 bg-teal-500 border border-white shadow-lg text-white text-xs px-2 py-1 rounded hover:bg-teal-600 transition-colors"
-                    >
+                  >
                     ¿Qué significa?
-                    </button>
+                  </button>
                 </div>
               </th>
             </tr>
@@ -416,6 +430,6 @@ const CotizaTuServicio = () => {
     </div>
   );
 };
-CotizaTuServicio.previousPage = '/paginas/cotizaTuServicio';
 
+CotizaTuServicio.previousPage = '/paginas/cotizaTuServicio';
 export default CotizaTuServicio;
