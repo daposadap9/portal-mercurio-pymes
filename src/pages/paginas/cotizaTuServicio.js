@@ -7,7 +7,8 @@ import {
   FaBoxOpen, 
   FaRegImage, 
   FaRocket,
-  FaMoneyBillWave
+  FaMoneyBillWave,
+  FaInfoCircle
 } from 'react-icons/fa';
 import { ThemeContext } from '@/context/ThemeContext';
 
@@ -196,24 +197,23 @@ const CotizaTuServicio = () => {
     (selectedServices.custodia ? Number(selectedServices.custodia.value) : 0) +
     (selectedServices.digitalizacion ? Number(selectedServices.digitalizacion.value) : 0);
 
-    const handlePayment = () => {
-        // Puedes validar si total es 0 o si no se ha seleccionado ningún servicio
-        if (
-          total === 0 ||
-          (!selectedServices.software &&
-            !selectedServices.custodia &&
-            !selectedServices.digitalizacion)
-        ) {
-          alert("Por favor, seleccione al menos un servicio para pagar.");
-          return;
-        }
-      
-        router.push({
-          pathname: '/PaymentFormPSE',
-          query: { total, previousPage: '/paginas/cotizaTuServicio' }
-        });
-      };
-      
+  const handlePayment = () => {
+    // Puedes validar si total es 0 o si no se ha seleccionado ningún servicio
+    if (
+      total === 0 ||
+      (!selectedServices.software &&
+        !selectedServices.custodia &&
+        !selectedServices.digitalizacion)
+    ) {
+      alert("Por favor, seleccione al menos un servicio para pagar.");
+      return;
+    }
+  
+    router.push({
+      pathname: '/PaymentFormPSE',
+      query: { total, previousPage: '/paginas/cotizaTuServicio' }
+    });
+  };
 
   return (
     <div className="container mx-auto p-4">
@@ -223,15 +223,58 @@ const CotizaTuServicio = () => {
       <div className="block lg:hidden">
         <div className="grid grid-cols-1 gap-6">
           <div>
+            <div className='flex flex-col justify-center items-center'>
             <h2 className="text-xl md:text-2xl font-bold mb-4 text-center">Software</h2>
+            <span className="text-sm text-center block mb-2">Cantidad de usuarios</span>
+            <button 
+            onClick={() =>
+                router.push({
+                pathname: '/paginas/servicios/mercurioPYMES',
+                query: { previousPage: '/paginas/cotizaTuServicio' }
+                })
+            }
+              className="mb-4 bg-teal-600 text-white px-3 py-1 rounded-full hover:bg-teal-700 transition-colors duration-200 shadow-md border-white border flex items-center justify-center"
+            >
+              <FaInfoCircle className="mr-2" /> ¿Qué significa?
+            </button>
+            </div>
+
             {options.map((option, index) => renderCell('software', option, index))}
           </div>
           <div>
+            <div className='flex flex-col justify-center items-center'>
             <h2 className="text-xl md:text-2xl font-bold mb-4 text-center">Custodia</h2>
+            <span className="text-sm text-center block mb-2">Cantidad de cajas</span>
+            <button 
+               onClick={() =>
+                router.push({
+                pathname: '/paginas/servicios/mercurioCustodia',
+                query: { previousPage: '/paginas/cotizaTuServicio' }
+                })
+            }
+              className="mb-4 bg-teal-600 text-white px-3 py-1 rounded-full hover:bg-teal-700 transition-colors duration-200 shadow-md border-white border flex items-center justify-center"
+            >
+              <FaInfoCircle className="mr-2" /> ¿Qué significa?
+            </button>
+            </div>
             {options2.map((option, index) => renderCell('custodia', option, index))}
           </div>
           <div>
+            <div className='flex flex-col justify-center items-center'>
             <h2 className="text-xl md:text-2xl font-bold mb-4 text-center">Digitalización</h2>
+            <span className="text-sm text-center block mb-2">Cantidad de imágenes</span>
+            <button 
+              onClick={() =>
+                router.push({
+                pathname: '/paginas/servicios/mercurioDigitalizacion',
+                query: { previousPage: '/paginas/cotizaTuServicio' }
+                })
+            }
+              className="mb-4 bg-teal-600 text-white px-3 py-1 rounded-full hover:bg-teal-700 transition-colors duration-200 shadow-md border-white border flex items-center justify-center"
+            >
+              <FaInfoCircle className="mr-2" /> ¿Qué significa?
+            </button>
+            </div>
             {options3.map((option, index) => renderCell('digitalizacion', option, index))}
           </div>
         </div>
