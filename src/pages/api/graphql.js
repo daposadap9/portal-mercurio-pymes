@@ -1,10 +1,25 @@
 // pages/api/graphql.js
 import { ApolloServer, gql } from 'apollo-server-micro';
+const { PrismaClient } = require('@prisma/client');
+const { GraphQLJSON } = require('graphql-type-json');
+const { GraphQLDateTime } = require('graphql-iso-date');
 import sql from 'mssql';
 import dotenv from 'dotenv';
-import axios from 'axios'; // Se agrega Axios para la petición SOAP
+import axios from 'axios';
 
 dotenv.config();
+
+// Cliente Prisma para las operaciones existentes (mssql y SOAP)
+const prisma = new PrismaClient();
+
+// *** NUEVO: Cliente Prisma para transacciones en una base de datos distinta ***
+const transactionsPrisma = new PrismaClient({
+  datasources: {
+    db: {
+      url: process.env.DATABASE_URL, // Define esta variable en tu .env
+    },
+  },
+});
 
 // Función auxiliar que implementa la lógica de setSiguienteRadicadoNew
 async function getNextRadicado() {
@@ -53,9 +68,34 @@ async function getNextRadicado() {
 }
 
 const typeDefs = gql`
+  scalar JSON
+  scalar DateTime
+
+  type Transaction {
+    id: ID!
+    userId: String!
+    software: JSON
+    custodia: JSON
+    digitalizacion: JSON
+    total: Float!
+    discount: Float!
+    state: String!
+    createdAt: DateTime!
+  }
+
+  input TransactionInput {
+    software: JSON
+    custodia: JSON
+    digitalizacion: JSON
+    total: Float!
+    discount: Float!
+    state: String!
+  }
+
   type Mutation {
     setSiguienteRadicadoNew: String!
     insertMertRecibido(documentInfo: String!, documentInfoGeneral: String!): InsertMertRecibidoPayload!
+    saveTransaction(userId: String!, input: TransactionInput!): Transaction!
   }
   type InsertMertRecibidoPayload {
     success: Boolean!
@@ -63,19 +103,52 @@ const typeDefs = gql`
     idDocumento: String
   }
   type Query {
+    getTransaction(userId: String!): Transaction!
+    getTotal(userId: String!): Float!
     _: Boolean
   }
 `;
 
 const resolvers = {
+  JSON: GraphQLJSON,
+  DateTime: GraphQLDateTime,
+  Query: {
+    // Para transacciones usamos el cliente transactionsPrisma (base de datos separada)
+    getTransaction: async (_, { userId }) => {
+      console.log("Resolver getTransaction – userId recibido:", userId);
+      try {
+        const transaction = await transactionsPrisma.transaction.findFirst({ where: { userId } });
+        if (!transaction) {
+          throw new Error(`No se encontró la transacción para el userId: ${userId}`);
+        }
+        console.log("Resolver getTransaction – Registro encontrado:", transaction);
+        return transaction;
+      } catch (error) {
+        console.error("Error en getTransaction:", error);
+        throw new Error("Error al obtener la transacción");
+      }
+    }, getTotal: async (_, { userId }) => {
+      console.log("Resolver getTotal – userId recibido:", userId);
+      try {
+        const transaction = await transactionsPrisma.transaction.findFirst({ where: { userId } });
+        console.log("Resolver getTotal – Registro encontrado:", transaction);
+        if (!transaction) {
+          throw new Error("No se encontró la transacción para el userId: " + userId);
+        }
+        return transaction.total;
+      } catch (error) {
+        console.error("Error en getTotal:", error);
+        throw new Error("Error al obtener el total de la transacción");
+      }
+    },
+    _: () => true
+  },
   Mutation: {
-    // Mutation que devuelve el siguiente radicado
+    // Métodos existentes (mssql y SOAP) sin cambios
     async setSiguienteRadicadoNew() {
       return await getNextRadicado();
     },
-    // Mutation para insertar en MERT_RECIBIDO y posteriormente enviar la petición SOAP
     async insertMertRecibido(_, { documentInfo, documentInfoGeneral }) {
-      // Primero, obtenemos el radicado a utilizar
       const idDocumento = await getNextRadicado();
 
       const config = {
@@ -135,12 +208,10 @@ const resolvers = {
           }
         });
 
-        // Validar condición: Si existe el anterior y no existe el actual ni el siguiente, o hay cambio de año
         if (!((existsPrevious && !existsCurrent && !existsNext) || cambioTiempo)) {
           throw new Error("No se cumplen las condiciones para insertar: ya existe o no hay cambio de tiempo");
         }
 
-        // Iniciar transacción
         const transaction = new sql.Transaction();
         await transaction.begin();
         try {
@@ -162,7 +233,7 @@ const resolvers = {
           `;
           await requestTx.query(updateConfigQuery);
 
-          // 3. Insertar en MERT_RECIBIDO con valores fijos y la información del formulario
+          // 3. Insertar en MERT_RECIBIDO con los valores fijos y la info del formulario
           requestTx.input('fecDocumento', sql.DateTime, new Date());
           requestTx.input('idAsociado', sql.VarChar, '800240660-2');
           requestTx.input('idGeografia', sql.VarChar, '00001');
@@ -270,12 +341,10 @@ const resolvers = {
           `;
           await requestTx.query(insertRecibidoQuery);
 
-          // Confirmar la transacción
+          // Confirmar la transacción SQL
           await transaction.commit();
 
           // Realizar la petición SOAP al webservice
-          // Cargar las variables de entorno
-
           const soapBody = `<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:rut="http://www.servisoft.com.co/Mercurio/Servicios/Schema/RutaService">
             <soapenv:Header/>
             <soapenv:Body>
@@ -291,14 +360,13 @@ const resolvers = {
             const soapResponse = await axios.post(process.env.SOAP_URL, soapBody, {
               headers: { 
                 'Content-Type': 'text/xml',
-                'SOAPAction': '' // Algunos servicios SOAP requieren esto, aunque sea vacío
+                'SOAPAction': '' // Algunos servicios SOAP requieren este header (aunque sea vacío)
               }
             });
             console.log('SOAP request successful:', soapResponse.data);
           } catch (soapError) {
             console.error('Error making SOAP request:', soapError);
           }
-
 
           return {
             success: true,
@@ -314,10 +382,33 @@ const resolvers = {
       } finally {
         sql.close();
       }
-    }
-  },
-  Query: {
-    _: () => true
+    },
+    // *** NUEVA mutation para guardar la transacción usando Prisma en la DB de transacciones ***
+    async saveTransaction(_, { userId, input }) {
+      // Convertir discount a float si llega como cadena con coma
+      const discountValue =
+        typeof input.discount === 'string'
+          ? parseFloat(input.discount.replace(',', '.'))
+          : input.discount;
+    
+      const dataToSave = {
+        ...input,
+        discount: discountValue,
+      };
+    
+      let transactionRecord = await transactionsPrisma.transaction.findFirst({ where: { userId } });
+      if (transactionRecord) {
+        transactionRecord = await transactionsPrisma.transaction.update({
+          where: { id: transactionRecord.id },
+          data: dataToSave,
+        });
+      } else {
+        transactionRecord = await transactionsPrisma.transaction.create({
+          data: { userId, ...dataToSave },
+        });
+      }
+      return transactionRecord;
+    }    
   }
 };
 

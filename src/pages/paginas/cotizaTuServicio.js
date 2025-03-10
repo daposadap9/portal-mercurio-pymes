@@ -1,3 +1,4 @@
+// pages/paginas/cotizaTuServicio.jsx
 import React, { useState, useEffect, useContext } from 'react';
 import { useRouter } from 'next/router';
 import { 
@@ -11,12 +12,43 @@ import {
   FaInfoCircle
 } from 'react-icons/fa';
 import { ThemeContext } from '@/context/ThemeContext';
+import { TransactionContext } from '@/context/TransactionContext';
+import { gql, useMutation } from '@apollo/client';
+import { v4 as uuidv4 } from 'uuid';
+import { useDebounce } from 'use-debounce';
+import Cookies from 'js-cookie';
+
+// Mutación para guardar la transacción en el backend
+const SAVE_TRANSACTION = gql`
+  mutation SaveTransaction($userId: String!, $input: TransactionInput!) {
+    saveTransaction(userId: $userId, input: $input) {
+      id
+      userId
+      software
+      custodia
+      digitalizacion
+      total
+      discount
+      state
+      createdAt
+    }
+  }
+`;
 
 const CotizaTuServicio = () => {
   const router = useRouter();
   const { theme } = useContext(ThemeContext);
+  const { 
+    selectedServices: globalServices, 
+    total: globalTotal, 
+    discount: globalDiscount, 
+    updateTransaction 
+  } = useContext(TransactionContext);
 
-  // Selecciona la clase de fondo según el tema actual
+  // Estado local para la UI; se actualizará luego en el contexto global
+  const [localServices, setLocalServices] = useState(globalServices);
+  const [expandedCells, setExpandedCells] = useState({});
+
   const bgClass =
     theme === 'dark'
       ? 'bg-custom-gradient'
@@ -24,43 +56,27 @@ const CotizaTuServicio = () => {
       ? 'bg-custom-gradient2'
       : 'bg-custom-gradient3';
 
-  // Valor por defecto (igual en servidor y cliente)
-  const defaultSelectedServices = { software: null, custodia: null, digitalizacion: null };
-
-  // Inicializamos siempre con el valor por defecto
-  const [selectedServices, setSelectedServices] = useState(defaultSelectedServices);
-  const [expandedCells, setExpandedCells] = useState({});
-  const [total, setTotal] = useState(0);
-  const [discount, setDiscount] = useState(0);
-  const [explanations, setExplanations] = useState({
-    software: false,
-    custodia: false,
-    digitalizacion: false,
+  // Generación de userId persistente en cookie (para evitar crear múltiples registros)
+  const [userId] = useState(() => {
+    let uid = Cookies.get('userId');
+    if (!uid) {
+      uid = uuidv4();
+      Cookies.set('userId', uid, { expires: 7 });
+    }
+    return uid;
   });
-  
-  // Bandera para saber que ya se ejecutó el useEffect (solo en cliente)
-  const [mounted, setMounted] = useState(false);
 
-  // En el primer efecto (solo en cliente) actualizamos el estado desde localStorage
-  useEffect(() => {
-    setMounted(true);
-    const saved = localStorage.getItem('selectedServices');
-    if (saved) {
-      setSelectedServices(JSON.parse(saved));
-    }
-  }, []);
+  const [saveTransaction] = useMutation(SAVE_TRANSACTION);
 
-  // Guardamos en localStorage cada vez que selectedServices cambie
-  useEffect(() => {
-    if (mounted) {
-      localStorage.setItem('selectedServices', JSON.stringify(selectedServices));
-    }
-  }, [selectedServices, mounted]);
+  // Debounce para evitar múltiples inserts mientras el usuario interactúa
+  const [debouncedServices] = useDebounce(localServices, 500);
 
+  // Función para alternar explicaciones
   const toggleExplanation = (service) => {
     setExplanations(prev => ({ ...prev, [service]: !prev[service] }));
   };
 
+  // Opciones para cada servicio
   const options = [
     { label: '1 usuario', value: 3000000, startup: 750000 },
     { label: '5 usuarios', value: 9000000, startup: 3000000 },
@@ -94,10 +110,12 @@ const CotizaTuServicio = () => {
     digitalizacion: <FaRegImage className="text-purple-600 mr-2 text-2xl icon-shadow" />,
   };
 
+  // Función para actualizar la selección
   const handleServiceChange = (service, option, index) => {
     const key = `${service}-${index}`;
-    if (selectedServices[service]?.label === option.label) {
-      setSelectedServices(prev => ({ ...prev, [service]: null }));
+    let newSelection;
+    if (localServices[service]?.label === option.label) {
+      newSelection = { ...localServices, [service]: null };
       setExpandedCells(prev => ({ ...prev, [key]: false }));
     } else {
       const newExpanded = { ...expandedCells };
@@ -107,56 +125,95 @@ const CotizaTuServicio = () => {
         }
       });
       newExpanded[key] = true;
-      setExpandedCells(newExpanded);
-      setSelectedServices(prev => ({ ...prev, [service]: option }));
+      newSelection = { ...localServices, [service]: option };
     }
+    setLocalServices(newSelection);
   };
 
   const toggleCell = (service, option, index) => {
     const key = `${service}-${index}`;
-    if (selectedServices[service]?.label === option.label) {
+    if (localServices[service]?.label === option.label) {
       setExpandedCells(prev => ({ ...prev, [key]: true }));
       return;
     }
     setExpandedCells(prev => ({ ...prev, [key]: !prev[key] }));
   };
 
-  // Cálculo ajustado del total y descuento:
+  // Cada vez que se estabiliza la selección (debounced), se recalculan total y descuento, se actualiza el contexto y se guarda en el backend.
   useEffect(() => {
-    // Para software, total es la suma de su valor + startup.
-    let softwareTotal = selectedServices.software
-      ? Number(selectedServices.software.value) + Number(selectedServices.software.startup)
+    const softwareTotal = debouncedServices.software
+      ? Number(debouncedServices.software.value) + Number(debouncedServices.software.startup)
       : 0;
-    let custodiaTotal = selectedServices.custodia ? Number(selectedServices.custodia.value) : 0;
-    let digitalizacionTotal = selectedServices.digitalizacion ? Number(selectedServices.digitalizacion.value) : 0;
+    const custodiaTotal = debouncedServices.custodia ? Number(debouncedServices.custodia.value) : 0;
+    const digitalizacionTotal = debouncedServices.digitalizacion ? Number(debouncedServices.digitalizacion.value) : 0;
     
     let count = 0;
-    if (selectedServices.software) count++;
-    if (selectedServices.custodia) count++;
-    if (selectedServices.digitalizacion) count++;
+    if (debouncedServices.software) count++;
+    if (debouncedServices.custodia) count++;
+    if (debouncedServices.digitalizacion) count++;
     
-    if (count === 1 && selectedServices.software) {
-      // Si sólo se escoge software, no hay descuento.
-      setDiscount(0);
-      setTotal(softwareTotal);
+    let calculatedDiscount = 0;
+    let calculatedTotal = 0;
+    if (count === 1 && debouncedServices.software) {
+      calculatedTotal = softwareTotal;
     } else {
-      // En otro caso, se aplica descuento al subtotal (que incluye la suma de todos los servicios)
-      let subtotal = softwareTotal + custodiaTotal + digitalizacionTotal;
-      let disc = 0;
+      const subtotal = softwareTotal + custodiaTotal + digitalizacionTotal;
       if (count === 3) {
-        disc = 0.1;
+        calculatedDiscount = 0.1;
       } else if (count === 2) {
-        disc = 0.07;
+        calculatedDiscount = 0.07;
       }
-      setDiscount(disc);
-      setTotal(subtotal - subtotal * disc);
+      calculatedTotal = subtotal - subtotal * calculatedDiscount;
     }
-  }, [selectedServices]);
+    // Actualizamos el contexto global
+    updateTransaction(debouncedServices, calculatedTotal, calculatedDiscount);
 
+    // Guardamos o actualizamos la transacción en el backend
+    if (userId) {
+      saveTransaction({
+        variables: {
+          userId,
+          input: {
+            software: debouncedServices.software,
+            custodia: debouncedServices.custodia,
+            digitalizacion: debouncedServices.digitalizacion,
+            total: calculatedTotal,
+            discount: calculatedDiscount,
+            state: "transaccion en formulario de pago"
+          }
+        }
+      }).catch(err => console.error("Error al guardar la transacción:", err));
+    }
+  }, [debouncedServices, userId, saveTransaction, updateTransaction]);
+
+  const subtotal =
+    (localServices.software ? Number(localServices.software.value) : 0) +
+    (localServices.custodia ? Number(localServices.custodia.value) : 0) +
+    (localServices.digitalizacion ? Number(localServices.digitalizacion.value) : 0) +
+    (localServices.software ? Number(localServices.software.startup) : 0);
+
+  // Al pulsar "Pagar", se redirige a PaymentFormPSE sin pasar el total en el query
+  const handlePayment = () => {
+    if (
+      globalTotal === 0 ||
+      (!localServices.software &&
+       !localServices.custodia &&
+       !localServices.digitalizacion)
+    ) {
+      alert('Por favor, seleccione al menos un servicio para pagar.');
+      return;
+    }
+    router.push({
+      pathname: '/PaymentFormPSE',
+      query: { previousPage: '/paginas/cotizaTuServicio' }
+    });
+  };
+
+  // Función para renderizar cada celda (opción) de servicio
   const renderCell = (service, option, index) => {
     const cellKey = `${service}-${index}`;
     const isExpanded = expandedCells[cellKey];
-    const isSelected = selectedServices[service]?.label === option.label;
+    const isSelected = localServices[service]?.label === option.label;
     const expanded = isSelected || isExpanded;
 
     return (
@@ -222,29 +279,6 @@ const CotizaTuServicio = () => {
         </button>
       </div>
     );
-  };
-
-  const subtotal =
-    (selectedServices.software ? Number(selectedServices.software.value) : 0) +
-    (selectedServices.custodia ? Number(selectedServices.custodia.value) : 0) +
-    (selectedServices.digitalizacion ? Number(selectedServices.digitalizacion.value) : 0) +
-    (selectedServices.software ? Number(selectedServices.software.startup) : 0);
-
-  const handlePayment = () => {
-    if (
-      total === 0 ||
-      (!selectedServices.software &&
-        !selectedServices.custodia &&
-        !selectedServices.digitalizacion)
-    ) {
-      alert('Por favor, seleccione al menos un servicio para pagar.');
-      return;
-    }
-  
-    router.push({
-      pathname: '/PaymentFormPSE',
-      query: { total, previousPage: '/paginas/cotizaTuServicio' },
-    });
   };
 
   return (
@@ -313,32 +347,32 @@ const CotizaTuServicio = () => {
         <div className="mt-8 p-4 border rounded-lg shadow-md">
           <h2 className="text-xl md:text-2xl font-bold mb-4">Resumen</h2>
           <ul className="text-sm md:text-base">
-            {selectedServices.software && (
+            {localServices.software && (
               <li className="mb-2">
-                <strong>Software:</strong> {selectedServices.software.label} - ${Number(selectedServices.software.value).toLocaleString('es-ES')} + Startup - ${Number(selectedServices.software.startup).toLocaleString('es-ES')}
+                <strong>Software:</strong> {localServices.software.label} - ${Number(localServices.software.value).toLocaleString('es-ES')} + Startup - ${Number(localServices.software.startup).toLocaleString('es-ES')}
               </li>
             )}
-            {selectedServices.custodia && (
+            {localServices.custodia && (
               <li className="mb-2">
-                <strong>Custodia:</strong> {selectedServices.custodia.label} - ${Number(selectedServices.custodia.value).toLocaleString('es-ES')}
+                <strong>Custodia:</strong> {localServices.custodia.label} - ${Number(localServices.custodia.value).toLocaleString('es-ES')}
               </li>
             )}
-            {selectedServices.digitalizacion && (
+            {localServices.digitalizacion && (
               <li className="mb-2">
-                <strong>Digitalización:</strong> {selectedServices.digitalizacion.label} - ${Number(selectedServices.digitalizacion.value).toLocaleString('es-ES')}
+                <strong>Digitalización:</strong> {localServices.digitalizacion.label} - ${Number(localServices.digitalizacion.value).toLocaleString('es-ES')}
               </li>
             )}
           </ul>
           <div className="mt-4 text-sm md:text-base">
             <strong>Subtotal:</strong> ${Math.round(subtotal).toLocaleString('es-ES')}
           </div>
-          {discount > 0 && (
+          {globalDiscount > 0 && (
             <div className="mt-2 text-green-600 text-sm md:text-base">
-              <strong>Descuento:</strong> {(discount * 100).toFixed(0)}%
+              <strong>Descuento:</strong> {(globalDiscount * 100).toFixed(0)}%
             </div>
           )}
           <div className="mt-4 text-2xl md:text-4xl font-bold">
-            <strong>Total:</strong> ${Math.round(total).toLocaleString('es-ES')}
+            <strong>Total:</strong> ${Math.round(globalTotal).toLocaleString('es-ES')}
           </div>
           <button
             onClick={handlePayment}
@@ -416,23 +450,23 @@ const CotizaTuServicio = () => {
             ))}
             <tr className="bg-custom-footer">
               <td colSpan="3" className="py-6 text-center font-bold">
-                {discount > 0 && (
+                {globalDiscount > 0 && (
                   <div className="mb-2 text-xl">
-                    ¡Felicidades! Tienes un {(discount * 100).toFixed(0)}% de descuento.
+                    ¡Felicidades! Tienes un {(globalDiscount * 100).toFixed(0)}% de descuento.
                   </div>
                 )}
-                {discount > 0 ? (
+                {globalDiscount > 0 ? (
                   <div className="flex justify-center items-center space-x-4">
                     <span className="text-3xl line-through">
                       ${Math.round(subtotal).toLocaleString('es-ES')}
                     </span>
                     <span className="text-5xl">
-                      ${Math.round(total).toLocaleString('es-ES')}
+                      ${Math.round(globalTotal).toLocaleString('es-ES')}
                     </span>
                   </div>
                 ) : (
                   <div className="text-5xl">
-                    ${Math.round(total).toLocaleString('es-ES')}
+                    ${Math.round(globalTotal).toLocaleString('es-ES')}
                   </div>
                 )}
                 <button

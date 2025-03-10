@@ -1,4 +1,4 @@
-// _app.js
+// pages/_app.js
 import "@/styles/globals.css";
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
@@ -9,6 +9,8 @@ import client from '../lib/apolloClient';
 import WhatsAppButton from "../components/WhatsAppButton";
 import { ThemeProvider } from '@/context/ThemeContext';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
+// Importa el TransactionProvider que creamos para mantener la transacción global
+import { TransactionProvider } from '@/context/TransactionContext';
 
 export default function App({ Component, pageProps }) {
   const router = useRouter();
@@ -51,21 +53,24 @@ export default function App({ Component, pageProps }) {
   return (
     <ApolloProvider client={client}>
       <ThemeProvider>
-        <AppRouterCacheProvider>
-          {/* Se pasa Component.previousPage al Layout */}
-          <Layout
-            handleNavigation={handleDelayedNavigation}
-            loading={loading}
-            previousPage={Component.previousPage}
-          >
-            {loading && <VerticalBarTransition onComplete={() => setLoading(false)} />}
-            <Component {...pageProps} />
-          </Layout>
-          <WhatsAppButton 
-            phoneNumber="3008676122" 
-            message="¡Hola! Quiero más información." 
-          />
-        </AppRouterCacheProvider>
+        {/* Aquí integramos el TransactionProvider para que su estado sea global */}
+        <TransactionProvider>
+          <AppRouterCacheProvider>
+            {/* Se pasa Component.previousPage al Layout */}
+            <Layout
+              handleNavigation={handleDelayedNavigation}
+              loading={loading}
+              previousPage={Component.previousPage}
+            >
+              {loading && <VerticalBarTransition onComplete={() => setLoading(false)} />}
+              <Component {...pageProps} />
+            </Layout>
+            <WhatsAppButton 
+              phoneNumber="3008676122" 
+              message="¡Hola! Quiero más información." 
+            />
+          </AppRouterCacheProvider>
+        </TransactionProvider>
       </ThemeProvider>
     </ApolloProvider>
   );
