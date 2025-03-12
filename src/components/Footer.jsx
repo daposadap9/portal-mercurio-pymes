@@ -8,7 +8,7 @@ const Footer = () => {
 
   const openModal = (e) => {
     e.preventDefault();
-    setPdfLoaded(false); // Reiniciamos el estado de carga
+    setPdfLoaded(false);
     setModalOpen(true);
   };
 
@@ -18,80 +18,67 @@ const Footer = () => {
 
   return (
     <>
-      {/* Footer: en mobile se posiciona en el flujo y en md se fija */}
-      <footer className="mt-auto relative md:fixed md:bottom-0 md:left-0 w-full bg-gradient-to-r from-teal-600 via-blue-800 to-teal-600 text-white py-4 shadow-xl z-10 md:z-50">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center justify-center">
-          {/* Sección izquierda */}
-          <div className="flex-1 text-center">
-            <p className="text-sm md:text-base font-semibold" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}>
-              ServiSoft S.A. | Gestión Documental, Mercurio BPM, ECM, Custodia documental, Digitalización de documentos - servisoft 2025 todos los derechos reservados
-            </p>
-          </div>
-          
-          {/* Separador: vertical en desktop */}
-          <div className="hidden md:block h-8 w-px bg-white mx-4"></div>
-          {/* Separador: horizontal en mobile */}
-          <div className="block md:hidden w-full h-px bg-white my-2"></div>
-          
-          {/* Sección derecha */}
-          <div className="flex-1 text-center">
-            <p className="text-sm md:text-base font-semibold mb-2" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}>
-              ¡Explora nuestros enlaces!
-            </p>
-            <div className="flex justify-center items-center space-x-4">
-              {/* Instagram */}
+      <footer className="bg-white">
+        <div className="container px-4 mx-auto">
+          {/* Contenido principal con altura reducida */}
+          <div className="py-2 flex flex-col md:flex-row items-center justify-evenly">
+            {/* Logo: se usa el PNG */}
+            <a href="#" className="mb-2 md:mb-0">
+              <img src="/logo-servisoft-30years.png" alt="Servisoft 30 Years" className="h-8 w-auto" />
+            </a>
+            {/* Enlaces combinados */}
+            <div className="flex flex-wrap justify-center items-center space-x-4">
+              <a href="/contact" className="text-sm text-black hover:text-black font-medium">Contactanos</a>
+              <a href="/careers" className="text-sm text-black hover:text-black font-medium">Servicios</a>
+              <a href="/careers" className="text-sm text-black hover:text-black font-medium">Cotiza tu servicio</a>
               <a 
                 href="https://www.instagram.com/servisoftsa/#" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="hover:text-gray-300"
-                style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}
+                className="text-sm text-black hover:text-black font-medium"
               >
-                <FaInstagram size={24} />
+                <FaInstagram size={16} />
               </a>
-              {/* Servisoft */}
               <a 
                 href="https://servisoft.co/" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="hover:text-gray-300"
-                style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}
+                className="text-sm text-black hover:text-black font-medium"
               >
-                <img src="/servisoft.webp" alt="Servisoft" className="w-6 h-6" />
+                <img src="/servisoft.png" alt="Servisoft" className="h-6 w-auto" />
               </a>
-              {/* Información Legal: abre modal */}
               <a 
                 href="#"
                 onClick={openModal}
-                className="flex items-center hover:text-gray-300"
-                style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}
+                className="flex items-center text-sm text-black hover:text-black font-medium"
               >
-                <FaInfoCircle size={24} className="mr-1" />
-                <span className="text-sm md:text-base font-semibold">Información Legal</span>
+                <FaInfoCircle size={16} className="mr-1" />
+                <span>Información Legal</span>
               </a>
             </div>
           </div>
         </div>
+        <div className="border-t border-black w-9/12 mx-auto"></div>
+        <div className="container px-4 mx-auto">
+          <p className="py-2 text-xs text-black font-medium text-center">
+            © 2025 Servisoft todos los derechos reservados.
+          </p>
+        </div>
       </footer>
-      
-      {/* Modal para mostrar el PDF */}
+
+      {/* Modal para Información Legal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
-          {/* Fondo semitransparente */}
           <div className="absolute inset-0 bg-black opacity-50" onClick={closeModal}></div>
-          {/* Contenedor de la modal */}
-          <div className="relative bg-white rounded-lg shadow-2xl p-6 w-full max-w-4xl mx-auto my-4 overflow-auto h-[50vh] md:h-[70vh]">
+          <div className="relative bg-white rounded-lg shadow-2xl p-4 w-full max-w-3xl mx-auto overflow-auto h-[70vh]">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold text-center flex-1">Información Legal</h2>
-              <button onClick={closeModal} className="text-gray-600 hover:text-gray-900 font-bold text-3xl">
+              <h2 className="text-lg font-bold text-gray-800 flex-1 text-center">Información Legal</h2>
+              <button onClick={closeModal} className="text-gray-600 hover:text-gray-900 font-bold text-2xl">
                 &times;
               </button>
             </div>
-            <div className="w-full" style={{ height: 'calc(100% - 120px)' }}>
-              {/* Spinner de carga */}
-              {!pdfLoaded && (
-                <Loading/>
-              )}
+            <div className="w-full" style={{ height: 'calc(100% - 60px)' }}>
+              {!pdfLoaded && <Loading />}
               <iframe
                 onLoad={() => setPdfLoaded(true)}
                 src="/InformaciónLegal.pdf"

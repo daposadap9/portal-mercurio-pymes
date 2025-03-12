@@ -27,7 +27,7 @@ const Layout = ({ children, handleNavigation, loading }) => {
           <main className="flex-grow pt-4 md:pb-20 pb-2">
             <div className="mx-auto w-full h-full px-4 md:p-10 pb-2">{children}</div>
           </main>
-          {/* <Footer /> */}
+        <Footer />
         </div>
 
         {/* Estilos globales */}

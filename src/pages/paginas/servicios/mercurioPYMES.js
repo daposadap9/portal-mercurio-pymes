@@ -82,55 +82,61 @@ const MercurioPYMES = () => {
   };
 
   return (
-    <div className="min-h-full flex items-center justify-center p-4">
-      <div className="w-full max-w-6xl flex flex-col lg:flex-row justify-around gap-4">
-        {/* Sección Izquierda: Párrafos */}
-        <div className="w-full lg:w-[35%]">
+    <div className="flex flex-col justify-between p-4">
+      {/* Contenedor principal */}
+      <div className="w-full mx-auto flex flex-col lg:flex-row justify-evenly lg:gap-0 gap-4 flex-1">
+        {/* Sección Izquierda: Información */}
+        <div className="w-full lg:w-[38%]">
           <div className="lg:text-left bg-white bg-opacity-0 backdrop-blur-xl p-6 rounded-xl border border-white/30">
-            <p className="mb-4 leading-relaxed text-black text-base font-normal">
-              Es un servicio innovador y estratégico que facilita y pone al acceso de todos la Gestión Documental. Diseñado para estructurar y almacenar la información de Grandes, medianas y pequeñas empresas, disminuyendo costos y propiciando un ambiente intuitivo y amigable que garantice el éxito en la gestión documental.
+            <p className="mb-4 leading-relaxed text-black text-base font-medium text-justify">
+              Mercurio PYMES es una solución estratégicamente diseñada para que personas naturales, micro, pequeñas y medianas empresas gestionen su información de manera eficiente, segura y accesible. Nuestro servicio innovador optimiza la administración documental, reduciendo costos de infraestructura y operativos gracias a su modelo de Software como servicio, proporcionando un entorno intuitivo que facilita la organización y el acceso a documentos clave.
             </p>
-            <p className="mb-4 leading-relaxed text-black text-base font-normal">
-              Con mercurio PYMES podrás crear expedientes, indexar todos los tipos de documentos que produce tu empresa y, sobre todo, conservarlos en sólo lugar sin aumentar el riesgo de pérdida ni quedarte sin espacio suficiente. Disminuye costos y propicia un ambiente intuitivo y amigable que garantiza el éxito en la gestión documental.
+            <p className="mb-4 leading-relaxed text-black text-base font-medium text-justify">
+              A nivel general, con MERCURIO PYMES puedes:
             </p>
-            <p className="mb-4 leading-relaxed text-black text-base font-normal">
-              Además podrás:
-            </p>
-            <ul className="list-disc list-inside text-black text-base font-normal">
-              <li>Controlar tus documentos.</li>
-              <li>Consultar tus documentos.</li>
-              <li>Conservar documentos en expedientes electrónicos.</li>
+            <ul className="list-disc list-inside text-black text-base font-medium text-justify mb-4">
+              <li>Crear y gestionar expedientes electrónicos con toda la documentación de tu empresa en un solo lugar.</li>
+              <li>Clasificar documentos de manera sencilla, agilizando la búsqueda y consulta.</li>
+              <li>Garantizar la conservación de la información sin riesgo de pérdida ni problemas de almacenamiento.</li>
             </ul>
+            <p className="mb-4 leading-relaxed text-black text-base font-medium text-justify">
+              Si estás interesado: en la sección ¡cotiza tu servicio! podrás conocer los precios y planes del servicio; debes tener en cuenta que el valor de la implementación y del servicio está determinado por el número de usuarios (licencias) que requiera la organización, una por cada persona que accederá a Mercurio.
+            </p>
+            <p className="mb-4 leading-relaxed text-black text-base font-medium text-justify">
+              Optimiza tu flujo documental con una solución confiable y escalable que impulsa la productividad de tu negocio.
+            </p>
           </div>
         </div>
 
         {/* Sección Derecha: Formulario */}
-        <div className="w-full lg:w-[35%]">
-          <div className="bg-gray-50 p-6 rounded-lg shadow-lg">
+        <div className="w-full lg:w-[40%]">
+          <div className="bg-gray-50 p-6 rounded-lg shadow-lg h-full flex flex-col">
             <h2 className="text-xl font-bold text-teal-600 text-center mb-6">
               ¡Adquiérelo ahora!
             </h2>
-            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-              {/* Bloque de Datos Personales */}
+            <form onSubmit={handleSubmit} className="flex flex-col gap-4 flex-1">
+              {/* Datos Personales */}
               <div className="flex flex-col space-y-4">
-                <input 
-                  type="text" 
-                  name="nombre"
-                  placeholder="Nombre:" 
-                  className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
-                  value={formData.nombre}
-                  onChange={handleChange}
-                  required
-                />
-                <input 
-                  type="text" 
-                  name="apellido"
-                  placeholder="Apellido:" 
-                  className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
-                  value={formData.apellido}
-                  onChange={handleChange}
-                  required
-                />
+                <div className='flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0'>
+                  <input 
+                    type="text" 
+                    name="nombre"
+                    placeholder="Nombre:" 
+                    className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900 w-full"
+                    value={formData.nombre}
+                    onChange={handleChange}
+                    required
+                  />
+                  <input 
+                    type="text" 
+                    name="apellido"
+                    placeholder="Apellido:" 
+                    className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900 w-full"
+                    value={formData.apellido}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
                 <input 
                   type="text" 
                   name="entidad"
@@ -140,28 +146,30 @@ const MercurioPYMES = () => {
                   onChange={handleChange}
                   required
                 />
-                <input 
-                  type="email" 
-                  name="email"
-                  placeholder="E-mail:" 
-                  className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                />
-                <input 
-                  type="tel" 
-                  name="telefono"
-                  placeholder="Teléfono celular:" 
-                  className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
-                  value={formData.telefono}
-                  onChange={handleChange}
-                  required
-                />
+                <div className='flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0'>
+                  <input 
+                    type="email" 
+                    name="email"
+                    placeholder="E-mail:" 
+                    className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900 w-full"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                  />
+                  <input 
+                    type="tel" 
+                    name="telefono"
+                    placeholder="Teléfono celular:" 
+                    className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900 w-full"
+                    value={formData.telefono}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
               </div>
-              {/* Bloque para Observaciones */}
-              <div className="flex flex-col space-y-2">
-                <label className="text-sm text-black font-semibold">
+              {/* Observaciones */}
+              <div className="flex flex-col mt-4 space-y-2">
+                <label className="text-sm text-gray-700 font-semibold">
                   Observaciones:
                 </label>
                 <textarea
@@ -249,7 +257,7 @@ const MercurioPYMES = () => {
                 <div className="mt-4 text-center text-teal-600 font-semibold">
                   Opción seleccionada: {formData.opcionSeleccionada}
                 </div>
-                <div className="lg:w-1/2 flex items-end mt-4">
+                <div className="lg:w-1/2 flex mx-auto items-end mt-4">
                   <button type="submit" className="w-full bg-teal-500 text-white font-bold py-2 rounded-md transition-colors duration-300 hover:bg-teal-600" disabled={loading}>
                     {loading ? "Procesando..." : "Enviar"}
                   </button>
@@ -259,6 +267,12 @@ const MercurioPYMES = () => {
             </form>
           </div>
         </div>
+      </div>
+      {/* Mensaje final destacado */}
+      <div className="mt-8 bg-gradient-to-r from-teal-500 to-blue-500 p-6 rounded-lg shadow-lg text-white text-center">
+        <p className="text-2xl font-bold">
+        ¡Descubre cómo Mercurio PYMES puede transformar la gestión documental de tu empresa!
+        </p>
       </div>
     </div>
   );

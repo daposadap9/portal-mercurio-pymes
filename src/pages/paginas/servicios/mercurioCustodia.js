@@ -82,53 +82,61 @@ const MercurioCustodia = () => {
   };
 
   return (
-    <div className="min-h-full flex items-center justify-center p-4">
-      <div className="w-full max-w-6xl flex flex-col lg:flex-row justify-around gap-4">
-        {/* Sección Izquierda: Párrafos */}
-        <div className="w-full lg:w-[35%]">
+    <div className="flex flex-col justify-between p-4">
+      {/* Contenedor principal */}
+      <div className="w-full mx-auto flex flex-col lg:flex-row justify-evenly lg:gap-0 gap-4 flex-1">
+        {/* Sección Izquierda: Información */}
+        <div className="w-full lg:w-[40%]">
           <div className="lg:text-left bg-white bg-opacity-0 backdrop-blur-xl p-6 rounded-xl border border-white/30">
-            <p className="mb-4 text-md font-medium text-black">
-              Nuestro servicio de custodia está diseñado para que olvides la preocupación por la gestión de documentos físicos; nosotros nos encargamos de todo mientras tú te concentras en hacer crecer tu negocio.
+            <p className="mb-4 text-lg font-bold text-black text-justify">
+              Custodia de Documentos: Seguridad, Accesibilidad y Eficiencia
             </p>
-            <p className="mb-4 text-md font-medium text-black">
-              Tus documentos estarán siempre disponibles cuando los necesites, con acceso rápido y seguro, sin los costos de mantenerlos en tus oficinas.
+            <p className="mb-4 text-md font-medium text-black text-justify">
+              Olvídate del almacenamiento de documentos físicos y enfócate en el crecimiento de tu empresa. Nuestro servicio de custodia documental garantiza la seguridad, organización y disponibilidad de tu información sin los costos ni el espacio que implica almacenarla en tus oficinas.
             </p>
-            <p className="mb-4 text-md font-medium text-black">
-              Con la tercerización de archivos, no solo ahorras, sino que optimizas recursos valiosos que puedes redirigir hacia áreas estratégicas de tu empresa.
+            <ul className="list-disc list-inside mb-4 text-md font-medium text-black text-justify">
+              <li>Acceso rápido y seguro a tus documentos cuando los necesites.</li>
+              <li>Optimización de recursos al reducir gastos operativos y liberar espacio.</li>
+              <li>Gestión profesional que garantiza el cumplimiento normativo y la conservación de tu archivo.</li>
+            </ul>
+            <p className="mb-4 text-md font-medium text-black text-justify">
+              Tercerizar la administración de documentos mejora la eficiencia de la empresa y permite redirigir esfuerzos hacia áreas estratégicas de tu negocio.
             </p>
-            <p className="mb-4 text-md font-medium text-black">
-              No dejes que el desorden documental afecte tu eficiencia: con nuestra custodia física, simplificamos todo el proceso de organización y acceso.
+            <p className="mb-4 text-md font-medium text-black text-justify">
+              Si estas interesado: En la sección ¡cotiza tu servicio! Podrás conocer los precios y planes del servicio. Debes tener en cuenta que el valor final está ligado al número de cajas totales que desees almacenar.
             </p>
           </div>
         </div>
 
         {/* Sección Derecha: Formulario */}
-        <div className="w-full lg:w-[35%]">
-          <div className="bg-gray-50 p-6 rounded-lg shadow-lg">
+        <div className="w-full lg:w-[40%]">
+          <div className="bg-gray-50 p-6 rounded-lg shadow-lg h-full flex flex-col">
             <h2 className="text-xl font-bold text-teal-600 text-center mb-6">
               Adquiérelo ahora!
             </h2>
-            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-              {/* Bloque de Datos Personales */}
+            <form onSubmit={handleSubmit} className="flex flex-col gap-4 flex-1">
+              {/* Datos Personales */}
               <div className="flex flex-col space-y-4">
-                <input 
-                  type="text" 
-                  name="nombre"
-                  placeholder="Nombre:" 
-                  className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
-                  value={formData.nombre}
-                  onChange={handleChange}
-                  required
-                />
-                <input 
-                  type="text" 
-                  name="apellido"
-                  placeholder="Apellido:" 
-                  className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
-                  value={formData.apellido}
-                  onChange={handleChange}
-                  required
-                />
+                <div className="flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0">
+                  <input 
+                    type="text" 
+                    name="nombre"
+                    placeholder="Nombre:" 
+                    className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900 w-full"
+                    value={formData.nombre}
+                    onChange={handleChange}
+                    required
+                  />
+                  <input 
+                    type="text" 
+                    name="apellido"
+                    placeholder="Apellido:" 
+                    className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900 w-full"
+                    value={formData.apellido}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
                 <input 
                   type="text" 
                   name="entidad"
@@ -138,28 +146,30 @@ const MercurioCustodia = () => {
                   onChange={handleChange}
                   required
                 />
-                <input 
-                  type="email" 
-                  name="email"
-                  placeholder="E_mail:" 
-                  className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                />
-                <input 
-                  type="tel" 
-                  name="telefono"
-                  placeholder="Teléfono celular:" 
-                  className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
-                  value={formData.telefono}
-                  onChange={handleChange}
-                  required
-                />
+                <div className="flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0">
+                  <input 
+                    type="email" 
+                    name="email"
+                    placeholder="E_mail:" 
+                    className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900 w-full"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                  />
+                  <input 
+                    type="tel" 
+                    name="telefono"
+                    placeholder="Teléfono celular:" 
+                    className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900 w-full"
+                    value={formData.telefono}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
               </div>
 
               {/* Bloque para Observaciones */}
-              <div className="flex flex-col space-y-2">
+              <div className="flex flex-col mt-4 space-y-2">
                 <label className="text-sm text-gray-700 font-semibold">
                   Observaciones:
                 </label>
@@ -249,7 +259,7 @@ const MercurioCustodia = () => {
                 <div className="mt-4 text-center text-teal-600 font-semibold">
                   Opción seleccionada: {formData.opcionSeleccionada}
                 </div>
-                <div className="lg:w-1/2 flex items-end mt-4">
+                <div className="lg:w-1/2 flex mx-auto items-end mt-4">
                   <button type="submit" className="w-full bg-teal-500 text-white font-bold py-2 rounded-md transition-colors duration-300 hover:bg-teal-600" disabled={loading}>
                     {loading ? "Procesando..." : "Enviar"}
                   </button>
@@ -259,6 +269,12 @@ const MercurioCustodia = () => {
             </form>
           </div>
         </div>
+      </div>
+        {/* Mensaje final destacado */}
+        <div className="mt-8 bg-gradient-to-r from-teal-500 to-blue-500 p-6 rounded-lg shadow-lg text-white text-center">
+        <p className="text-2xl font-bold">
+        ¡Confía en nosotros para una gestión documental sin preocupaciones!
+        </p>
       </div>
     </div>
   );

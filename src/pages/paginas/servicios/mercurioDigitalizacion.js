@@ -82,82 +82,92 @@ const MercurioDigitalizacion = () => {
   };
 
   return (
-    <div className="min-h-full flex items-center justify-center p-4">
-      <div className="w-full max-w-6xl flex flex-col lg:flex-row justify-around gap-4">
-        {/* Sección Izquierda: Párrafos */}
-        <div className="w-full lg:w-[35%]">
+    <div className="flex flex-col justify-between p-4">
+      {/* Contenedor principal que se expande en el viewport */}
+      <div className="w-full mx-auto flex flex-col lg:flex-row justify-evenly lg:gap-0 gap-4 flex-1">
+        {/* Sección Izquierda: Información */}
+        <div className="w-full lg:w-[38%]">
           <div className="lg:text-left bg-white bg-opacity-0 backdrop-blur-xl p-6 rounded-xl border border-white/30">
-            <p className="mb-4 leading-relaxed text-black text-base font-normal">
-              Con Servisoft S.A. dile adiós al papel desordenado y al riesgo de pérdida. Con nuestra digitalización documental, toda tu información estará organizada y protegida.
+            <p className="mb-4 text-xl font-bold text-black text-justify">
+              Digitalización de Documentos: Seguridad, Orden y Accesibilidad
             </p>
-            <p className="mb-4 leading-relaxed text-black text-base font-normal">
-              La seguridad, accesibilidad y eficiencia en un sólo servicio. Digitalizamos tu archivo físico para que trabajes sin límites.
+            <p className="mb-4 leading-relaxed text-black text-base font-medium text-justify">
+              Dile adiós al desorden y al riesgo de pérdida de documentos. Con nuestro servicio de digitalización documental, transformamos tu archivo físico en un sistema seguro, accesible y eficiente, optimizando la gestión de tu información.
             </p>
-            <p className="mb-4 leading-relaxed text-black text-base font-normal">
-              Te apoyamos con el cumplimiento de normativas legales y protegemos tu información con copias digitales seguras y respaldadas.
+            <ul className="list-disc list-inside mb-4 text-black text-base font-medium text-justify">
+              <li>Organización y protección de tus documentos en formato digital.</li>
+              <li>Acceso rápido y respaldo seguro desde cualquier lugar, sin restricciones.</li>
+              <li>Optimiza tu espacio y reduce costos en generación de duplicados, impresiones y tiempo.</li>
+            </ul>
+            <p className="mb-4 leading-relaxed text-black text-base font-medium text-justify">
+              Si estas interesado: En la sección ¡cotiza tu servicio! podrás conocer los precios y planes del servicio. Debes tener presente que el valor total del servicio depende del número de folios (hojas por una cara) que la entidad requiera digitalizar.
             </p>
           </div>
         </div>
 
         {/* Sección Derecha: Formulario */}
-        <div className="w-full lg:w-[35%]">
-          <div className="bg-gray-50 p-6 rounded-lg shadow-lg">
+        <div className="w-full lg:w-[40%]">
+          <div className="bg-gray-50 p-6 rounded-lg shadow-lg h-full flex flex-col">
             <h2 className="text-xl font-bold text-teal-600 text-center mb-6">
               ¡Adquiérelo ahora!
             </h2>
-            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-              {/* Bloque de Datos Personales */}
+            <form onSubmit={handleSubmit} className="flex flex-col gap-4 flex-1">
+              {/* Datos Personales */}
               <div className="flex flex-col space-y-4">
-                <input 
-                  type="text" 
-                  name="nombre"
-                  placeholder="Nombre:" 
-                  className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
-                  value={formData.nombre}
-                  onChange={handleChange}
-                  required
-                />
-                <input 
-                  type="text" 
-                  name="apellido"
-                  placeholder="Apellido:" 
-                  className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
-                  value={formData.apellido}
-                  onChange={handleChange}
-                  required
-                />
+                <div className="flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0">
+                  <input 
+                    type="text" 
+                    name="nombre"
+                    placeholder="Nombre:" 
+                    className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900 w-full"
+                    value={formData.nombre}
+                    onChange={handleChange}
+                    required
+                  />
+                  <input 
+                    type="text" 
+                    name="apellido"
+                    placeholder="Apellido:" 
+                    className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900 w-full"
+                    value={formData.apellido}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
                 <input 
                   type="text" 
                   name="entidad"
                   placeholder="Entidad y/o empresa:" 
-                  className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
+                  className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900 w-full"
                   value={formData.entidad}
                   onChange={handleChange}
                   required
                 />
-                <input 
-                  type="email" 
-                  name="email"
-                  placeholder="E-mail:" 
-                  className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                />
-                <input 
-                  type="tel" 
-                  name="telefono"
-                  placeholder="Teléfono celular:" 
-                  className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
-                  value={formData.telefono}
-                  onChange={handleChange}
-                  required
-                />
+                <div className="flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0">
+                  <input 
+                    type="email" 
+                    name="email"
+                    placeholder="E-mail:" 
+                    className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900 w-full"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                  />
+                  <input 
+                    type="tel" 
+                    name="telefono"
+                    placeholder="Teléfono celular:" 
+                    className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900 w-full"
+                    value={formData.telefono}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
               </div>
 
-              {/* Bloque para Observaciones */}
-              <div className="flex flex-col space-y-2">
-                <label className="text-sm text-black font-semibold">
+              {/* Observaciones */}
+              <div className="flex flex-col mt-4 space-y-2">
+                <label className="text-sm text-gray-700 font-semibold">
                   Observaciones:
                 </label>
                 <textarea 
@@ -244,12 +254,13 @@ const MercurioDigitalizacion = () => {
                 <div className="mt-4 text-center text-teal-600 font-semibold">
                   Opción seleccionada: {formData.opcionSeleccionada}
                 </div>
-                <div className="lg:w-1/2 flex items-end mt-4">
-                  <button type="submit" className="w-full bg-teal-500 text-white font-bold py-2 rounded-md transition-colors duration-300 hover:bg-teal-600">
+                <div className="lg:w-1/2 flex mx-auto items-end mt-4">
+                  <button type="submit" className="w-full bg-teal-500 text-white font-bold py-2 rounded-md transition-colors duration-300 hover:bg-teal-600" disabled={loading}>
                     {loading ? "Procesando..." : "Enviar"}
                   </button>
                 </div>
               </div>
+              {error && <p className="text-red-600">Error: {error.message}</p>}
             </form>
           </div>
         </div>
