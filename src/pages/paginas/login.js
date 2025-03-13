@@ -8,7 +8,7 @@ const Login = () => {
         {/* Lado izquierdo */}
         <div 
           className="w-full md:w-1/2 relative bg-cover bg-center"
-          style={{ backgroundImage: "linear-gradient(#334d84, #a3b0cc), url('https://source.unsplash.com/featured/?office,developers')" }}
+          style={{ backgroundImage: "linear-gradient(, #a3b0cc), url('https://source.unsplash.com/featured/?office,developers')" }}
         >
           {/* Vectores decorativos */}
           <div className="absolute top-4 left-4">
