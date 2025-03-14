@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect } from 'react';
+import { createContext, useState, useEffect, useContext } from 'react';
 
 export const ThemeContext = createContext();
 
@@ -14,4 +14,9 @@ export const ThemeProvider = ({ children }) => {
       {children}
     </ThemeContext.Provider>
   );
+};
+
+// Hook personalizado para consumir el contexto
+export const useTheme = () => {
+  return useContext(ThemeContext);
 };

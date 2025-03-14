@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { FaInstagram, FaInfoCircle } from 'react-icons/fa';
 import Loading from './loading';
+import { ThemeContext } from '@/context/ThemeContext';
+import Link from 'next/link';
 
 const Footer = () => {
   const [isModalOpen, setModalOpen] = useState(false);
@@ -12,9 +14,16 @@ const Footer = () => {
     setModalOpen(true);
   };
 
+    const { theme } = useContext(ThemeContext);
   const closeModal = () => {
     setModalOpen(false);
   };
+  const cardBgClass =
+  theme === 'dark'
+    ? 'bg-custom-gradient'
+    : theme === 'purple'
+    ? 'bg-custom-gradient2'
+    : 'bg-custom-gradient3';
 
   return (
     <>
@@ -28,9 +37,9 @@ const Footer = () => {
             </a>
             {/* Enlaces combinados */}
             <div className="flex flex-wrap justify-center items-center space-x-4">
-              <a href="/contact" className="text-sm text-black hover:text-black font-medium">Contactanos</a>
-              <a href="/careers" className="text-sm text-black hover:text-black font-medium">Servicios</a>
-              <a href="/careers" className="text-sm text-black hover:text-black font-medium">Cotiza tu servicio</a>
+              <Link href="/paginas/contactanos" className="text-sm text-black hover:text-black font-medium">Contactanos</Link>
+              <Link href="/paginas/servicios" className="text-sm text-black hover:text-black font-medium">Servicios</Link>
+              <Link href="/paginas/cotizaTuServicio" className="text-sm text-black hover:text-black font-medium">Cotiza tu servicio</Link>
               <a 
                 href="https://www.instagram.com/servisoftsa/#" 
                 target="_blank" 

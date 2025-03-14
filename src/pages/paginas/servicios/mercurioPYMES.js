@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { gql, useMutation } from '@apollo/client';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 
 // Mutation que realiza todo el proceso de radicación
 const INSERT_MERT_RECIBIDO = gql`
@@ -85,30 +86,29 @@ const MercurioPYMES = () => {
     <div className="flex flex-col justify-between p-4">
       {/* Contenedor principal */}
       <div className="w-full mx-auto flex flex-col lg:flex-row justify-evenly lg:gap-0 gap-4 flex-1">
-        {/* Sección Izquierda: Información */}
-        <div className="w-full lg:w-[38%]">
-          <div className="lg:text-left bg-white bg-opacity-0 backdrop-blur-xl p-6 rounded-xl border border-white/30">
-            <p className="mb-4 leading-relaxed text-black text-base font-medium text-justify">
-              Mercurio PYMES es una solución estratégicamente diseñada para que personas naturales, micro, pequeñas y medianas empresas gestionen su información de manera eficiente, segura y accesible. Nuestro servicio innovador optimiza la administración documental, reduciendo costos de infraestructura y operativos gracias a su modelo de Software como servicio, proporcionando un entorno intuitivo que facilita la organización y el acceso a documentos clave.
-            </p>
-            <p className="mb-4 leading-relaxed text-black text-base font-medium text-justify">
-              A nivel general, con MERCURIO PYMES puedes:
-            </p>
-            <ul className="list-disc list-inside text-black text-base font-medium text-justify mb-4">
-              <li>Crear y gestionar expedientes electrónicos con toda la documentación de tu empresa en un solo lugar.</li>
-              <li>Clasificar documentos de manera sencilla, agilizando la búsqueda y consulta.</li>
-              <li>Garantizar la conservación de la información sin riesgo de pérdida ni problemas de almacenamiento.</li>
-            </ul>
-            <p className="mb-4 leading-relaxed text-black text-base font-medium text-justify">
-              Si estás interesado: en la sección ¡cotiza tu servicio! podrás conocer los precios y planes del servicio; debes tener en cuenta que el valor de la implementación y del servicio está determinado por el número de usuarios (licencias) que requiera la organización, una por cada persona que accederá a Mercurio.
-            </p>
-            <p className="mb-4 leading-relaxed text-black text-base font-medium text-justify">
-              Optimiza tu flujo documental con una solución confiable y escalable que impulsa la productividad de tu negocio.
-            </p>
+          <div className="w-full lg:w-[38%]">
+            <div className="lg:text-left bg-white bg-opacity-0 backdrop-blur-xl p-6 rounded-xl border border-white/30">
+              <p className="mb-4 leading-relaxed text-black text-base font-medium text-justify">
+                Mercurio PYMES es una solución estratégicamente diseñada para que personas naturales, micro, pequeñas y medianas empresas gestionen su información de manera eficiente, segura y accesible. Nuestro servicio innovador optimiza la administración documental, reduciendo costos de infraestructura y operativos gracias a su modelo de Software como servicio, proporcionando un entorno intuitivo que facilita la organización y el acceso a documentos clave.
+              </p>
+              <p className="mb-4 leading-relaxed text-black text-base font-medium text-justify">
+                A nivel general, con MERCURIO PYMES puedes:
+              </p>
+              <ul className="list-disc list-inside text-black text-base font-medium text-justify mb-4">
+                <li>Crear y gestionar expedientes electrónicos con toda la documentación de tu empresa en un solo lugar.</li>
+                <li>Clasificar documentos de manera sencilla, agilizando la búsqueda y consulta.</li>
+                <li>Garantizar la conservación de la información sin riesgo de pérdida ni problemas de almacenamiento.</li>
+              </ul>
+              <p className="mb-4 leading-relaxed text-black text-base font-medium text-justify">
+                Si estás interesado: en la sección <Link href="/paginas/cotizaTuServicio" legacyBehavior><a className="text-blue-600 underline">¡cotiza tu servicio!</a></Link> podrás conocer los precios y planes del servicio; debes tener en cuenta que el valor de la implementación y del servicio está determinado por el número de usuarios (licencias) que requiera la organización, una por cada persona que accederá a Mercurio.
+              </p>
+              <p className="mb-4 leading-relaxed text-black text-base font-medium text-justify">
+                Optimiza tu flujo documental con una solución confiable y escalable que impulsa la productividad de tu negocio.
+              </p>
+            </div>
           </div>
-        </div>
 
-        {/* Sección Derecha: Formulario */}
+          {/* Sección Derecha: Formulario */}
         <div className="w-full lg:w-[40%]">
           <div className="bg-gray-50 p-6 rounded-lg shadow-lg h-full flex flex-col">
             <h2 className="text-xl font-bold text-teal-600 text-center mb-6">
@@ -213,45 +213,45 @@ const MercurioPYMES = () => {
                   `}</style>
                   <button 
                     type="button"
-                    className={`btn-wave w-full p-2 rounded-md text-white font-bold transition-all duration-300 bg-blue-500 hover:bg-blue-600 ${formData.opcionSeleccionada === "Desde 1 Usuario Corporativo - $3.000.000 + Startup $750.000" ? "selected" : ""}`}
-                    onClick={() => handleOptionSelect("Desde 1 Usuario Corporativo - $3.000.000 + Startup $750.000")}
+                    className={`btn-wave w-full p-2 rounded-md text-white font-bold transition-all duration-300 bg-blue-500 hover:bg-blue-600 ${formData.opcionSeleccionada === "Desde 1 Usuario Corporativo - $3.000.000 + Startup $750.000 anual" ? "selected" : ""}`}
+                    onClick={() => handleOptionSelect("Desde 1 Usuario Corporativo - $3.000.000 + Startup $750.000 anual")}
                   >
-                    Desde 1 Usuario Corporativo - $3.000.000 + Startup $750.000
+                    Desde 1 Usuario Corporativo - $3.000.000 + Startup $750.000 anual
                   </button>
                   <button 
                     type="button"
-                    className={`btn-wave w-full p-2 rounded-md text-white font-bold transition-all duration-300 bg-purple-500 hover:bg-purple-600 ${formData.opcionSeleccionada === "Desde 5 Usuarios Corporativos - $9.000.000 + Startup $3.000.000" ? "selected" : ""}`}
-                    onClick={() => handleOptionSelect("Desde 5 Usuarios Corporativos - $9.000.000 + Startup $3.000.000")}
+                    className={`btn-wave w-full p-2 rounded-md text-white font-bold transition-all duration-300 bg-purple-500 hover:bg-purple-600 ${formData.opcionSeleccionada === "Desde 5 Usuarios Corporativos - $9.000.000 + Startup $3.000.000 anual" ? "selected" : ""}`}
+                    onClick={() => handleOptionSelect("Desde 5 Usuarios Corporativos - $9.000.000 + Startup $3.000.000 anual")}
                   >
-                    Desde 5 Usuarios Corporativos - $9.000.000 + Startup $3.000.000
+                    Desde 5 Usuarios Corporativos - $9.000.000 + Startup $3.000.000 anual
                   </button>
                   <button 
                     type="button"
-                    className={`btn-wave w-full p-2 rounded-md text-white font-bold transition-all duration-300 bg-amber-500 hover:bg-amber-600 ${formData.opcionSeleccionada === "Desde 10 Usuarios Corporativos - $16.200.000 + Startup $6.750.000" ? "selected" : ""}`}
-                    onClick={() => handleOptionSelect("Desde 10 Usuarios Corporativos - $16.200.000 + Startup $6.750.000")}
+                    className={`btn-wave w-full p-2 rounded-md text-white font-bold transition-all duration-300 bg-amber-500 hover:bg-amber-600 ${formData.opcionSeleccionada === "Desde 10 Usuarios Corporativos - $16.200.000 + Startup $6.750.000 anual" ? "selected" : ""}`}
+                    onClick={() => handleOptionSelect("Desde 10 Usuarios Corporativos - $16.200.000 + Startup $6.750.000 anual")}
                   >
-                    Desde 10 Usuarios Corporativos - $16.200.000 + Startup $6.750.000
+                    Desde 10 Usuarios Corporativos - $16.200.000 + Startup $6.750.000 anual
                   </button>
                   <button 
                     type="button"
-                    className={`btn-wave w-full p-2 rounded-md text-white font-bold transition-all duration-300 bg-yellow-500 hover:bg-yellow-600 ${formData.opcionSeleccionada === "Desde 20 Usuarios Corporativos - $24.600.000 + Startup $8.200.000" ? "selected" : ""}`}
-                    onClick={() => handleOptionSelect("Desde 20 Usuarios Corporativos - $24.600.000 + Startup $8.200.000")}
+                    className={`btn-wave w-full p-2 rounded-md text-white font-bold transition-all duration-300 bg-yellow-500 hover:bg-yellow-600 ${formData.opcionSeleccionada === "Desde 20 Usuarios Corporativos - $24.600.000 + Startup $8.200.000 anual" ? "selected" : ""}`}
+                    onClick={() => handleOptionSelect("Desde 20 Usuarios Corporativos - $24.600.000 + Startup $8.200.000 anual")}
                   >
-                    Desde 20 Usuarios Corporativos - $24.600.000 + Startup $8.200.000
+                    Desde 20 Usuarios Corporativos - $24.600.000 + Startup $8.200.000 anual
                   </button>
                   <button 
                     type="button"
-                    className={`btn-wave w-full p-2 rounded-md text-white font-bold transition-all duration-300 bg-red-500 hover:bg-red-600 ${formData.opcionSeleccionada === "Desde 30 Usuarios Corporativos - $32.400.000 + Startup $10.800.000" ? "selected" : ""}`}
-                    onClick={() => handleOptionSelect("Desde 30 Usuarios Corporativos - $32.400.000 + Startup $10.800.000")}
+                    className={`btn-wave w-full p-2 rounded-md text-white font-bold transition-all duration-300 bg-red-500 hover:bg-red-600 ${formData.opcionSeleccionada === "Desde 30 Usuarios Corporativos - $32.400.000 + Startup $10.800.000 anual" ? "selected" : ""}`}
+                    onClick={() => handleOptionSelect("Desde 30 Usuarios Corporativos - $32.400.000 + Startup $10.800.000 anual")}
                   >
-                    Desde 30 Usuarios Corporativos - $32.400.000 + Startup $10.800.000
+                    Desde 30 Usuarios Corporativos - $32.400.000 + Startup $10.800.000 anual
                   </button>
                   <button 
                     type="button"
-                    className={`btn-wave w-full p-2 rounded-md text-white font-bold transition-all duration-300 bg-black hover:bg-yellow-600 ${formData.opcionSeleccionada === "Desde 50 Usuarios Corporativos - $42.000.000 + Startup $14.000.000" ? "selected" : ""}`}
-                    onClick={() => handleOptionSelect("Desde 50 Usuarios Corporativos - $42.000.000 + Startup $14.000.000")}
+                    className={`btn-wave w-full p-2 rounded-md text-white font-bold transition-all duration-300 bg-black hover:bg-yellow-600 ${formData.opcionSeleccionada === "Desde 50 Usuarios Corporativos - $42.000.000 + Startup $14.000.000 anual" ? "selected" : ""}`}
+                    onClick={() => handleOptionSelect("Desde 50 Usuarios Corporativos - $42.000.000 + Startup $14.000.000 anual")}
                   >
-                    Desde 50 Usuarios Corporativos - $42.000.000 + Startup $14.000.000
+                    Desde 50 Usuarios Corporativos - $42.000.000 + Startup $14.000.000 anual
                   </button>
                 </div>
                 <div className="mt-4 text-center text-teal-600 font-semibold">

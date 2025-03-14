@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { gql, useMutation } from '@apollo/client';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 
 // Mutation que realiza todo el proceso de radicación
 const INSERT_MERT_RECIBIDO = gql`
@@ -100,7 +101,7 @@ const MercurioDigitalizacion = () => {
               <li>Optimiza tu espacio y reduce costos en generación de duplicados, impresiones y tiempo.</li>
             </ul>
             <p className="mb-4 leading-relaxed text-black text-base font-medium text-justify">
-              Si estas interesado: En la sección ¡cotiza tu servicio! podrás conocer los precios y planes del servicio. Debes tener presente que el valor total del servicio depende del número de folios (hojas por una cara) que la entidad requiera digitalizar.
+              Si estas interesado: En la sección <Link href="/paginas/cotizaTuServicio" legacyBehavior><a className="text-blue-600 underline">¡cotiza tu servicio!</a></Link> podrás conocer los precios y planes del servicio. Debes tener presente que el valor total del servicio depende del número de folios (hojas por una cara) que la entidad requiera digitalizar.
             </p>
           </div>
         </div>
@@ -210,45 +211,45 @@ const MercurioDigitalizacion = () => {
                   `}</style>
                   <button 
                     type="button"
-                    className={`btn-wave w-full p-2 rounded-md text-white font-bold transition-all duration-300 bg-blue-500 hover:bg-blue-600 ${formData.opcionSeleccionada === "Desde 10667 imágenes - $1.866.667" ? "selected" : ""}`}
-                    onClick={() => handleOptionSelect("Desde 10667 imágenes - $1.866.667")}
+                    className={`btn-wave w-full p-2 rounded-md text-white font-bold transition-all duration-300 bg-blue-500 hover:bg-blue-600 ${formData.opcionSeleccionada === "Desde 10667 imágenes - $1.866.667 anual" ? "selected" : ""}`}
+                    onClick={() => handleOptionSelect("Desde 10667 imágenes - $1.866.667 anual")}
                   >
-                    Desde 10667 imágenes - $1.866.667
+                    Desde 10667 imágenes - $1.866.667 anual
                   </button>
                   <button 
                     type="button"
-                    className={`btn-wave w-full p-2 rounded-md text-white font-bold transition-all duration-300 bg-purple-500 hover:bg-purple-600 ${formData.opcionSeleccionada === "Desde 21333 imágenes - $3.626.667" ? "selected" : ""}`}
-                    onClick={() => handleOptionSelect("Desde 21333 imágenes - $3.626.667")}
+                    className={`btn-wave w-full p-2 rounded-md text-white font-bold transition-all duration-300 bg-purple-500 hover:bg-purple-600 ${formData.opcionSeleccionada === "Desde 21333 imágenes - $3.626.667 anual" ? "selected" : ""}`}
+                    onClick={() => handleOptionSelect("Desde 21333 imágenes - $3.626.667 anual")}
                   >
-                    Desde 21333 imágenes - $3.626.667
+                    Desde 21333 imágenes - $3.626.667 anual
                   </button>
                   <button 
                     type="button"
-                    className={`btn-wave w-full p-2 rounded-md text-white font-bold transition-all duration-300 bg-amber-500 hover:bg-amber-600 ${formData.opcionSeleccionada === "Desde 42667 imágenes - $7.040.000" ? "selected" : ""}`}
-                    onClick={() => handleOptionSelect("Desde 42667 imágenes - $7.040.000")}
+                    className={`btn-wave w-full p-2 rounded-md text-white font-bold transition-all duration-300 bg-amber-500 hover:bg-amber-600 ${formData.opcionSeleccionada === "Desde 42667 imágenes - $7.040.000 anual" ? "selected" : ""}`}
+                    onClick={() => handleOptionSelect("Desde 42667 imágenes - $7.040.000 anual")}
                   >
-                    Desde 42667 imágenes - $7.040.000
+                    Desde 42667 imágenes - $7.040.000 anual
                   </button>
                   <button 
                     type="button"
-                    className={`btn-wave w-full p-2 rounded-md text-white font-bold transition-all duration-300 bg-yellow-500 hover:bg-yellow-600 ${formData.opcionSeleccionada === "Desde 64000 imágenes - $10.240.000" ? "selected" : ""}`}
-                    onClick={() => handleOptionSelect("Desde 64000 imágenes - $10.240.000")}
+                    className={`btn-wave w-full p-2 rounded-md text-white font-bold transition-all duration-300 bg-yellow-500 hover:bg-yellow-600 ${formData.opcionSeleccionada === "Desde 64000 imágenes - $10.240.000 anual" ? "selected" : ""}`}
+                    onClick={() => handleOptionSelect("Desde 64000 imágenes - $10.240.000 anual")}
                   >
-                    Desde 64000 imágenes - $10.240.000
+                    Desde 64000 imágenes - $10.240.000 anual
                   </button>
                   <button 
                     type="button"
-                    className={`btn-wave w-full p-2 rounded-md text-white font-bold transition-all duration-300 bg-red-500 hover:bg-red-600 ${formData.opcionSeleccionada === "Desde 85333 imágenes - $13.226.667" ? "selected" : ""}`}
-                    onClick={() => handleOptionSelect("Desde 85333 imágenes - $13.226.667")}
+                    className={`btn-wave w-full p-2 rounded-md text-white font-bold transition-all duration-300 bg-red-500 hover:bg-red-600 ${formData.opcionSeleccionada === "Desde 85333 imágenes - $13.226.667 anual" ? "selected" : ""}`}
+                    onClick={() => handleOptionSelect("Desde 85333 imágenes - $13.226.667 anual")}
                   >
-                    Desde 85333 imágenes - $13.226.667
+                    Desde 85333 imágenes - $13.226.667 anual
                   </button>
                   <button 
                     type="button"
-                    className={`btn-wave w-full p-2 rounded-md text-white font-bold transition-all duration-300 bg-black hover:bg-yellow-600 ${formData.opcionSeleccionada === "Desde 106667 imágenes - $16.000.000" ? "selected" : ""}`}
-                    onClick={() => handleOptionSelect("Desde 106667 imágenes - $16.000.000")}
+                    className={`btn-wave w-full p-2 rounded-md text-white font-bold transition-all duration-300 bg-black hover:bg-yellow-600 ${formData.opcionSeleccionada === "Desde 106667 imágenes - $16.000.000 anual" ? "selected" : ""}`}
+                    onClick={() => handleOptionSelect("Desde 106667 imágenes - $16.000.000 anual")}
                   >
-                    Desde 106667 imágenes - $16.000.000
+                    Desde 106667 imágenes - $16.000.000 anual
                   </button>
                 </div>
                 <div className="mt-4 text-center text-teal-600 font-semibold">
