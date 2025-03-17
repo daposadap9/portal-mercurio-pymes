@@ -12,10 +12,16 @@ const VerticalBarTransition = ({ onComplete }) => {
 
   useEffect(() => {
     // Si estamos en la página radicadoExitoso, no ejecutar la transición
-    if (router.pathname === '/radicadoExitoso' || router.pathname === '/PaymentFormPSE') {
+    if (
+      router.pathname === '/radicadoExitoso' ||
+      router.pathname === '/PaymentFormPSE' ||
+      router.pathname === '/paginas/servicios/mercurioPYMES' ||
+      router.pathname === '/paginas/servicios/mercurioDigitalizacion' ||
+      router.pathname === '/paginas/servicios/mercurioCustodia'
+    ) {
       onComplete?.();
       return;
-    }
+    }  
 
     const bars = [bar1Ref.current, bar2Ref.current, bar3Ref.current];
     

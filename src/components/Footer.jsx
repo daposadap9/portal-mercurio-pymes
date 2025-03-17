@@ -4,9 +4,10 @@ import Loading from './loading';
 import { ThemeContext } from '@/context/ThemeContext';
 import Link from 'next/link';
 
-const Footer = () => {
+const Footer = ({ handleNavigation }) => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [pdfLoaded, setPdfLoaded] = useState(false);
+  const { theme } = useContext(ThemeContext);
 
   const openModal = (e) => {
     e.preventDefault();
@@ -14,32 +15,52 @@ const Footer = () => {
     setModalOpen(true);
   };
 
-    const { theme } = useContext(ThemeContext);
   const closeModal = () => {
     setModalOpen(false);
   };
-  const cardBgClass =
-  theme === 'dark'
-    ? 'bg-custom-gradient'
-    : theme === 'purple'
-    ? 'bg-custom-gradient2'
-    : 'bg-custom-gradient3';
 
   return (
     <>
       <footer className="bg-white">
         <div className="container px-4 mx-auto">
-          {/* Contenido principal con altura reducida */}
           <div className="py-2 flex flex-col md:flex-row items-center justify-evenly">
-            {/* Logo: se usa el PNG */}
             <a href="#" className="mb-2 md:mb-0">
               <img src="/logo-servisoft-30years.png" alt="Servisoft 30 Years" className="h-8 w-auto" />
             </a>
-            {/* Enlaces combinados */}
             <div className="flex flex-wrap justify-center items-center space-x-4">
-              <Link href="/paginas/contactanos" className="text-sm text-black hover:text-black font-medium">Contactanos</Link>
-              <Link href="/paginas/servicios" className="text-sm text-black hover:text-black font-medium">Servicios</Link>
-              <Link href="/paginas/cotizaTuServicio" className="text-sm text-black hover:text-black font-medium">Cotiza tu servicio</Link>
+              <Link href="/paginas/contactanos" legacyBehavior>
+                <a
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleNavigation('/paginas/contactanos', true);
+                  }}
+                  className="text-sm text-black hover:text-black font-medium"
+                >
+                  Contactanos
+                </a>
+              </Link>
+              <Link href="/paginas/servicios" legacyBehavior>
+                <a
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleNavigation('/paginas/servicios', true);
+                  }}
+                  className="text-sm text-black hover:text-black font-medium"
+                >
+                  Servicios
+                </a>
+              </Link>
+              <Link href="/paginas/cotizaTuServicio" legacyBehavior>
+                <a
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleNavigation('/paginas/cotizaTuServicio', true);
+                  }}
+                  className="text-sm text-black hover:text-black font-medium"
+                >
+                  Cotiza tu servicio
+                </a>
+              </Link>
               <a 
                 href="https://www.instagram.com/servisoftsa/#" 
                 target="_blank" 
@@ -75,7 +96,6 @@ const Footer = () => {
         </div>
       </footer>
 
-      {/* Modal para Información Legal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
           <div className="absolute inset-0 bg-black opacity-50" onClick={closeModal}></div>
