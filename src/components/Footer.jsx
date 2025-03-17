@@ -18,14 +18,27 @@ const Footer = ({ handleNavigation }) => {
   const closeModal = () => {
     setModalOpen(false);
   };
-
+  const logoSrc =
+  theme === 'dark' || theme === 'purple'
+  ? '/logo-servisoft-30years-dark.png'
+  : '/logo-servisoft-30years.png';
+  const logoStyle = theme === 'dark' || theme === 'purple'
+  ? { transform: 'scale(2.7)' }
+  : {};
+  const cardBgClass =
+  theme === 'dark'
+  ? 'bg-custom-gradient'
+  : theme === 'purple'
+  ? 'bg-custom-gradient2'
+  : 'bg-custom-gradient3';
+// Selecciona la sombra según el tema:
   return (
     <>
-      <footer className="bg-white">
+      <footer className={`${cardBgClass}`}>
         <div className="container px-4 mx-auto">
           <div className="py-2 flex flex-col md:flex-row items-center justify-evenly">
             <a href="#" className="mb-2 md:mb-0">
-              <img src="/logo-servisoft-30years.png" alt="Servisoft 30 Years" className="h-8 w-auto" />
+              <img src={logoSrc} alt="Servisoft 30 Years" className="h-10 w-auto" style={logoStyle}/>
             </a>
             <div className="flex flex-wrap justify-center items-center space-x-4">
               <Link href="/paginas/contactanos" legacyBehavior>
