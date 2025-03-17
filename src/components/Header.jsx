@@ -172,14 +172,18 @@ const Header = ({ handleNavigation, loading }) => {
         {/* Logo */}
         <div className="flex items-center" style={{ minWidth: '180px', height: '100%' }}>
           <div className="w-48 h-full overflow-hidden relative">
-            <Image 
-              src={logoSrc} 
-              alt="Logo Servisoft" 
-              layout="fill"
-              objectFit="contain"
-              priority
-              style={logoStyle}
-            />
+          <Link href="/" legacyBehavior>
+            <a>
+              <Image
+                src={logoSrc} 
+                alt="Logo Servisoft" 
+                layout="fill"
+                objectFit="contain"
+                priority
+                style={logoStyle}
+              />
+            </a>
+          </Link>
           </div>
         </div>
 
