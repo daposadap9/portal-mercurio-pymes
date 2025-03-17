@@ -385,7 +385,7 @@ const CotizaTuServicio = () => {
       {/* Vista para desktop */}
       <div className="hidden lg:block">
         <table className="min-w-full bg-white border border-gray-200 shadow-2xl rounded-lg overflow-hidden">
-          <thead className="bg-gradient-to-r from-teal-500 to-teal-600 text-white text-shadow">
+          <thead className="bg-custom-footer">
             <tr>
               <th className="py-4 px-6 text-xl text-shadow">
                 <div className="flex flex-col items-center">
