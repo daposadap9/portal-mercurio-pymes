@@ -31,15 +31,22 @@ const Footer = ({ handleNavigation }) => {
   : theme === 'purple'
   ? 'bg-custom-gradient2'
   : 'bg-custom-gradient3';
-// Selecciona la sombra según el tema:
   return (
     <>
       <footer className={`${cardBgClass}`}>
         <div className="container px-4 mx-auto">
           <div className="py-2 flex flex-col md:flex-row items-center justify-evenly">
-            <a href="#" className="mb-2 md:mb-0">
-              <img src={logoSrc} alt="Servisoft 30 Years" className="h-10 w-auto" style={logoStyle}/>
-            </a>
+            <Link href="/" legacyBehavior className="mb-2 md:mb-0">
+                  <a
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleNavigation('/', true);
+                  }}
+                  
+                ><img src={logoSrc} alt="Servisoft 30 Years" className="h-10 w-auto" style={logoStyle}/>
+                </a>
+              
+            </Link>
             <div className="flex flex-wrap justify-center items-center space-x-4">
               <Link href="/paginas/contactanos" legacyBehavior>
                 <a
@@ -101,7 +108,7 @@ const Footer = ({ handleNavigation }) => {
             </div>
           </div>
         </div>
-        <div className="border-t border-black w-9/12 mx-auto"></div>
+        <div className="border-t border-black w-11/12 mx-auto"></div>
         <div className="container px-4 mx-auto">
           <p className="py-2 text-xs text-black font-medium text-center">
             © 2025 Servisoft todos los derechos reservados.
