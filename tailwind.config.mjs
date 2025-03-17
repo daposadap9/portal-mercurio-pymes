@@ -66,7 +66,7 @@ export default {
       },
       backgroundImage:{
         'custom-gradient': 'linear-gradient(130deg, #0b0d0f 20%, #292e36 100%)',
-        'custom-gradient2': 'linear-gradient(130deg, #013A63, #14274E);',
+        'custom-gradient2': 'linear-gradient(130deg,#14274E, #013A63 );',
         'custom-gradient3': 'linear-gradient(240deg, #F6F0F0, #FBFBFB,  #F6F0F0)',
       }
     },
