@@ -95,7 +95,7 @@ const PaymentFormPSE = () => {
             value={formData.banco} 
             onChange={handleChange} 
             required
-            className="mt-1 block w-full rounded-md border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
+            className="mt-1 block w-full rounded-md border-gray-300 text-gray-700 p-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
           >
             <option value="">Elige un banco</option>
             {bancos.map((banco, idx) => (
