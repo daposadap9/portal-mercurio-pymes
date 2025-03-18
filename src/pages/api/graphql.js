@@ -519,6 +519,13 @@ const apolloServer = new ApolloServer({ typeDefs, resolvers });
 const startServer = apolloServer.start();
 
 export default async function handler(req, res) {
+  // Manejar la solicitud preflight OPTIONS
+  if (req.method === 'OPTIONS') {
+    res.writeHead(200);
+    res.end();
+    return;
+  }
+  
   await startServer;
   await apolloServer.createHandler({ path: '/api/graphql' })(req, res);
 }
@@ -529,3 +536,4 @@ export const config = {
     bodyParser: false
   }
 };
+
