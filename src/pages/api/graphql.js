@@ -519,24 +519,28 @@ const apolloServer = new ApolloServer({ typeDefs, resolvers });
 const startServer = apolloServer.start();
 
 export default async function handler(req, res) {
-  // Manejar la solicitud preflight OPTIONS con cabeceras CORS
+  // Configura las cabeceras CORS para todas las peticiones
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
+  // Manejar la solicitud preflight OPTIONS
   if (req.method === 'OPTIONS') {
-    res.setHeader('Access-Control-Allow-Credentials', 'true');
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     res.status(200).end();
     return;
   }
-  
+
+  // Asegúrate de que se inicie el servidor Apollo antes de atender la petición
   await startServer;
-  await apolloServer.createHandler({ path: '/api/graphql' })(req, res);
+  return apolloServer.createHandler({ path: '/api/graphql' })(req, res);
 }
 
 // Deshabilitar el body parser, ya que Apollo Server lo gestiona
 export const config = {
   api: {
     bodyParser: false,
+    externalResolver: true,
   },
 };
 
