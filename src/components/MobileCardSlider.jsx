@@ -12,6 +12,7 @@ const images = [
   '/cliente1.png',
   '/cliente11.png',
   '/cliente12.png',
+  '/cliente13.png',
 ];
 
 // Array extendido para efecto infinito: [última imagen, ...imágenes, primera imagen]
