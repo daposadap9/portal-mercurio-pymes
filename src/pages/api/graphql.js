@@ -519,10 +519,13 @@ const apolloServer = new ApolloServer({ typeDefs, resolvers });
 const startServer = apolloServer.start();
 
 export default async function handler(req, res) {
-  // Manejar la solicitud preflight OPTIONS
+  // Manejar la solicitud preflight OPTIONS con cabeceras CORS
   if (req.method === 'OPTIONS') {
-    res.writeHead(200);
-    res.end();
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.status(200).end();
     return;
   }
   
@@ -533,7 +536,8 @@ export default async function handler(req, res) {
 // Deshabilitar el body parser, ya que Apollo Server lo gestiona
 export const config = {
   api: {
-    bodyParser: false
-  }
+    bodyParser: false,
+  },
 };
+
 
