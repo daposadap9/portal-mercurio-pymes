@@ -1,18 +1,19 @@
 // pages/api/graphql.js
 import { ApolloServer, gql } from 'apollo-server-micro';
-const { PrismaClient } = require('@prisma/client');
-const { GraphQLJSON } = require('graphql-type-json');
-const { GraphQLDateTime } = require('graphql-iso-date');
+import { PrismaClient } from '@prisma/client';
+import { GraphQLJSON } from 'graphql-type-json';
+import { GraphQLDateTime } from 'graphql-iso-date';
 import sql from 'mssql';
 import dotenv from 'dotenv';
 import axios from 'axios';
+import bcrypt from 'bcryptjs';
 
 dotenv.config();
 
-// Cliente Prisma para las operaciones existentes (mssql y SOAP)
+// Cliente Prisma para operaciones generales (incluye modelos de usuarios)
 const prisma = new PrismaClient();
 
-// *** NUEVO: Cliente Prisma para transacciones en una base de datos distinta ***
+// Cliente Prisma para transacciones en una base de datos distinta
 const transactionsPrisma = new PrismaClient({
   datasources: {
     db: {
@@ -31,8 +32,8 @@ async function getNextRadicado() {
     port: parseInt(process.env.DB_PORT, 10),
     options: {
       encrypt: process.env.DB_ENCRYPT === "true",
-      trustServerCertificate: process.env.DB_TRUST_SERVER_CERTIFICATE === "true"
-    }
+      trustServerCertificate: process.env.DB_TRUST_SERVER_CERTIFICATE === "true",
+    },
   };
 
   try {
@@ -92,16 +93,52 @@ const typeDefs = gql`
     state: String!
   }
 
-  type Mutation {
-    setSiguienteRadicadoNew: String!
-    insertMertRecibido(documentInfo: String!, documentInfoGeneral: String!): InsertMertRecibidoPayload!
-    saveTransaction(userId: String!, input: TransactionInput!): Transaction!
+  # Modelos de Usuario
+  type CuidUser {
+    id: ID!
+    email: String!
+    name: String
+    createdAt: DateTime!
+    updatedAt: DateTime!
   }
+
+  type RegularUser {
+    id: ID!
+    email: String!
+    name: String
+    createdAt: DateTime!
+    updatedAt: DateTime!
+  }
+
+  # Tipos de respuesta para registro y login
+  type CuidUserResponse {
+    success: Boolean!
+    message: String!
+    user: CuidUser
+  }
+
+  type RegularUserResponse {
+    success: Boolean!
+    message: String!
+    user: RegularUser
+  }
+
   type InsertMertRecibidoPayload {
     success: Boolean!
     message: String!
     idDocumento: String
   }
+
+  type Mutation {
+    setSiguienteRadicadoNew: String!
+    insertMertRecibido(documentInfo: String!, documentInfoGeneral: String!): InsertMertRecibidoPayload!
+    saveTransaction(userId: String!, input: TransactionInput!): Transaction!
+    registerCuidUser(email: String!, password: String!, name: String): CuidUserResponse!
+    registerRegularUser(email: String!, password: String!, name: String): RegularUserResponse!
+    loginCuidUser(email: String!, password: String!): CuidUserResponse!
+    loginRegularUser(email: String!, password: String!): RegularUserResponse!
+  }
+
   type Query {
     getTransaction(userId: String!): Transaction!
     getTotal(userId: String!): Float!
@@ -113,7 +150,6 @@ const resolvers = {
   JSON: GraphQLJSON,
   DateTime: GraphQLDateTime,
   Query: {
-    // Para transacciones usamos el cliente transactionsPrisma (base de datos separada)
     getTransaction: async (_, { userId }) => {
       console.log("Resolver getTransaction – userId recibido:", userId);
       try {
@@ -127,7 +163,8 @@ const resolvers = {
         console.error("Error en getTransaction:", error);
         throw new Error("Error al obtener la transacción");
       }
-    }, getTotal: async (_, { userId }) => {
+    },
+    getTotal: async (_, { userId }) => {
       console.log("Resolver getTotal – userId recibido:", userId);
       try {
         const transaction = await transactionsPrisma.transaction.findFirst({ where: { userId } });
@@ -144,7 +181,6 @@ const resolvers = {
     _: () => true
   },
   Mutation: {
-    // Métodos existentes (mssql y SOAP) sin cambios
     async setSiguienteRadicadoNew() {
       return await getNextRadicado();
     },
@@ -159,8 +195,8 @@ const resolvers = {
         port: parseInt(process.env.DB_PORT, 10),
         options: {
           encrypt: process.env.DB_ENCRYPT === "true",
-          trustServerCertificate: process.env.DB_TRUST_SERVER_CERTIFICATE === "true"
-        }
+          trustServerCertificate: process.env.DB_TRUST_SERVER_CERTIFICATE === "true",
+        },
       };
 
       try {
@@ -233,7 +269,7 @@ const resolvers = {
           `;
           await requestTx.query(updateConfigQuery);
 
-          // 3. Insertar en MERT_RECIBIDO con los valores fijos y la info del formulario
+          // 3. Insertar en MERT_RECIBIDO
           requestTx.input('fecDocumento', sql.DateTime, new Date());
           requestTx.input('idAsociado', sql.VarChar, '800240660-2');
           requestTx.input('idGeografia', sql.VarChar, '00001');
@@ -341,10 +377,9 @@ const resolvers = {
           `;
           await requestTx.query(insertRecibidoQuery);
 
-          // Confirmar la transacción SQL
           await transaction.commit();
 
-          // Realizar la petición SOAP al webservice
+          // Realizar petición SOAP (opcional)
           const soapBody = `<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:rut="http://www.servisoft.com.co/Mercurio/Servicios/Schema/RutaService">
             <soapenv:Header/>
             <soapenv:Body>
@@ -360,7 +395,7 @@ const resolvers = {
             const soapResponse = await axios.post(process.env.SOAP_URL, soapBody, {
               headers: { 
                 'Content-Type': 'text/xml',
-                'SOAPAction': '' // Algunos servicios SOAP requieren este header (aunque sea vacío)
+                'SOAPAction': '' // Puede requerirse este header
               }
             });
             console.log('SOAP request successful:', soapResponse.data);
@@ -383,9 +418,7 @@ const resolvers = {
         sql.close();
       }
     },
-    // *** NUEVA mutation para guardar la transacción usando Prisma en la DB de transacciones ***
     async saveTransaction(_, { userId, input }) {
-      // Convertir discount a float si llega como cadena con coma
       const discountValue =
         typeof input.discount === 'string'
           ? parseFloat(input.discount.replace(',', '.'))
@@ -408,7 +441,77 @@ const resolvers = {
         });
       }
       return transactionRecord;
-    }    
+    },
+    async registerCuidUser(_, { email, password, name }) {
+      if (!email || !password) {
+        return { success: false, message: "Email y contraseña son requeridos", user: null };
+      }
+      try {
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+        const cuidUser = await prisma.cuidUser.create({
+          data: { email, password: hashedPassword, name },
+        });
+        return { success: true, message: "Cuid user registrado exitosamente", user: cuidUser };
+      } catch (error) {
+        console.error("Error registrando cuid user:", error);
+        return { success: false, message: "Error registrando cuid user", user: null };
+      }
+    },
+    async registerRegularUser(_, { email, password, name }) {
+      if (!email || !password) {
+        return { success: false, message: "Email y contraseña son requeridos", user: null };
+      }
+      try {
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+        const regularUser = await prisma.user.create({
+          data: { email, password: hashedPassword, name },
+        });
+        return { success: true, message: "Regular user registrado exitosamente", user: regularUser };
+      } catch (error) {
+        console.error("Error registrando regular user:", error);
+        return { success: false, message: "Error registrando regular user", user: null };
+      }
+    },
+    async loginCuidUser(_, { email, password }) {
+      if (!email || !password) {
+        return { success: false, message: "Email y contraseña son requeridos", user: null };
+      }
+      try {
+        const user = await prisma.cuidUser.findUnique({ where: { email } });
+        if (!user) {
+          return { success: false, message: "Usuario no encontrado", user: null };
+        }
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+          return { success: false, message: "Contraseña incorrecta", user: null };
+        }
+        return { success: true, message: "Usuario logueado exitosamente", user };
+      } catch (error) {
+        console.error("Error en loginCuidUser:", error);
+        return { success: false, message: "Error en login", user: null };
+      }
+    },
+    async loginRegularUser(_, { email, password }) {
+      if (!email || !password) {
+        return { success: false, message: "Email y contraseña son requeridos", user: null };
+      }
+      try {
+        const user = await prisma.user.findUnique({ where: { email } });
+        if (!user) {
+          return { success: false, message: "Usuario no encontrado", user: null };
+        }
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+          return { success: false, message: "Contraseña incorrecta", user: null };
+        }
+        return { success: true, message: "Usuario logueado exitosamente", user };
+      } catch (error) {
+        console.error("Error en loginRegularUser:", error);
+        return { success: false, message: "Error en login", user: null };
+      }
+    }
   }
 };
 
