@@ -1,19 +1,20 @@
 // pages/api/graphql.js
-import { ApolloServer, gql } from 'apollo-server-micro';
+import { ApolloServer } from '@apollo/server';
+import { startServerAndCreateNextHandler } from '@as-integrations/next';
 import { PrismaClient } from '@prisma/client';
 import { GraphQLJSON } from 'graphql-type-json';
 import { GraphQLDateTime } from 'graphql-iso-date';
+import { gql } from 'graphql-tag';
 import sql from 'mssql';
 import dotenv from 'dotenv';
 import axios from 'axios';
 import bcrypt from 'bcryptjs';
+import { makeExecutableSchema } from '@graphql-tools/schema';
 
 dotenv.config();
 
-// Cliente Prisma para operaciones generales (incluye modelos de usuarios)
+// Clientes Prisma para operaciones generales y transacciones (puede apuntar a bases de datos distintas)
 const prisma = new PrismaClient();
-
-// Cliente Prisma para transacciones en una base de datos distinta
 const transactionsPrisma = new PrismaClient({
   datasources: {
     db: {
@@ -22,7 +23,7 @@ const transactionsPrisma = new PrismaClient({
   },
 });
 
-// Función auxiliar que implementa la lógica de setSiguienteRadicadoNew
+// Función auxiliar para obtener el siguiente radicado
 async function getNextRadicado() {
   const config = {
     user: process.env.DB_USER,
@@ -93,7 +94,6 @@ const typeDefs = gql`
     state: String!
   }
 
-  # Modelos de Usuario
   type CuidUser {
     id: ID!
     email: String!
@@ -110,7 +110,6 @@ const typeDefs = gql`
     updatedAt: DateTime!
   }
 
-  # Tipos de respuesta para registro y login
   type CuidUserResponse {
     success: Boolean!
     message: String!
@@ -150,7 +149,7 @@ const resolvers = {
   JSON: GraphQLJSON,
   DateTime: GraphQLDateTime,
   Query: {
-    getTransaction: async (_, { userId }) => {
+    async getTransaction(_, { userId }) {
       console.log("Resolver getTransaction – userId recibido:", userId);
       try {
         const transaction = await transactionsPrisma.transaction.findFirst({ where: { userId } });
@@ -164,7 +163,7 @@ const resolvers = {
         throw new Error("Error al obtener la transacción");
       }
     },
-    getTotal: async (_, { userId }) => {
+    async getTotal(_, { userId }) {
       console.log("Resolver getTotal – userId recibido:", userId);
       try {
         const transaction = await transactionsPrisma.transaction.findFirst({ where: { userId } });
@@ -178,7 +177,7 @@ const resolvers = {
         throw new Error("Error al obtener el total de la transacción");
       }
     },
-    _: () => true
+    _: () => true,
   },
   Mutation: {
     async setSiguienteRadicadoNew() {
@@ -186,7 +185,6 @@ const resolvers = {
     },
     async insertMertRecibido(_, { documentInfo, documentInfoGeneral }) {
       const idDocumento = await getNextRadicado();
-
       const config = {
         user: process.env.DB_USER,
         password: process.env.DB_PASSWORD,
@@ -201,8 +199,6 @@ const resolvers = {
 
       try {
         await sql.connect(config);
-
-        // Calcular la longitud, el número anterior y el siguiente
         const longitud = idDocumento.length;
         const numRadicado = parseInt(idDocumento, 10);
         let nextId = (numRadicado + 1).toString();
@@ -214,14 +210,12 @@ const resolvers = {
           prevId = "0" + prevId;
         }
 
-        // Determinar si hay cambio de año (cambioTiempo)
         const currentYear = new Date().getFullYear().toString();
         let cambioTiempo = false;
         if (idDocumento && idDocumento.length >= 4 && !idDocumento.startsWith(currentYear)) {
           cambioTiempo = true;
         }
 
-        // Consultar existencia en MERT_RADICADO_UNICO
         const existenciaQuery = `
           SELECT IDDOCUMENTO 
           FROM MERT_RADICADO_UNICO 
@@ -395,7 +389,7 @@ const resolvers = {
             const soapResponse = await axios.post(process.env.SOAP_URL, soapBody, {
               headers: { 
                 'Content-Type': 'text/xml',
-                'SOAPAction': '' // Puede requerirse este header
+                'SOAPAction': '' // Ajusta si es necesario
               }
             });
             console.log('SOAP request successful:', soapResponse.data);
@@ -511,37 +505,17 @@ const resolvers = {
         console.error("Error en loginRegularUser:", error);
         return { success: false, message: "Error en login", user: null };
       }
-    }
-  }
-};
-
-const apolloServer = new ApolloServer({ typeDefs, resolvers });
-const startServer = apolloServer.start();
-
-export default async function handler(req, res) {
-  // Configura las cabeceras CORS para todas las peticiones
-  res.setHeader('Access-Control-Allow-Credentials', 'true');
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-
-  // Manejar la solicitud preflight OPTIONS
-  if (req.method === 'OPTIONS') {
-    res.status(200).end();
-    return;
-  }
-
-  // Asegúrate de que se inicie el servidor Apollo antes de atender la petición
-  await startServer;
-  return apolloServer.createHandler({ path: '/api/graphql' })(req, res);
-}
-
-// Deshabilitar el body parser, ya que Apollo Server lo gestiona
-export const config = {
-  api: {
-    bodyParser: false,
-    externalResolver: true,
+    },
   },
 };
 
+const schema = makeExecutableSchema({ typeDefs, resolvers });
+const server = new ApolloServer({ schema });
 
+// Exportamos el handler utilizando la integración para Next.js
+export default startServerAndCreateNextHandler(server, {
+  context: async (_req, _res) => {
+    // Puedes integrar aquí la obtención de sesión, por ejemplo, con NextAuth.
+    return {};
+  },
+});
