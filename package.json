@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@apollo/client": "^3.13.3",
+    "@apollo/server": "^4.11.3",
+    "@as-integrations/next": "^3.2.0",
     "@emotion/cache": "^11.14.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
