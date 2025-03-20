@@ -30,6 +30,13 @@ const contacts = [
     city: "MEDELLÍN",
     phone: "3008676122",
     email: "SESCOBAR@SERVISOFT.COM.CO"
+  },
+  {
+    name: "LICETH MONTOYA",
+    department: "SERVICIO AL CLIENTE",
+    city: "MEDELLÍN",
+    phone: "3005675429",
+    email: "LMONTOYA@SERVISOFT.COM.CO"
   }
 ];
 
@@ -37,7 +44,8 @@ const images = [
   '/sandra.png',
   '/fredy.png',
   '/erika.png',
-  '/simon.png'
+  '/simon.png',
+  '/lizeth.png'
 ];
 
 const Contactanos = () => {
