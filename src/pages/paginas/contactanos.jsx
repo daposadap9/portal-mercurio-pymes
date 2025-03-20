@@ -8,14 +8,14 @@ const contacts = [
     department: "CUENTAS CORPORATIVAS",
     city: "BOGOTÁ D.C",
     phone: "3002187751",
-    email: "SPEÑA@SERVISOFT.COM.CO"
+    email: "SPENA@SERVISOFT.COM.CO"
   },
   {
     name: "FREDY PEÑA",
     department: "CUENTAS CORPORATIVAS",
     city: "BOGOTÁ D.C",
     phone: "3008676350",
-    email: "FPEÑA@SERVISOFT.COM.CO"
+    email: "FPENA@SERVISOFT.COM.CO"
   },
   {
     name: "ERIKA CORTÉS",
