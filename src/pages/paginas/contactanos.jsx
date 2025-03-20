@@ -65,7 +65,7 @@ const Contactanos = () => {
                 layout="fill" 
                 objectFit="cover" 
                 quality={100}
-                className="rounded-full"
+                className="rounded-full shadow-xl"
               />
             </div>
             <h3 className="text-2xl font-bold text-teal-600 mb-2 text-center">
