@@ -308,3 +308,83 @@ select:disabled::placeholder {
 .icon-shadow {
   filter: drop-shadow(1px 1px 3px rgba(0, 0, 0, 0.3));
 }
+
+.inicio-prueba-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.section {
+  position: relative;
+  width: 100%;
+  height: 500px;
+  overflow: hidden;
+}
+
+.section-1, .section-2 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.section-1::before, .section-2::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+}
+
+.section-1 h1, .section-2 h1 {
+  position: relative;
+  z-index: 2;
+  color: white;
+  font-size: 3rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.section-2 p {
+  position: relative;
+  z-index: 2;
+  color: white;
+  font-size: 1.5rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  max-width: 600px;
+  text-align: center;
+}
+
+.section-3 {
+  background-color: #C4C4C4;
+  padding: 40px;
+  text-align: center;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  text-align: center;
+}
+
+.overlay h1 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+}
+
+.overlay p {
+  font-size: 1.2rem;
+  max-width: 600px;
+}
