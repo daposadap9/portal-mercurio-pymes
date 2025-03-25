@@ -1,19 +1,19 @@
+// pages/paginas/servicios/index.jsx
 import React from 'react';
-import { FaCheckCircle } from 'react-icons/fa';
 import { useRouter } from 'next/router';
-import { useDropdown } from '@/context/DropdownContext';
+import { FaCheckCircle } from 'react-icons/fa';
 import Card from '@/components/Card';
+import { useDropdown } from '@/context/DropdownContext';
 
 export default function Servicios({ disabledProvider }) {
   const router = useRouter();
   const { dropdownActive } = useDropdown();
   
-  // Determina si el dropdown está activo
   const isAnyDropdownActive = disabledProvider 
     ? false 
     : (dropdownActive.services || dropdownActive.tramites);
 
-  // Ejemplo de datos (puedes cambiar los tuyos)
+  // Datos para las tarjetas
   const cardData1 = {
     title: 'MERCURIO SGDEA',
     lines: [
@@ -25,6 +25,7 @@ export default function Servicios({ disabledProvider }) {
       { text: 'Firmas digitales y digitalizadas', icon: <FaCheckCircle /> },
       { text: 'Puntos de integración (+25 Web services Publicados)', icon: <FaCheckCircle /> },
     ],
+    maxLines: 7,
     onViewMore: () => router.push("/paginas/servicios/mercurioSGDEA"),
     borderColorClass: "hover:border-yellow-500",
     titleColorClass: "text-yellow-600",
@@ -40,6 +41,7 @@ export default function Servicios({ disabledProvider }) {
       { text: 'Flujo estándar de PQRS', icon: <FaCheckCircle /> },
       { text: 'Control de documentos.', icon: <FaCheckCircle /> },
     ],
+    maxLines: 7,
     onViewMore: () => router.push("/paginas/servicios/mercurioPYMES"),
     borderColorClass: "hover:border-blue-500",
     titleColorClass: "text-blue-600",
@@ -51,9 +53,10 @@ export default function Servicios({ disabledProvider }) {
     title: 'CUSTODIA',
     lines: [
       { text: 'Custodiamos desde 1 caja de documentos', icon: <FaCheckCircle /> },
-      { text: 'Nuestra custodia te proporciona tranquilidad...', icon: <FaCheckCircle /> },
-      { text: 'Aprovecha la reducción de costos operativos...', icon: <FaCheckCircle /> },
+      { text: 'Nuestra custodia te proporciona tranquilidad al saber que tus documentos están en condiciones óptimas y con un manejo totalmente confidencial', icon: <FaCheckCircle /> },
+      { text: 'Aprovecha la reducción de costos operativos y de personal, al delegar la gestión de tus archivos físicos en expertos', icon: <FaCheckCircle /> },
     ],
+    maxLines: 7,
     onViewMore: () => router.push("/paginas/servicios/mercurioCustodia"),
     additionalButtonText: "Busca tus cajas en nuestro sistema de odin",
     additionalButtonHref: "https://odin.servisoft.com.co/",
@@ -66,10 +69,11 @@ export default function Servicios({ disabledProvider }) {
   const cardData4 = {
     title: 'DIGITALIZACIÓN',
     lines: [
-      { text: 'La digitalización documental no es un gasto...', icon: <FaCheckCircle /> },
-      { text: 'Cumple con las normativas legales...', icon: <FaCheckCircle /> },
-      { text: 'Convierte tu archivo físico en digital...', icon: <FaCheckCircle /> },
+      { text: 'La digitalización documental no es un gasto, es una inversión en seguridad, accesibilidad y productividad', icon: <FaCheckCircle /> },
+      { text: 'Cumple con las normativas legales y protege tu información con copias digitales seguras y respaldadas', icon: <FaCheckCircle /> },
+      { text: 'Convierte tu archivo físico en digital y reduce costos operativos mientras mejoras la eficiencia de tu empresa', icon: <FaCheckCircle /> },
     ],
+    maxLines: 7,
     onViewMore: () => router.push("/paginas/servicios/mercurioDigitalizacion"),
     badgeText: "¡Oferta recomendada!",
     borderColorClass: "hover:border-red-500",
@@ -87,6 +91,7 @@ export default function Servicios({ disabledProvider }) {
       { text: '1TB de almacenamiento', icon: <FaCheckCircle /> },
       { text: '100 GB de almacenamiento', icon: <FaCheckCircle /> },
     ],
+    maxLines: 7,
     onViewMore: () => router.push("/paginas/servicios/serviciosAdicionales"),
     badgeText: "¡Oferta recomendada!",
     borderColorClass: "hover:border-green-500",
@@ -109,22 +114,17 @@ export default function Servicios({ disabledProvider }) {
         <h1>¡Nuestros Servicios!</h1>
       </div>
 
-      {/*
-        Grid de 4 columnas en pantallas >= md, 1 columna en móviles.
-        place-items-stretch => cada columna se estira verticalmente.
-      */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 place-items-stretch max-w-7xl mx-auto">
-
-        {/* Columna 1: TÍTULO FUERA */}
-        <div className="flex flex-col h-full">
+      {/* Contenedor de tarjetas: con flex, wrap, items-center y justify-center */}
+      <div className="flex flex-col md:flex-row flex-wrap items-center justify-center pt-5 gap-4 p-2">
+        {/* Columna 1 */}
+        <div className="max-w-[300px] w-full flex flex-col self-auto md:self-stretch">
           <h2 className={`text-xl font-bold mb-2 text-center ${cardData1.titleColorClass}`}>
             {cardData1.title}
           </h2>
-          {/* Card ocupa el resto */}
-          <div className="flex-1">
+          <div className="flex-1 flex flex-col">
             <Card
-              // No pasamos title para no duplicar
               lines={cardData1.lines}
+              maxLines={cardData1.maxLines}
               borderColorClass={cardData1.borderColorClass}
               titleColorClass={cardData1.titleColorClass}
               iconColorClass={cardData1.iconColorClass}
@@ -136,13 +136,14 @@ export default function Servicios({ disabledProvider }) {
         </div>
 
         {/* Columna 2 */}
-        <div className="flex flex-col h-full">
+        <div className="max-w-[300px] w-full flex flex-col self-auto md:self-stretch">
           <h2 className={`text-xl font-bold mb-2 text-center ${cardData2.titleColorClass}`}>
             {cardData2.title}
           </h2>
-          <div className="flex-1">
+          <div className="flex-1 flex flex-col">
             <Card
               lines={cardData2.lines}
+              maxLines={cardData2.maxLines}
               borderColorClass={cardData2.borderColorClass}
               titleColorClass={cardData2.titleColorClass}
               iconColorClass={cardData2.iconColorClass}
@@ -154,13 +155,14 @@ export default function Servicios({ disabledProvider }) {
         </div>
 
         {/* Columna 3 */}
-        <div className="flex flex-col h-full">
+        <div className="max-w-[300px] w-full flex flex-col self-auto md:self-stretch">
           <h2 className={`text-xl font-bold mb-2 text-center ${cardData3.titleColorClass}`}>
             {cardData3.title}
           </h2>
-          <div className="flex-1">
+          <div className="flex-1 flex flex-col">
             <Card
               lines={cardData3.lines}
+              maxLines={cardData3.maxLines}
               borderColorClass={cardData3.borderColorClass}
               titleColorClass={cardData3.titleColorClass}
               iconColorClass={cardData3.iconColorClass}
@@ -174,13 +176,14 @@ export default function Servicios({ disabledProvider }) {
         </div>
 
         {/* Columna 4 */}
-        <div className="flex flex-col h-full">
+        <div className="max-w-[300px] w-full flex flex-col self-auto md:self-stretch">
           <h2 className={`text-xl font-bold mb-2 text-center ${cardData4.titleColorClass}`}>
             {cardData4.title}
           </h2>
-          <div className="flex-1">
+          <div className="flex-1 flex flex-col">
             <Card
               lines={cardData4.lines}
+              maxLines={cardData4.maxLines}
               borderColorClass={cardData4.borderColorClass}
               badgeText={cardData4.badgeText}
               titleColorClass={cardData4.titleColorClass}
@@ -194,19 +197,15 @@ export default function Servicios({ disabledProvider }) {
       </div>
 
       {/* Sección de Servicios Adicionales */}
-      <div className="flex justify-center pt-10 text-2xl md:text-4xl font-bold text-teal-600 text-center titulo-shadow">
-        <h1>Servicios Adicionales</h1>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 place-items-stretch max-w-7xl mx-auto">
-        {/* Columna 1: Título fuera */}
-        <div className="flex flex-col h-full">
+      <div className="flex flex-col md:flex-row flex-wrap items-center justify-center pt-5 gap-4 p-2">
+        <div className="max-w-[300px] w-full flex flex-col self-auto md:self-stretch">
           <h2 className={`text-xl font-bold mb-2 text-center ${cardData5.titleColorClass}`}>
             {cardData5.title}
           </h2>
-          <div className="flex-1">
+          <div className="flex-1 flex flex-col">
             <Card
               lines={cardData5.lines}
+              maxLines={cardData5.maxLines}
               borderColorClass={cardData5.borderColorClass}
               badgeText={cardData5.badgeText}
               titleColorClass={cardData5.titleColorClass}
