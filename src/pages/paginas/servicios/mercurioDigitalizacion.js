@@ -83,6 +83,17 @@ const MercurioDigitalizacion = () => {
   };
 
   return (
+    <>
+    <div
+        className={`
+          flex justify-center text-2xl md:text-4xl font-bold
+          transition-all duration-500 ease-in-out
+          text-teal-600 text-center titulo-shadow mb-10
+        `}
+      ><div className="w-full lg:w-[85%]">
+      <h3>Olvídate de los documentos físicos, digitalízalos con nosotros. La Gestión Documental Avanza y tú compañía también</h3>
+      </div>
+      </div>
     <div className="flex flex-col justify-between p-4">
       {/* Contenedor principal que se expande en el viewport */}
       <div className="w-full mx-auto flex flex-col lg:flex-row justify-evenly lg:gap-0 gap-4 flex-1">
@@ -267,6 +278,7 @@ const MercurioDigitalizacion = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

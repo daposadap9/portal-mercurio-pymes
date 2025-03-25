@@ -83,6 +83,17 @@ const MercurioCustodia = () => {
   };
 
   return (
+    <>
+    <div
+        className={`
+          flex justify-center text-2xl md:text-4xl font-bold
+          transition-all duration-500 ease-in-out
+          text-teal-600 text-center titulo-shadow mb-10
+        `}
+      ><div className="w-full lg:w-[85%]">
+        <h3>¿Sabías que más del 15% de la superficie de las oficinas está reservado para armarios de papel? La Gestión Documental Avanza, nosotros conservamos tus documentos.</h3>
+      </div>  
+      </div>
     <div className="flex flex-col justify-between p-4">
       {/* Contenedor principal */}
       <div className="w-full mx-auto flex flex-col lg:flex-row justify-evenly lg:gap-0 gap-4 flex-1">
@@ -278,6 +289,7 @@ const MercurioCustodia = () => {
         </p>
       </div>
     </div>
+    </>
   );
 };
 

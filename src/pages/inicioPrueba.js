@@ -176,7 +176,7 @@ export default function InicioPrueba() {
           top: 210px;
           right: 0;
           width: 60%;
-          height: 60%;
+          height: 70%;
           z-index: 3;
           filter: grayscale(100%);
           overflow: hidden;

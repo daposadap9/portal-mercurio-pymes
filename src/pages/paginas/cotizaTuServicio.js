@@ -217,6 +217,7 @@ const CotizaTuServicio = () => {
     const expanded = isSelected || isExpanded;
 
     return (
+      <>
       <div
         className={`group p-4 border rounded-lg cursor-pointer relative transition-colors duration-300 shadow-xl ${
           isSelected
@@ -278,14 +279,22 @@ const CotizaTuServicio = () => {
           Seleccionar
         </button>
       </div>
+      </>
     );
   };
 
   return (
+    <>
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl md:text-4xl font-extrabold text-center mb-8">
-        ¡Cotiza tu servicio!
-      </h1>
+      <div
+        className={`
+          flex justify-center text-2xl md:text-4xl font-bold
+          transition-all duration-500 ease-in-out
+          text-teal-600 text-center titulo-shadow mb-10
+        `}
+      >
+        <h3>Olvídate de los documentos físicos, digitalízalos con nosotros. La Gestión Documental Avanza y tú compañía también</h3>
+      </div>
       {/* Vista para dispositivos móviles */}
       <div className="block lg:hidden">
         <div className="grid grid-cols-1 gap-6">
@@ -481,6 +490,7 @@ const CotizaTuServicio = () => {
         </table>
       </div>
     </div>
+    </>
   );
 };
 

@@ -12,6 +12,9 @@ export default function Home() {
       </div>
       
       <div className="mt-16">
+      <div className={`flex justify-center text-2xl md:text-4xl font-bold transition-all duration-500 ease-in-out text-teal-600 text-center titulo-shadow mb-10`}>
+      <h1>Mejora Tú Gestión Documental</h1>
+      </div>
         <Servicios disabledProvider="diabledProvider" />
       </div>
       <div className="mt-16">
