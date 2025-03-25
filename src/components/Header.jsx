@@ -313,20 +313,6 @@ const Header = ({ handleNavigation, loading }) => {
             </a>
           </Link>
 
-          {/* Nueva opción: INICIO PRUEBA */}
-          <Link href="/inicioPrueba" legacyBehavior>
-            <a
-              onClick={handleLinkClick("/inicioPrueba")}
-              className={`${baseLinkClass} ${
-                isActive("/inicioPrueba")
-                  ? activeLinkClass
-                  : inactiveLinkClass
-              } text-sm`}
-            >
-              <FaDollarSign className="mr-1 text-base" /> INICIO PRUEBA
-            </a>
-          </Link>
-
           {/* Dropdown de TRÁMITES */}
           <div
             className="relative inline-block"
@@ -472,20 +458,6 @@ const Header = ({ handleNavigation, loading }) => {
                 } text-sm`}
               >
                 <FaDollarSign className="mr-1 text-base" /> ¡COTIZA TU SERVICIO!
-              </a>
-            </Link>
-            <Link href="/inicioPrueba" legacyBehavior>
-              <a
-                onClick={handleLinkClick("/inicioPrueba", () =>
-                  setMobileMenuOpen(false)
-                )}
-                className={`${baseLinkClass2} ${
-                  isActive("/inicioPrueba")
-                    ? activeLinkClass
-                    : inactiveLinkClass
-                } text-sm`}
-              >
-                <FaDollarSign className="mr-1 text-base" /> INICIO PRUEBA
               </a>
             </Link>
             <button
