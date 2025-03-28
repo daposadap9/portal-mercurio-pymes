@@ -91,7 +91,7 @@ const MercurioCustodia = () => {
           text-teal-600 text-center titulo-shadow mb-10
         `}
       ><div className="w-full lg:w-[85%]">
-        <h3>¿Sabías que más del 15% de la superficie de las oficinas está reservado para armarios de papel? La Gestión Documental Avanza, nosotros conservamos tus documentos.</h3>
+        <h1>¿Sabías que más del 15% de la superficie de las oficinas está reservado para armarios de papel? La Gestión Documental Avanza, nosotros conservamos tus documentos.</h1>
       </div>  
       </div>
     <div className="flex flex-col justify-between p-4">

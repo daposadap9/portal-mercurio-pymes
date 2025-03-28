@@ -92,7 +92,7 @@ const MercurioPYMES = () => {
         `}
       >
         <div className="w-full lg:w-[85%]">
-        <h3>Mercurio PYMES es una forma ágil, fácil y práctica para la gestión documental de pequeñas, medianas empresas.</h3>
+        <h1>Mercurio PYMES es una forma ágil, fácil y práctica para la gestión documental de pequeñas, medianas empresas.</h1>
         </div>
       </div>
     <div className="flex flex-col justify-between p-4">

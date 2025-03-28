@@ -91,7 +91,7 @@ const MercurioDigitalizacion = () => {
           text-teal-600 text-center titulo-shadow mb-10
         `}
       ><div className="w-full lg:w-[85%]">
-      <h3>Olvídate de los documentos físicos, digitalízalos con nosotros. La Gestión Documental Avanza y tú compañía también</h3>
+      <h1>Olvídate de los documentos físicos, digitalízalos con nosotros. La Gestión Documental Avanza y tú compañía también</h1>
       </div>
       </div>
     <div className="flex flex-col justify-between p-4">

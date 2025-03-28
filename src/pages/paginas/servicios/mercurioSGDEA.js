@@ -93,7 +93,7 @@ const MercurioSGDEA = () => {
           text-teal-600 text-center titulo-shadow mb-10
         `}
       ><div className="w-full lg:w-[85%]">
-        <h3> Con Mercurio Optimiza la Gestión Documental de tú Negocio.</h3>
+        <h1> Con Mercurio Optimiza la Gestión Documental de tú Negocio.</h1>
       </div>
       </div>
     <div className="flex flex-col justify-between p-4">
