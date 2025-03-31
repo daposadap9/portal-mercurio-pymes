@@ -1,26 +1,25 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { CldImage } from 'next-cloudinary';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
-// Se obtiene el Cloud Name desde la variable de entorno pública
-const CLOUD_NAME = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
-
-// Definimos un arreglo de medios. En este ejemplo, son videos (también podrías tener imágenes)
+// Definimos un arreglo de medios. En este ejemplo, son videos (o imágenes en webm)
 // Cada objeto tiene una propiedad "type" y "publicId". Usa únicamente el publicId (sin ruta completa).
 const defaultMedia = [
   { type: 'video', publicId: 'imagen1' },
   { type: 'video', publicId: 'imagen2' },
   { type: 'video', publicId: 'imagen3' }
-  // Ejemplo de imagen:
-  // { type: 'image', publicId: 'photo1' }
+  // Ejemplo de imagen (webm animado, por ejemplo):
+  // { type: 'image', publicId: 'imagen4' }
 ];
 
 /**
- * Función para construir la URL optimizada de un video usando Cloudinary.
- * Se aplican transformaciones: calidad automática, formato automático y recorte para llenar el contenedor.
+ * Función para construir la URL local de un video usando archivos en la carpeta public.
+ * Si los archivos se encuentran en una subcarpeta (ejemplo: /videos), ajusta la ruta.
  */
 const buildVideoUrl = (publicId) => {
-  return `https://res.cloudinary.com/${CLOUD_NAME}/video/upload/q_auto,f_auto,c_fill/${publicId}.mp4`;
+  // Si los videos están en una carpeta "videos" dentro de public, usa:
+  // return `/videos/${publicId}.webm`;
+  // Si están directamente en public, usa:
+  return `/${publicId}.webm`;
 };
 
 const Slider = ({ media = defaultMedia, autoPlay = false, autoPlayTime = 3000 }) => {
@@ -62,28 +61,22 @@ const Slider = ({ media = defaultMedia, autoPlay = false, autoPlayTime = 3000 })
   return (
     <div className="relative w-full h-60 sm:h-80 md:h-[32rem] overflow-hidden rounded-md shadow-lg">
       {media.map((item, index) => {
-        // Aplica clases para transición de opacidad entre slides
+        // Clases comunes para la transición de opacidad entre slides
         const commonClassNames = `absolute inset-0 w-full h-full transition-opacity duration-1000 ease-in-out ${
           index === currentIndex ? 'opacity-100' : 'opacity-0'
         }`;
 
         if (item.type === 'image') {
-          // Para imágenes, se usa CldImage para optimización
           return (
             <div key={index} className={commonClassNames}>
-              <CldImage
-                cloudName={CLOUD_NAME}
-                publicId={item.publicId}
+              <img
+                src={`/${item.publicId}.webm`}
                 alt={`Slide ${index}`}
-                width={800}
-                height={600}
                 style={{ objectFit: 'cover', width: '100%', height: '100%' }}
-                transformation={[{ quality: 'auto', fetch_format: 'auto' }]}
               />
             </div>
           );
         } else if (item.type === 'video') {
-          // Para videos, se usa un elemento <video> nativo con la URL optimizada
           return (
             <div key={index} className={commonClassNames}>
               <video
