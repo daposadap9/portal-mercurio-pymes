@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { gql, useMutation } from '@apollo/client';
 import { FaCalendarAlt } from 'react-icons/fa';
 import { useRouter } from 'next/router';
+import { useDropdown } from '@/context/DropdownContext';
 
 // Mutation que realiza todo el proceso de radicación
 const INSERT_MERT_RECIBIDO = gql`
@@ -14,7 +15,7 @@ const INSERT_MERT_RECIBIDO = gql`
   }
 `;
 
-const MercurioSGDEA = () => {
+const MercurioSGDEA = ({disabledProvider}) => {
   const router = useRouter();
   const [formData, setFormData] = useState({
     nombre: "",
@@ -26,6 +27,10 @@ const MercurioSGDEA = () => {
     observaciones: "",
     opcionSeleccionada: ""
   });
+    const { dropdownActive } = useDropdown();
+    const isAnyDropdownActive = disabledProvider 
+    ? false 
+    : (dropdownActive.services || dropdownActive.tramites);
   
   const [newRadicado, setNewRadicado] = useState(null);
   const [insertMertRecibido, { loading, error }] = useMutation(INSERT_MERT_RECIBIDO);
@@ -91,6 +96,7 @@ const MercurioSGDEA = () => {
           flex justify-center text-2xl md:text-4xl font-bold
           transition-all duration-500 ease-in-out
           text-teal-600 text-center titulo-shadow mb-10
+          ${isAnyDropdownActive ? "mt-24" : ""}
         `}
       ><div className="w-full lg:w-[85%]">
         <h1> Con Mercurio Optimiza la Gestión Documental de tú Negocio.</h1>

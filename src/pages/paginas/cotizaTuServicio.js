@@ -17,6 +17,7 @@ import { gql, useMutation } from '@apollo/client';
 import { v4 as uuidv4 } from 'uuid';
 import { useDebounce } from 'use-debounce';
 import Cookies from 'js-cookie';
+import { useDropdown } from '@/context/DropdownContext';
 
 // Mutación para guardar la transacción en el backend
 const SAVE_TRANSACTION = gql`
@@ -35,7 +36,7 @@ const SAVE_TRANSACTION = gql`
   }
 `;
 
-const CotizaTuServicio = () => {
+const CotizaTuServicio = ({ disabledProvider }) => {
   const router = useRouter();
   const { theme } = useContext(ThemeContext);
   const { 
@@ -44,6 +45,12 @@ const CotizaTuServicio = () => {
     discount: globalDiscount, 
     updateTransaction 
   } = useContext(TransactionContext);
+
+  const { dropdownActive } = useDropdown();
+
+  const isAnyDropdownActive = disabledProvider 
+    ? false 
+    : (dropdownActive.services || dropdownActive.tramites);
 
   // Estado local para la UI; se actualizará luego en el contexto global
   const [localServices, setLocalServices] = useState(globalServices);
@@ -291,6 +298,7 @@ const CotizaTuServicio = () => {
           flex justify-center text-2xl md:text-4xl font-bold
           transition-all duration-500 ease-in-out
           text-teal-600 text-center titulo-shadow mb-10
+          ${isAnyDropdownActive ? 'mt-24' : 'mt-0'}
         `}
       >
         <h3>Olvídate de los documentos físicos, digitalízalos con nosotros. La Gestión Documental Avanza y tú compañía también</h3>
