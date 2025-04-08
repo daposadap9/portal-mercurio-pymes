@@ -229,6 +229,7 @@ const MercurioPYMES = ({disabledProvider}) => {
                       transform: scale(1.05);
                     }
                   `}</style>
+                  {/* Botones de selección 
                   <button 
                     type="button"
                     className={`btn-wave w-full p-2 rounded-md text-white font-bold transition-all duration-300 bg-blue-500 hover:bg-blue-600 ${formData.opcionSeleccionada === "Desde 1 Usuario Corporativo - $3.000.000 + Startup $750.000 anual" ? "selected" : ""}`}
@@ -279,6 +280,7 @@ const MercurioPYMES = ({disabledProvider}) => {
                   <button type="submit" className="w-full bg-teal-500 text-white font-bold py-2 rounded-md transition-colors duration-300 hover:bg-teal-600" disabled={loading}>
                     {loading ? "Procesando..." : "Enviar"}
                   </button>
+                  */}
                 </div>
               </div>
               {error && <p className="text-red-600">Error: {error.message}</p>}

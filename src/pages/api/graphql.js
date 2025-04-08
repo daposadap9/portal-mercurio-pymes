@@ -1,4 +1,3 @@
-// pages/api/graphql.js
 import { ApolloServer } from '@apollo/server';
 import { startServerAndCreateNextHandler } from '@as-integrations/next';
 import { PrismaClient } from '@prisma/client';
@@ -13,12 +12,12 @@ import { makeExecutableSchema } from '@graphql-tools/schema';
 
 dotenv.config();
 
-// Clientes Prisma para operaciones generales y transacciones (puede apuntar a bases de datos distintas)
+// Clientes Prisma para operaciones generales y transacciones
 const prisma = new PrismaClient();
 const transactionsPrisma = new PrismaClient({
   datasources: {
     db: {
-      url: process.env.DATABASE_URL, // Define esta variable en tu .env
+      url: process.env.DATABASE_URL,
     },
   },
 });
@@ -73,59 +72,49 @@ const typeDefs = gql`
   scalar JSON
   scalar DateTime
 
-  type Transaction {
-    id: ID!
-    userId: String!
-    software: JSON
-    custodia: JSON
-    digitalizacion: JSON
-    total: Float!
-    discount: Float!
-    state: String!
-    createdAt: DateTime!
+  type Transaction { 
+    id: ID!, 
+    userId: String!, 
+    software: JSON, 
+    custodia: JSON, 
+    digitalizacion: JSON, 
+    total: Float!, 
+    discount: Float!, 
+    state: String!, 
+    createdAt: DateTime! 
+  }
+  input TransactionInput { 
+    software: JSON, 
+    custodia: JSON, 
+    digitalizacion: JSON, 
+    total: Float!, 
+    discount: Float!, 
+    state: String! 
   }
 
-  input TransactionInput {
-    software: JSON
-    custodia: JSON
-    digitalizacion: JSON
-    total: Float!
-    discount: Float!
-    state: String!
-  }
+  type CuidUser { id: ID!, email: String!, name: String, createdAt: DateTime!, updatedAt: DateTime! }
+  type RegularUser { id: ID!, email: String!, name: String, createdAt: DateTime!, updatedAt: DateTime! }
+  type CuidUserResponse { success: Boolean!, message: String!, user: CuidUser }
+  type RegularUserResponse { success: Boolean!, message: String!, user: RegularUser }
 
-  type CuidUser {
-    id: ID!
-    email: String!
-    name: String
-    createdAt: DateTime!
-    updatedAt: DateTime!
-  }
+  type InsertMertRecibidoPayload { success: Boolean!, message: String!, idDocumento: String }
 
-  type RegularUser {
-    id: ID!
-    email: String!
-    name: String
-    createdAt: DateTime!
-    updatedAt: DateTime!
+  type Service { 
+    id: ID!, 
+    name: String!, 
+    icon: String, 
+    createdAt: DateTime!, 
+    updatedAt: DateTime!, 
+    options: [ServiceOption!]! 
   }
-
-  type CuidUserResponse {
-    success: Boolean!
-    message: String!
-    user: CuidUser
-  }
-
-  type RegularUserResponse {
-    success: Boolean!
-    message: String!
-    user: RegularUser
-  }
-
-  type InsertMertRecibidoPayload {
-    success: Boolean!
-    message: String!
-    idDocumento: String
+  type ServiceOption { 
+    id: ID!, 
+    label: String!, 
+    value: Float!, 
+    startup: Float, 
+    serviceId: String!, 
+    createdAt: DateTime!, 
+    updatedAt: DateTime! 
   }
 
   type Mutation {
@@ -136,11 +125,19 @@ const typeDefs = gql`
     registerRegularUser(email: String!, password: String!, name: String): RegularUserResponse!
     loginCuidUser(email: String!, password: String!): CuidUserResponse!
     loginRegularUser(email: String!, password: String!): RegularUserResponse!
+
+    createService(name: String!, icon: String): Service!
+    createServiceOption(serviceId: String!, label: String!, value: Float!, startup: Float): ServiceOption!
+    updateService(id: ID!, name: String, icon: String): Service!
+    updateServiceOption(id: ID!, label: String, value: Float, startup: Float): ServiceOption!
+    deleteService(id: ID!): Service!
+    deleteServiceOption(id: ID!): ServiceOption!
   }
 
   type Query {
     getTransaction(userId: String!): Transaction!
     getTotal(userId: String!): Float!
+    services: [Service!]!
     _: Boolean
   }
 `;
@@ -154,7 +151,17 @@ const resolvers = {
       try {
         const transaction = await transactionsPrisma.transaction.findFirst({ where: { userId } });
         if (!transaction) {
-          throw new Error(`No se encontró la transacción para el userId: ${userId}`);
+          return {
+            id: "N/A",
+            userId,
+            software: null,
+            custodia: null,
+            digitalizacion: null,
+            total: 0,
+            discount: 0,
+            state: "No hay información disponible",
+            createdAt: new Date(),
+          };
         }
         console.log("Resolver getTransaction – Registro encontrado:", transaction);
         return transaction;
@@ -167,16 +174,17 @@ const resolvers = {
       console.log("Resolver getTotal – userId recibido:", userId);
       try {
         const transaction = await transactionsPrisma.transaction.findFirst({ where: { userId } });
-        console.log("Resolver getTotal – Registro encontrado:", transaction);
         if (!transaction) {
-          throw new Error("No se encontró la transacción para el userId: " + userId);
+          return 0;
         }
+        console.log("Resolver getTotal – Registro encontrado:", transaction);
         return transaction.total;
       } catch (error) {
         console.error("Error en getTotal:", error);
         throw new Error("Error al obtener el total de la transacción");
       }
     },
+    services: async () => prisma.service.findMany({ include: { options: true } }),
     _: () => true,
   },
   Mutation: {
@@ -373,7 +381,7 @@ const resolvers = {
 
           await transaction.commit();
 
-          // Realizar petición SOAP (opcional)
+          // Petición SOAP opcional
           const soapBody = `<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:rut="http://www.servisoft.com.co/Mercurio/Servicios/Schema/RutaService">
             <soapenv:Header/>
             <soapenv:Body>
@@ -389,7 +397,7 @@ const resolvers = {
             const soapResponse = await axios.post(process.env.SOAP_URL, soapBody, {
               headers: { 
                 'Content-Type': 'text/xml',
-                'SOAPAction': '' // Ajusta si es necesario
+                'SOAPAction': ''
               }
             });
             console.log('SOAP request successful:', soapResponse.data);
@@ -506,16 +514,37 @@ const resolvers = {
         return { success: false, message: "Error en login", user: null };
       }
     },
+    // Resolver para crear un nuevo servicio con options garantizado como arreglo (aunque vacío)
+    createService: (_, { name, icon }) =>
+      prisma.service.create({
+        data: { name, icon },
+        include: { options: true }
+      }),
+    createServiceOption: (_, { serviceId, label, value, startup }) =>
+      prisma.serviceOption.create({ data: { serviceId, label, value, startup } }),
+    updateService: (_, { id, name, icon }) =>
+      prisma.service.update({
+        where: { id },
+        data: { name, icon },
+        include: { options: true }
+      }),
+    updateServiceOption: (_, { id, label, value, startup }) =>
+      prisma.serviceOption.update({ where: { id }, data: { label, value, startup } }),
+    deleteService: async (_, { id }) => {
+      await prisma.serviceOption.deleteMany({ where: { serviceId: id }});
+      return prisma.service.delete({ where: { id }, include: { options: true } });
+    },
+    deleteServiceOption: (_, { id }) =>
+      prisma.serviceOption.delete({ where: { id } }),
   },
 };
 
 const schema = makeExecutableSchema({ typeDefs, resolvers });
 const server = new ApolloServer({ schema });
 
-// Exportamos el handler utilizando la integración para Next.js
+// Exportamos el handler para Next.js
 export default startServerAndCreateNextHandler(server, {
   context: async (_req, _res) => {
-    // Puedes integrar aquí la obtención de sesión, por ejemplo, con NextAuth.
     return {};
   },
 });

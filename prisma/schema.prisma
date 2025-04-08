@@ -34,3 +34,23 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model Service {
+  id        String         @id @default(uuid())
+  name      String         // Ej: "Software", "Custodia", "Digitalización"
+  icon      String?        // Nombre del icono que quieras usar (ej: "FaLaptopCode")
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+  options   ServiceOption[]
+}
+
+model ServiceOption {
+  id        String   @id @default(uuid())
+  label     String   // Ej: "1 usuario", "5 usuarios"
+  value     Float
+  startup   Float?   // solo para algunos servicios, ej. software
+  serviceId String
+  service   Service  @relation(fields: [serviceId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

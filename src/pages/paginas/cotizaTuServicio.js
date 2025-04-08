@@ -1,25 +1,19 @@
-// pages/paginas/cotizaTuServicio.jsx
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef, useCallback } from 'react';
 import { useRouter } from 'next/router';
-import { 
-  FaChevronDown, 
-  FaChevronUp, 
-  FaLaptopCode, 
-  FaBoxOpen, 
-  FaRegImage, 
-  FaRocket,
-  FaMoneyBillWave,
-  FaInfoCircle
+import { gql, useQuery, useMutation } from '@apollo/client';
+import {
+  FaChevronLeft, FaChevronRight, FaChevronDown, FaChevronUp,
+  FaLaptopCode, FaBoxOpen, FaRegImage, FaRocket, FaMoneyBillWave, FaEdit, FaSave, FaTrash
 } from 'react-icons/fa';
 import { ThemeContext } from '@/context/ThemeContext';
 import { TransactionContext } from '@/context/TransactionContext';
-import { gql, useMutation } from '@apollo/client';
+import { UserContext } from '@/context/UserContext';
+import { useDropdown } from '@/context/DropdownContext';
 import { v4 as uuidv4 } from 'uuid';
 import { useDebounce } from 'use-debounce';
 import Cookies from 'js-cookie';
-import { useDropdown } from '@/context/DropdownContext';
 
-// Mutación para guardar la transacción en el backend
+// Mutaciones y consultas GraphQL
 const SAVE_TRANSACTION = gql`
   mutation SaveTransaction($userId: String!, $input: TransactionInput!) {
     saveTransaction(userId: $userId, input: $input) {
@@ -36,34 +30,99 @@ const SAVE_TRANSACTION = gql`
   }
 `;
 
+const GET_SERVICES = gql`
+  query GetServices {
+    services {
+      id
+      name
+      icon
+      options {
+        id
+        label
+        value
+        startup
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+const CREATE_SERVICE = gql`
+  mutation CreateService($name: String!, $icon: String) {
+    createService(name: $name, icon: $icon) {
+      id
+      name
+      icon
+      options {
+        id
+        label
+        value
+        startup
+      }
+    }
+  }
+`;
+
+const CREATE_SERVICE_OPTION = gql`
+  mutation CreateServiceOption($serviceId: String!, $label: String!, $value: Float!, $startup: Float) {
+    createServiceOption(serviceId: $serviceId, label: $label, value: $value, startup: $startup) {
+      id
+      label
+      value
+      startup
+      serviceId
+    }
+  }
+`;
+
+const UPDATE_SERVICE_OPTION = gql`
+  mutation UpdateServiceOption($id: ID!, $label: String, $value: Float, $startup: Float) {
+    updateServiceOption(id: $id, label: $label, value: $value, startup: $startup) {
+      id
+      label
+      value
+      startup
+    }
+  }
+`;
+
+const DELETE_SERVICE_OPTION = gql`
+  mutation DeleteServiceOption($id: ID!) {
+    deleteServiceOption(id: $id) {
+      id
+    }
+  }
+`;
+
+const UPDATE_SERVICE = gql`
+  mutation UpdateService($id: ID!, $name: String!) {
+    updateService(id: $id, name: $name) {
+      id
+      name
+    }
+  }
+`;
+
 const CotizaTuServicio = ({ disabledProvider }) => {
   const router = useRouter();
   const { theme } = useContext(ThemeContext);
-  const { 
-    selectedServices: globalServices, 
-    total: globalTotal, 
-    discount: globalDiscount, 
-    updateTransaction 
-  } = useContext(TransactionContext);
-
+  const { selectedServices: globalServices, total: globalTotal, discount: globalDiscount, updateTransaction } = useContext(TransactionContext);
+  const { user } = useContext(UserContext);
   const { dropdownActive } = useDropdown();
+  const isAnyDropdownActive = disabledProvider ? false : (dropdownActive.services || dropdownActive.tramites);
 
-  const isAnyDropdownActive = disabledProvider 
-    ? false 
-    : (dropdownActive.services || dropdownActive.tramites);
-
-  // Estado local para la UI; se actualizará luego en el contexto global
-  const [localServices, setLocalServices] = useState(globalServices);
+  const [servicesData, setServicesData] = useState([]);
+  const [localServices, setLocalServices] = useState({});
+  const [editableOptions, setEditableOptions] = useState({});
   const [expandedCells, setExpandedCells] = useState({});
+  const [editMode, setEditMode] = useState(false);
+  const [editingTitles, setEditingTitles] = useState({});
+  const [currentSlide, setCurrentSlide] = useState(1);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [disableTransition, setDisableTransition] = useState(false);
+  const [isMobileSlider, setIsMobileSlider] = useState(false);
 
-  const bgClass =
-    theme === 'dark'
-      ? 'bg-custom-gradient'
-      : theme === 'purple'
-      ? 'bg-custom-gradient2'
-      : 'bg-custom-gradient3';
-
-  // Generación de userId persistente en cookie (para evitar crear múltiples registros)
   const [userId] = useState(() => {
     let uid = Cookies.get('userId');
     if (!uid) {
@@ -73,96 +132,82 @@ const CotizaTuServicio = ({ disabledProvider }) => {
     return uid;
   });
 
+  const { data, refetch } = useQuery(GET_SERVICES);
   const [saveTransaction] = useMutation(SAVE_TRANSACTION);
-
-  // Debounce para evitar múltiples inserts mientras el usuario interactúa
+  const [createService] = useMutation(CREATE_SERVICE);
+  const [createServiceOption] = useMutation(CREATE_SERVICE_OPTION);
+  const [updateServiceOption] = useMutation(UPDATE_SERVICE_OPTION);
+  const [deleteServiceOption] = useMutation(DELETE_SERVICE_OPTION);
+  const [updateService] = useMutation(UPDATE_SERVICE);
   const [debouncedServices] = useDebounce(localServices, 500);
 
-  // Función para alternar explicaciones
-  const toggleExplanation = (service) => {
-    setExplanations(prev => ({ ...prev, [service]: !prev[service] }));
+  useEffect(() => {
+    if (data && data.services) {
+      setServicesData(data.services);
+      const optionsMap = {};
+      data.services.forEach(service => {
+        optionsMap[service.id] = service.options;
+      });
+      setEditableOptions(optionsMap);
+    }
+  }, [data]);
+
+  const handleAddService = () => {
+    alert("Función para agregar servicio no implementada.");
   };
 
-  // Opciones para cada servicio
-  const options = [
-    { label: '1 usuario', value: 3000000, startup: 750000 },
-    { label: '5 usuarios', value: 9000000, startup: 3000000 },
-    { label: '10 usuarios', value: 16200000, startup: 6750000 },
-    { label: '20 usuarios', value: 24600000, startup: 8200000 },
-    { label: '30 usuarios', value: 32400000, startup: 10800000 },
-    { label: '50 usuarios', value: 42000000, startup: 14000000 },
-  ];
-
-  const options2 = [
-    { label: '5 cajas', value: 210000 },
-    { label: '10 cajas', value: 384000 },
-    { label: '20 cajas', value: 696000 },
-    { label: '30 cajas', value: 936000 },
-    { label: '40 cajas', value: 1104000 },
-    { label: '50 cajas', value: 1200000 },
-  ];
-
-  const options3 = [
-    { label: '10667 imágenes', value: 1866666.67 },
-    { label: '21333 imágenes', value: 3626666.67 },
-    { label: '42667 imágenes', value: 7040000 },
-    { label: '64000 imágenes', value: 10240000 },
-    { label: '85333 imágenes', value: 13226666.67 },
-    { label: '106667 imágenes', value: 16000000 },
-  ];
-
-  const serviceIcons = {
-    software: <FaLaptopCode className="text-blue-600 mr-2 text-2xl icon-shadow" />,
-    custodia: <FaBoxOpen className="text-green-600 mr-2 text-2xl icon-shadow" />,
-    digitalizacion: <FaRegImage className="text-purple-600 mr-2 text-2xl icon-shadow" />,
+  const handleAddOption = (service) => {
+    alert("Función para agregar opción no implementada para el servicio: " + service.name);
   };
 
-  // Función para actualizar la selección
-  const handleServiceChange = (service, option, index) => {
-    const key = `${service}-${index}`;
+  const handleServiceChange = (serviceId, option, index) => {
+    const key = `${serviceId}-${index}`;
     let newSelection;
-    if (localServices[service]?.label === option.label) {
-      newSelection = { ...localServices, [service]: null };
+    if (localServices[serviceId]?.id === option.id) {
+      newSelection = { ...localServices, [serviceId]: null };
       setExpandedCells(prev => ({ ...prev, [key]: false }));
     } else {
       const newExpanded = { ...expandedCells };
       Object.keys(newExpanded).forEach(k => {
-        if (k.indexOf(service + '-') === 0) {
+        if (k.startsWith(serviceId + '-')) {
           newExpanded[k] = false;
         }
       });
       newExpanded[key] = true;
-      newSelection = { ...localServices, [service]: option };
+      newSelection = { ...localServices, [serviceId]: option };
     }
     setLocalServices(newSelection);
   };
 
-  const toggleCell = (service, option, index) => {
-    const key = `${service}-${index}`;
-    if (localServices[service]?.label === option.label) {
+  const toggleCell = (serviceId, option, index) => {
+    const key = `${serviceId}-${index}`;
+    if (localServices[serviceId]?.id === option.id) {
       setExpandedCells(prev => ({ ...prev, [key]: true }));
       return;
     }
     setExpandedCells(prev => ({ ...prev, [key]: !prev[key] }));
   };
 
-  // Cada vez que se estabiliza la selección (debounced), se recalculan total y descuento, se actualiza el contexto y se guarda en el backend.
   useEffect(() => {
-    const softwareTotal = debouncedServices.software
-      ? Number(debouncedServices.software.value) + Number(debouncedServices.software.startup)
-      : 0;
-    const custodiaTotal = debouncedServices.custodia ? Number(debouncedServices.custodia.value) : 0;
-    const digitalizacionTotal = debouncedServices.digitalizacion ? Number(debouncedServices.digitalizacion.value) : 0;
-    
-    let count = 0;
-    if (debouncedServices.software) count++;
-    if (debouncedServices.custodia) count++;
-    if (debouncedServices.digitalizacion) count++;
-    
+    let softwareTotal = 0, custodiaTotal = 0, digitalizacionTotal = 0;
+    servicesData.forEach(service => {
+      const serviceName = service.name.toLowerCase();
+      const selectedOption = localServices[service.id];
+      if (selectedOption) {
+        if (serviceName.includes('software')) {
+          softwareTotal = Number(selectedOption.value) + Number(selectedOption.startup || 0);
+        } else if (serviceName.includes('custodia')) {
+          custodiaTotal = Number(selectedOption.value);
+        } else if (serviceName.includes('digital')) {
+          digitalizacionTotal = Number(selectedOption.value);
+        }
+      }
+    });
+    let count = Object.values(localServices).filter(opt => opt).length;
     let calculatedDiscount = 0;
     let calculatedTotal = 0;
-    if (count === 1 && debouncedServices.software) {
-      calculatedTotal = softwareTotal;
+    if (count === 1) {
+      calculatedTotal = softwareTotal || custodiaTotal || digitalizacionTotal;
     } else {
       const subtotal = softwareTotal + custodiaTotal + digitalizacionTotal;
       if (count === 3) {
@@ -172,18 +217,21 @@ const CotizaTuServicio = ({ disabledProvider }) => {
       }
       calculatedTotal = subtotal - subtotal * calculatedDiscount;
     }
-    // Actualizamos el contexto global
-    updateTransaction(debouncedServices, calculatedTotal, calculatedDiscount);
-
-    // Guardamos o actualizamos la transacción en el backend
+    updateTransaction(localServices, calculatedTotal, calculatedDiscount);
     if (userId) {
       saveTransaction({
         variables: {
           userId,
           input: {
-            software: debouncedServices.software,
-            custodia: debouncedServices.custodia,
-            digitalizacion: debouncedServices.digitalizacion,
+            software: servicesData.find(s => s.name.toLowerCase().includes('software'))
+              ? localServices[servicesData.find(s => s.name.toLowerCase().includes('software')).id]
+              : null,
+            custodia: servicesData.find(s => s.name.toLowerCase().includes('custodia'))
+              ? localServices[servicesData.find(s => s.name.toLowerCase().includes('custodia')).id]
+              : null,
+            digitalizacion: servicesData.find(s => s.name.toLowerCase().includes('digital'))
+              ? localServices[servicesData.find(s => s.name.toLowerCase().includes('digital')).id]
+              : null,
             total: calculatedTotal,
             discount: calculatedDiscount,
             state: "transaccion en formulario de pago"
@@ -191,22 +239,21 @@ const CotizaTuServicio = ({ disabledProvider }) => {
         }
       }).catch(err => console.error("Error al guardar la transacción:", err));
     }
-  }, [debouncedServices, userId, saveTransaction, updateTransaction]);
+  }, [debouncedServices, userId, saveTransaction, updateTransaction, servicesData, localServices]);
 
-  const subtotal =
-    (localServices.software ? Number(localServices.software.value) : 0) +
-    (localServices.custodia ? Number(localServices.custodia.value) : 0) +
-    (localServices.digitalizacion ? Number(localServices.digitalizacion.value) : 0) +
-    (localServices.software ? Number(localServices.software.startup) : 0);
+  const subtotal = servicesData.reduce((acc, service) => {
+    const selected = localServices[service.id];
+    if (selected) {
+      if (service.name.toLowerCase().includes('software')) {
+        return acc + Number(selected.value) + Number(selected.startup || 0);
+      }
+      return acc + Number(selected.value);
+    }
+    return acc;
+  }, 0);
 
-  // Al pulsar "Pagar", se redirige a PaymentFormPSE sin pasar el total en el query
   const handlePayment = () => {
-    if (
-      globalTotal === 0 ||
-      (!localServices.software &&
-       !localServices.custodia &&
-       !localServices.digitalizacion)
-    ) {
+    if (globalTotal === 0 || !Object.values(localServices).some(opt => opt)) {
       alert('Por favor, seleccione al menos un servicio para pagar.');
       return;
     }
@@ -216,288 +263,518 @@ const CotizaTuServicio = ({ disabledProvider }) => {
     });
   };
 
-  // Función para renderizar cada celda (opción) de servicio
-  const renderCell = (service, option, index) => {
-    const cellKey = `${service}-${index}`;
-    const isExpanded = expandedCells[cellKey];
-    const isSelected = localServices[service]?.label === option.label;
-    const expanded = isSelected || isExpanded;
+  useEffect(() => {
+    const handleResize = () => setIsMobileSlider(window.innerWidth < 768);
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
-    return (
-      <>
-      <div
-        className={`group p-4 border rounded-lg cursor-pointer relative transition-colors duration-300 shadow-xl ${
-          isSelected
-            ? 'bg-teal-500 border-teal-500 text-white shadow-md'
-            : `${bgClass} bg-white lg:hover:bg-teal-500 lg:hover:text-white lg:hover:border-white lg:hover:border lg:hover:shadow-md`
-        }`}
-        onClick={() => toggleCell(service, option, index)}
-      >
-        {!isSelected && (
-          <div className={`absolute inset-0 ${bgClass} transition-opacity duration-300 rounded-md`}></div>
-        )}
-        <div className={`absolute inset-0 ${isSelected ? 'bg-teal-500' : 'bg-teal-600 opacity-0 lg:group-hover:opacity-100'} transition-opacity duration-300 rounded-md`}></div>
-        <div className="flex items-center justify-between relative z-10">
-          <div className="flex items-center">
-            {serviceIcons[service]}
-            <span className={`font-bold text-base md:text-lg ${isSelected ? 'text-shadow' : 'lg:group-hover:text-shadow'}`}>
-              {option.label}
-            </span>
-          </div>
-          {isSelected ? (
-            <FaChevronUp className="text-2xl text-white text-shadow" />
-          ) : expanded ? (
-            <FaChevronUp className="text-2xl text-teal-600 lg:group-hover:text-white lg:group-hover:text-shadow" />
+  const extendedServices =
+    servicesData.length > 1
+      ? [servicesData[servicesData.length - 1], ...servicesData, servicesData[0]]
+      : servicesData;
+
+  const getSliderStyle = (position, isMobile, disableTransition) => {
+    const base = {
+      position: 'absolute',
+      left: '50%',
+      top: '50%',
+      transition: disableTransition ? 'none' : 'all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+    };
+    if (isMobile) {
+      switch (position) {
+        case -1:
+          return {
+            ...base,
+            transform: 'translate(calc(-50% - 230px), -50%) scale(0.4)',
+            opacity: 0.1,
+            zIndex: 1,
+            filter: 'drop-shadow(0px 0px 1px rgba(0,0,0,0.9))'
+          };
+        case 0:
+          return {
+            ...base,
+            transform: 'translate(-50%, -50%) scale(1)',
+            opacity: 1,
+            zIndex: 3,
+            filter: 'drop-shadow(0px 0px 4px rgba(0,0,0,0.8))'
+          };
+        case 1:
+          return {
+            ...base,
+            transform: 'translate(calc(-50% + 230px), -50%) scale(0.8)',
+            opacity: 0.4,
+            zIndex: 1,
+            filter: 'drop-shadow(0px 0px 5px rgba(0,0,0,0.8))'
+          };
+        case 2:
+          return {
+            ...base,
+            transform: 'translate(calc(-50% + 460px), -50%) scale(0.65)',
+            opacity: 0.2,
+            zIndex: 0,
+            filter: 'drop-shadow(0px 0px 3px rgba(0,0,0,0.5))'
+          };
+        default:
+          return { opacity: 0, pointerEvents: 'none' };
+      }
+    } else {
+      switch (position) {
+        case -1:
+          return {
+            ...base,
+            transform: 'translate(calc(-50% - 28vw), calc(-50% + 5vh)) scale(0.4)',
+            opacity: 0.1,
+            zIndex: 1,
+            filter: 'drop-shadow(0px 0px 2px rgba(0,0,0,0.4))'
+          };
+        case 0:
+          return {
+            ...base,
+            transform: 'translate(-50%, -50%) scale(1)',
+            opacity: 1,
+            zIndex: 3,
+            filter: 'drop-shadow(0px 0px 4px rgba(0,0,0,0.8))'
+          };
+        case 1:
+          return {
+            ...base,
+            transform: 'translate(calc(-50% + 28vw), calc(-50% + 5vh)) scale(0.7)',
+            opacity: 0.4,
+            zIndex: 1,
+            filter: 'drop-shadow(0px 0px 5px rgba(0,0,0,0.8))'
+          };
+        case 2:
+          return {
+            ...base,
+            transform: 'translate(calc(-50% + 56vw), calc(-50% + 8vh)) scale(0.5)',
+            opacity: 0.2,
+            zIndex: 0,
+            filter: 'drop-shadow(0px 0px 3px rgba(0,0,0,0.5))'
+          };
+        default:
+          return { opacity: 0, pointerEvents: 'none' };
+      }
+    }
+  };
+
+  const nextSlide = useCallback(() => {
+    if (isTransitioning) return;
+    setIsTransitioning(true);
+    setCurrentSlide(prev => prev + 1);
+    setTimeout(() => {
+      setIsTransitioning(false);
+    }, 1100);
+  }, [isTransitioning]);
+
+  const prevSlide = useCallback(() => {
+    if (isTransitioning) return;
+    setIsTransitioning(true);
+    setCurrentSlide(prev => prev - 1);
+    setTimeout(() => {
+      setIsTransitioning(false);
+    }, 1100);
+  }, [isTransitioning]);
+
+  const handleNext = useCallback(() => {
+    nextSlide();
+  }, [nextSlide]);
+
+  const handlePrev = useCallback(() => {
+    prevSlide();
+  }, [prevSlide]);
+
+  useEffect(() => {
+    if (currentSlide === extendedServices.length - 1) {
+      setTimeout(() => {
+        setDisableTransition(true);
+        setCurrentSlide(1);
+        setTimeout(() => setDisableTransition(false), 50);
+      }, 1100);
+    }
+    if (currentSlide === 0) {
+      setTimeout(() => {
+        setDisableTransition(true);
+        setCurrentSlide(extendedServices.length - 2);
+        setTimeout(() => setDisableTransition(false), 50);
+      }, 1100);
+    }
+  }, [currentSlide, extendedServices.length]);
+
+  const isDragging = useRef(false);
+  const startX = useRef(0);
+  const dragThreshold = 50;
+
+  const handlePointerDown = (e) => {
+    isDragging.current = true;
+    startX.current = e.clientX;
+  };
+
+  const handlePointerUp = (e) => {
+    if (!isDragging.current) return;
+    isDragging.current = false;
+    const delta = e.clientX - startX.current;
+    if (delta > dragThreshold) {
+      handlePrev();
+    } else if (delta < -dragThreshold) {
+      handleNext();
+    }
+  };
+
+  const getBehindUrl = () => {
+    const activeService = extendedServices[currentSlide];
+    if (!activeService) return '/paginas/cotizaTuServicio';
+    const name = activeService.name.toLowerCase();
+    if (name.includes('software')) return '/paginas/servicios/mercurioPYMES';
+    if (name.includes('custodia')) return '/paginas/servicios/mercurioCustodia';
+    if (name.includes('digital')) return '/paginas/servicios/mercurioDigitalizacion';
+    return '/paginas/cotizaTuServicio';
+  };
+
+  const renderServiceCard = (service, idx) => (
+    <div
+      key={`${service.id}-${idx}`}
+      className="card bg-white p-4 rounded-lg shadow-lg relative overflow-y-auto w-80 h-96"
+    >
+      <div className="card-header flex flex-col items-center">
+        <div className="flex items-center">
+          {service.name.toLowerCase().includes('software') && <FaLaptopCode className="text-blue-600 mr-2 text-2xl" />}
+          {service.name.toLowerCase().includes('custodia') && <FaBoxOpen className="text-green-600 mr-2 text-2xl" />}
+          {service.name.toLowerCase().includes('digital') && <FaRegImage className="text-purple-600 mr-2 text-2xl" />}
+        </div>
+        <div className="flex items-center justify-center">
+          {editingTitles[service.id] ? (
+            <>
+              <input
+                type="text"
+                value={service.name}
+                className="text-xl font-bold my-2 p-1 border rounded text-center"
+                onChange={(e) => {
+                  const newServices = servicesData.map(s =>
+                    s.id === service.id ? { ...s, name: e.target.value } : s
+                  );
+                  setServicesData(newServices);
+                }}
+              />
+              <button
+                onClick={() => {
+                  updateService({ variables: { id: service.id, name: service.name } })
+                    .then(() => setEditingTitles(prev => ({ ...prev, [service.id]: false })))
+                    .catch(err => console.error("Error al actualizar el servicio:", err));
+                }}
+                className="ml-2"
+              >
+                <FaSave className="text-green-600" />
+              </button>
+            </>
           ) : (
-            <FaChevronDown className="text-2xl text-teal-600 lg:group-hover:text-white lg:group-hover:text-shadow" />
+            <>
+              <h2 className="text-xl font-bold my-2 text-center">{service.name}</h2>
+              <button
+                onClick={() => setEditingTitles(prev => ({ ...prev, [service.id]: true }))}
+                className="ml-2"
+              >
+                <FaEdit className="text-yellow-500" />
+              </button>
+            </>
           )}
         </div>
-        {expanded && (
-          <div className="mt-2 text-sm relative z-10">
-            <div className="flex items-center">
-              <FaMoneyBillWave className={`text-green-500 mr-2 text-2xl icon-shadow ${isSelected ? 'text-shadow' : 'lg:group-hover:text-shadow'}`} />
-              <span className={`font-bold text-base md:text-xl ${isSelected ? 'text-shadow' : 'lg:group-hover:text-shadow'}`}>
-                Precio:
-              </span>
-              <span className={`ml-2 text-2xl font-extrabold ${isSelected ? 'text-shadow' : 'lg:group-hover:text-shadow'}`}>
-                ${Number(option.value).toLocaleString('es-ES', { maximumFractionDigits: 0 })}
-              </span>
-            </div>
-            {service === 'software' && option.startup && (
-              <div className="flex items-center mt-1">
-                <FaRocket className={`text-red-500 mr-2 text-2xl icon-shadow ${isSelected ? 'text-shadow' : 'lg:group-hover:text-shadow'}`} />
-                <span className={`font-bold text-base md:text-xl ${isSelected ? 'text-shadow' : 'lg:group-hover:text-shadow'}`}>
-                  Startup:
-                </span>
-                <span className={`ml-2 text-2xl font-extrabold ${isSelected ? 'text-shadow' : 'lg:group-hover:text-shadow'}`}>
-                  ${Number(option.startup).toLocaleString('es-ES', { maximumFractionDigits: 0 })}
-                </span>
-              </div>
-            )}
-          </div>
-        )}
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            handleServiceChange(service, option, index);
-          }}
-          className="mt-2 bg-teal-600 text-white px-3 py-1 rounded hover:bg-teal-700 transition-colors duration-200 shadow-md border-white border relative z-10"
-        >
-          Seleccionar
-        </button>
+        <span className="text-sm">
+          {service.name.toLowerCase().includes('software')
+            ? 'Cantidad de usuarios'
+            : service.name.toLowerCase().includes('custodia')
+            ? 'Cantidad de cajas'
+            : service.name.toLowerCase().includes('digital')
+            ? 'Cantidad de imágenes'
+            : 'Descripción no definida'}
+        </span>
       </div>
-      </>
-    );
-  };
+      <div className="card-body mt-4">
+        {editableOptions[service.id] &&
+          editableOptions[service.id].map((option, idx2) => (
+            <div key={`${service.id}-${idx2}`} className="mb-4 border p-3 rounded-lg shadow-sm">
+              <div className="flex items-center justify-between">
+                {editMode ? (
+                  <input
+                    type="text"
+                    value={option.label}
+                    className="font-bold text-base p-1 border rounded"
+                    onChange={(e) => {
+                      const newOptions = { ...editableOptions };
+                      newOptions[service.id][idx2] = { ...option, label: e.target.value };
+                      setEditableOptions(newOptions);
+                    }}
+                  />
+                ) : (
+                  <span className="font-bold text-base">{option.label}</span>
+                )}
+                <button onClick={() => toggleCell(service.id, option, idx2)} className="text-xl">
+                  {expandedCells[`${service.id}-${idx2}`] || localServices[service.id]?.id === option.id
+                    ? <FaChevronUp />
+                    : <FaChevronDown />}
+                </button>
+              </div>
+              {(expandedCells[`${service.id}-${idx2}`] || localServices[service.id]?.id === option.id) && !editMode && (
+                <div className="mt-2 text-sm">
+                  <div className="flex items-center">
+                    <FaMoneyBillWave className="text-green-500 mr-2 text-2xl" />
+                    <span className="font-bold text-base">Precio:</span>
+                    <span className="ml-2 text-2xl font-extrabold">
+                      ${Number(option.value).toLocaleString('es-ES', { maximumFractionDigits: 0 })}
+                    </span>
+                  </div>
+                  {service.name.toLowerCase().includes('software') && option.startup && (
+                    <div className="flex items-center mt-1">
+                      <FaRocket className="text-teal-500 mr-2 text-2xl" />
+                      <span className="font-bold text-base">Startup:</span>
+                      <span className="ml-2 text-2xl font-extrabold">
+                        ${Number(option.startup).toLocaleString('es-ES', { maximumFractionDigits: 0 })}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              )}
+              {!editMode && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleServiceChange(service.id, option, idx2);
+                  }}
+                  className="mt-2 bg-teal-500 text-white px-3 py-1 rounded hover:bg-teal-700 transition-colors shadow-md border"
+                >
+                  Seleccionar
+                </button>
+              )}
+              {editMode && (
+                <div className="flex space-x-2 mt-2">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      const newLabel = prompt("Nuevo Label:", option.label);
+                      if (newLabel === null) return;
+                      const newValue = parseFloat(prompt("Nuevo Valor:", option.value));
+                      let newStartup = option.startup;
+                      if (service.name.toLowerCase().includes('software')) {
+                        const startupInput = prompt("Nuevo Startup:", option.startup || 0);
+                        newStartup = startupInput ? parseFloat(startupInput) : 0;
+                      }
+                      updateServiceOption({ variables: { id: option.id, label: newLabel, value: newValue, startup: newStartup }})
+                        .then(() => refetch())
+                        .catch(err => console.error("Error updating option:", err));
+                    }}
+                    className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 transition-colors shadow-md border"
+                  >
+                    <FaSave className="mr-1" /> Guardar
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (confirm("¿Eliminar opción?")) {
+                        deleteServiceOption({ variables: { id: option.id }})
+                          .then(() => refetch())
+                          .catch(err => console.error("Error deleting option:", err));
+                      }
+                    }}
+                    className="bg-teal-500 text-white px-3 py-1 rounded hover:bg-teal-700 transition-colors shadow-md border"
+                  >
+                    <FaTrash className="mr-1" /> Eliminar
+                  </button>
+                </div>
+              )}
+            </div>
+          ))}
+        {editMode && (
+          <button onClick={() => handleAddOption(service)} className="bg-indigo-500 text-white px-3 py-1 rounded hover:bg-indigo-600 transition-colors mt-2">
+            Agregar Opción
+          </button>
+        )}
+      </div>
+    </div>
+  );
 
   return (
     <>
-    <div className="container mx-auto p-4">
-      <div
-        className={`
-          flex justify-center text-2xl md:text-4xl font-bold
-          transition-all duration-500 ease-in-out
-          text-teal-600 text-center titulo-shadow mb-10
-          ${isAnyDropdownActive ? 'mt-24' : 'mt-0'}
-        `}
-      >
-        <h3>Olvídate de los documentos físicos, digitalízalos con nosotros. La Gestión Documental Avanza y tú compañía también</h3>
-      </div>
-      {/* Vista para dispositivos móviles */}
-      <div className="block lg:hidden">
-        <div className="grid grid-cols-1 gap-6">
-          <div>
-            <div className="flex flex-col justify-center items-center">
-              <h2 className="text-xl md:text-2xl font-bold mb-4 text-center">Software</h2>
-              <span className="text-sm text-center block mb-2">Cantidad de usuarios</span>
+      <div className="relative min-h-screen bg-gray-100">
+        {/* PARTE IZQUIERDA: contenido principal */}
+        <div className="relative z-20 transition-all duration-700 w-1/3 ml-4 p-1">
+          <div className={`flex justify-center text-2xl md:text-2xl font-bold text-teal-500 text-left mb-0 ${isAnyDropdownActive ? 'mt-10' : 'mt-0'}`}>
+            <h3>
+              Olvídate de los documentos físicos, digitalízalos con nosotros. La Gestión Documental Avanza y tu compañía también
+            </h3>
+          </div>
+          {user && (
+            <div className="flex flex-col items-start mb-4">
               <button
-                onClick={() =>
-                  router.push({
-                    pathname: '/paginas/servicios/mercurioPYMES',
-                    query: { previousPage: '/paginas/cotizaTuServicio' },
-                  })
-                }
-                className="mb-4 bg-teal-600 text-white px-3 py-1 rounded-full hover:bg-teal-700 transition-colors duration-200 shadow-md border-white border flex items-center justify-center"
+                onClick={() => setEditMode(!editMode)}
+                className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600 transition-colors mb-2"
               >
-                <FaInfoCircle className="mr-2" /> ¿Qué significa?
+                {editMode ? 'Salir de edición' : 'Editar Cards'} <FaEdit className="inline ml-1" />
               </button>
-            </div>
-            {options.map((option, index) => renderCell('software', option, index))}
-          </div>
-          <div>
-            <div className="flex flex-col justify-center items-center">
-              <h2 className="text-xl md:text-2xl font-bold mb-4 text-center">Custodia</h2>
-              <span className="text-sm text-center block mb-2">Cantidad de cajas</span>
-              <button
-                onClick={() =>
-                  router.push({
-                    pathname: '/paginas/servicios/mercurioCustodia',
-                    query: { previousPage: '/paginas/cotizaTuServicio' },
-                  })
-                }
-                className="mb-4 bg-teal-600 text-white px-3 py-1 rounded-full hover:bg-teal-700 transition-colors duration-200 shadow-md border-white border flex items-center justify-center"
-              >
-                <FaInfoCircle className="mr-2" /> ¿Qué significa?
-              </button>
-            </div>
-            {options2.map((option, index) => renderCell('custodia', option, index))}
-          </div>
-          <div>
-            <div className="flex flex-col justify-center items-center">
-              <h2 className="text-xl md:text-2xl font-bold mb-4 text-center">Digitalización</h2>
-              <span className="text-sm text-center block mb-2">Cantidad de imágenes</span>
-              <button
-                onClick={() =>
-                  router.push({
-                    pathname: '/paginas/servicios/mercurioDigitalizacion',
-                    query: { previousPage: '/paginas/cotizaTuServicio' },
-                  })
-                }
-                className="mb-4 bg-teal-600 text-white px-3 py-1 rounded-full hover:bg-teal-700 transition-colors duration-200 shadow-md border-white border flex items-center justify-center"
-              >
-                <FaInfoCircle className="mr-2" /> ¿Qué significa?
-              </button>
-            </div>
-            {options3.map((option, index) => renderCell('digitalizacion', option, index))}
-          </div>
-        </div>
-        <div className="mt-8 p-4 border rounded-lg shadow-md">
-          <h2 className="text-xl md:text-2xl font-bold mb-4">Resumen</h2>
-          <ul className="text-sm md:text-base">
-            {localServices.software && (
-              <li className="mb-2">
-                <strong>Software:</strong> {localServices.software.label} - ${Number(localServices.software.value).toLocaleString('es-ES')} + Startup - ${Number(localServices.software.startup).toLocaleString('es-ES')}
-              </li>
-            )}
-            {localServices.custodia && (
-              <li className="mb-2">
-                <strong>Custodia:</strong> {localServices.custodia.label} - ${Number(localServices.custodia.value).toLocaleString('es-ES')}
-              </li>
-            )}
-            {localServices.digitalizacion && (
-              <li className="mb-2">
-                <strong>Digitalización:</strong> {localServices.digitalizacion.label} - ${Number(localServices.digitalizacion.value).toLocaleString('es-ES')}
-              </li>
-            )}
-          </ul>
-          <div className="mt-4 text-sm md:text-base">
-            <strong>Subtotal:</strong> ${Math.round(subtotal).toLocaleString('es-ES')}
-          </div>
-          {globalDiscount > 0 && (
-            <div className="mt-2 text-green-600 text-sm md:text-base">
-              <strong>Descuento:</strong> {(globalDiscount * 100).toFixed(0)}%
+              {editMode && (
+                <div className="flex space-x-4">
+                  <button
+                    onClick={handleAddService}
+                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
+                  >
+                    Agregar Servicio
+                  </button>
+                </div>
+              )}
             </div>
           )}
-          <div className="mt-4 text-2xl md:text-4xl font-bold">
-            <strong>Total:</strong> ${Math.round(globalTotal).toLocaleString('es-ES')}
+          {/* --- Slider de Cards manual (sin auto slide) --- */}
+          {servicesData.length > 0 && (
+            <div
+              className="slider-wrapper"
+              onPointerDown={handlePointerDown}
+              onPointerUp={handlePointerUp}
+            >
+              <button onClick={handlePrev} className="nav-button prev-button">
+                <FaChevronLeft size={18} />
+              </button>
+              <button onClick={handleNext} className="nav-button next-button">
+                <FaChevronRight size={18} />
+              </button>
+              <div className="slider-container">
+                {extendedServices.map((service, idx) => {
+                  const relativePosition = idx - currentSlide;
+                  if (relativePosition < -1 || relativePosition > 2) return null;
+                  return (
+                    <div
+                      key={`${service.id}-extended-${idx}`}
+                      className="slider-card"
+                      style={getSliderStyle(relativePosition, isMobileSlider, disableTransition)}
+                    >
+                      {renderServiceCard(service, idx)}
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="indicator-container">
+                {servicesData.map((_, index) => (
+                  <div
+                    key={index}
+                    className={`indicator ${currentSlide - 1 === index ? 'active' : ''}`}
+                    onClick={() => {
+                      if (isTransitioning) return;
+                      setIsTransitioning(true);
+                      setCurrentSlide(index + 1);
+                      setTimeout(() => {
+                        setIsTransitioning(false);
+                      }, 1100);
+                    }}
+                  />
+                ))}
+              </div>
+              <style jsx>{`
+                .slider-wrapper {
+                  width: 100%;
+                  max-width: 1300px;
+                  margin: 0 auto;
+                  position: relative;
+                  height: ${isMobileSlider ? '40vh' : '50vh'};
+                  overflow: hidden;
+                }
+                .slider-container {
+                  position: relative;
+                  width: 100%;
+                  height: 100%;
+                }
+                .nav-button {
+                  position: absolute;
+                  top: 50%;
+                  transform: translateY(-50%);
+                  z-index: 30;
+                  background: white;
+                  border: none;
+                  padding: 0.5rem;
+                  border-radius: 9999px;
+                  box-shadow: 0px 2px 13px rgba(0,0,0,0.9);
+                  cursor: pointer;
+                }
+                .prev-button {
+                  left: 1rem;
+                }
+                .next-button {
+                  right: 1rem;
+                }
+                .indicator-container {
+                  position: absolute;
+                  bottom: 1rem;
+                  left: 50%;
+                  transform: translateX(-50%);
+                  display: flex;
+                  gap: 0.5rem;
+                  z-index: 50;
+                }
+                .indicator {
+                  width: 10px;
+                  height: 10px;
+                  border-radius: 50%;
+                  background: rgba(255, 255, 255, 0.5);
+                  cursor: pointer;
+                  transition: background 0.3s ease, transform 0.3s ease;
+                }
+                .indicator.active {
+                  background: #000;
+                  transform: scale(1.2);
+                }
+              `}</style>
+            </div>
+          )}
+          {/* --- Resumen: movido abajo de las Cards --- */}
+          <div className="mt-8 p-4 border rounded-lg shadow-md">
+            <h2 className="text-xl md:text-2xl font-bold mb-4">Resumen</h2>
+            <ul className="text-sm md:text-base">
+              {servicesData.map((service, idx) => {
+                const selected = localServices[service.id];
+                return selected ? (
+                  <li key={`${service.id}-${idx}`} className="mb-2">
+                    <strong>{service.name}:</strong> {selected.label} - ${Number(selected.value).toLocaleString('es-ES')}
+                    {service.name.toLowerCase().includes('software') && selected.startup && (
+                      <span> + Startup - ${Number(selected.startup).toLocaleString('es-ES')}</span>
+                    )}
+                  </li>
+                ) : null;
+              })}
+            </ul>
+            <div className="mt-4 text-sm md:text-base">
+              <strong>Subtotal:</strong> ${Math.round(subtotal).toLocaleString('es-ES')}
+            </div>
+            {globalDiscount > 0 && (
+              <div className="mt-2 text-green-600 text-sm md:text-base">
+                <strong>Descuento:</strong> {(globalDiscount * 100).toFixed(0)}%
+              </div>
+            )}
+            <div className="mt-4 text-2xl md:text-4xl font-bold">
+              <strong>Total:</strong> ${Math.round(globalTotal).toLocaleString('es-ES')}
+            </div>
+            <button
+              onClick={handlePayment}
+              className="mt-4 bg-teal-500 text-white px-4 py-2 rounded hover:bg-teal-700 transition-colors duration-200 shadow-md border"
+            >
+              Pagar
+            </button>
           </div>
-          <button
-            onClick={handlePayment}
-            className="mt-4 bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700 transition-colors duration-200 shadow-md border-white border"
-          >
-            Pagar
-          </button>
+        </div>
+        {/* PARTE DERECHA: iframe con detalles del servicio siempre visible */}
+        <div className="absolute top-0 right-0 h-full w-2/3 z-30 transition-all duration-700">
+          <iframe
+            src={getBehindUrl()}
+            title="Detalle del Servicio"
+            className="w-full h-full"
+            frameBorder="0"
+            style={{
+              border: 'none',
+              overflow: 'auto',
+              background: 'transparent',
+              transform: 'scale(1)',
+            }}
+            scrolling="yes"
+          />
         </div>
       </div>
-      {/* Vista para desktop */}
-      <div className="hidden lg:block">
-        <table className="min-w-full bg-white border border-gray-200 shadow-2xl rounded-lg overflow-hidden">
-          <thead className="bg-custom-footer">
-            <tr>
-              <th className="py-4 px-6 text-xl text-shadow">
-                <div className="flex flex-col items-center">
-                  <span>Software</span>
-                  <span className="text-sm">Cantidad de usuarios</span>
-                  <button
-                    onClick={() =>
-                      router.push({
-                        pathname: '/paginas/servicios/mercurioPYMES',
-                        query: { previousPage: '/paginas/cotizaTuServicio' },
-                      })
-                    }
-                    className="mt-1 bg-teal-500 border border-white shadow-lg text-white text-xs px-2 py-1 rounded hover:bg-teal-600 transition-colors"
-                  >
-                    ¿Qué significa?
-                  </button>
-                </div>
-              </th>
-              <th className="py-4 px-6 text-xl text-shadow">
-                <div className="flex flex-col items-center">
-                  <span>Custodia</span>
-                  <span className="text-sm">Cantidad de cajas</span>
-                  <button
-                    onClick={() =>
-                      router.push({
-                        pathname: '/paginas/servicios/mercurioCustodia',
-                        query: { previousPage: '/paginas/cotizaTuServicio' },
-                      })
-                    }
-                    className="mt-1 bg-teal-500 border border-white shadow-lg text-white text-xs px-2 py-1 rounded hover:bg-teal-600 transition-colors"
-                  >
-                    ¿Qué significa?
-                  </button>
-                </div>
-              </th>
-              <th className="py-4 px-6 text-xl text-shadow">
-                <div className="flex flex-col items-center">
-                  <span>Digitalización</span>
-                  <span className="text-sm">Cantidad de imágenes</span>
-                  <button
-                    onClick={() =>
-                      router.push({
-                        pathname: '/paginas/servicios/mercurioDigitalizacion',
-                        query: { previousPage: '/paginas/cotizaTuServicio' },
-                      })
-                    }
-                    className="mt-1 bg-teal-500 border border-white shadow-lg text-white text-xs px-2 py-1 rounded hover:bg-teal-600 transition-colors"
-                  >
-                    ¿Qué significa?
-                  </button>
-                </div>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {options.map((_, index) => (
-              <tr key={index} className="border-b">
-                <td className="py-3 px-4">{renderCell('software', options[index], index)}</td>
-                <td className="py-3 px-4">{renderCell('custodia', options2[index], index)}</td>
-                <td className="py-3 px-4">{renderCell('digitalizacion', options3[index], index)}</td>
-              </tr>
-            ))}
-            <tr className="bg-custom-footer">
-              <td colSpan="3" className="py-6 text-center font-bold">
-                {globalDiscount > 0 && (
-                  <div className="mb-2 text-xl">
-                    ¡Felicidades! Tienes un {(globalDiscount * 100).toFixed(0)}% de descuento.
-                  </div>
-                )}
-                {globalDiscount > 0 ? (
-                  <div className="flex justify-center items-center space-x-4">
-                    <span className="text-3xl line-through">
-                      ${Math.round(subtotal).toLocaleString('es-ES')}
-                    </span>
-                    <span className="text-5xl">
-                      ${Math.round(globalTotal).toLocaleString('es-ES')}
-                    </span>
-                  </div>
-                ) : (
-                  <div className="text-5xl">
-                    ${Math.round(globalTotal).toLocaleString('es-ES')}
-                  </div>
-                )}
-                <button
-                  onClick={handlePayment}
-                  className="mt-4 bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700 transition-colors duration-200 shadow-md border-white border"
-                >
-                  Pagar
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
     </>
   );
 };

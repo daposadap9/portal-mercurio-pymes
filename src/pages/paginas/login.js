@@ -1,10 +1,9 @@
-// pages/login.js
 import React, { useState, useContext } from 'react';
 import { useMutation, gql } from '@apollo/client';
 import { useRouter } from 'next/router';
-import Link from 'next/link';
 import Image from 'next/image';
 import { ThemeContext } from '@/context/ThemeContext';
+import { UserContext } from '@/context/UserContext'; // Importa el contexto
 
 // Mutación para login de usuario regular
 const LOGIN_REGULAR_USER = gql`
@@ -39,10 +38,10 @@ const REGISTER_REGULAR_USER = gql`
 const Login = () => {
   const router = useRouter();
   const { theme } = useContext(ThemeContext);
+  const { setUser } = useContext(UserContext); // Extrae setUser del contexto
   const [isRegister, setIsRegister] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  // Campo adicional para el registro
   const [name, setName] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
 
@@ -51,7 +50,8 @@ const Login = () => {
     onCompleted: (data) => {
       if (data.loginRegularUser.success) {
         alert(data.loginRegularUser.message);
-        // Aquí podrías guardar la info del usuario en contexto o localStorage
+        // Guarda el usuario en el contexto
+        setUser(data.loginRegularUser.user);
         router.push('/'); // Redirige a la página principal tras login exitoso
       } else {
         setErrorMsg(data.loginRegularUser.message);
@@ -67,7 +67,8 @@ const Login = () => {
     onCompleted: (data) => {
       if (data.registerRegularUser.success) {
         alert(data.registerRegularUser.message);
-        // Tras registrarse, podrías redirigir al usuario o cambiar al modo login
+        // Guarda el usuario en el contexto (opcionalmente) o cambia al modo login
+        setUser(data.registerRegularUser.user);
         router.push('/');
       } else {
         setErrorMsg(data.registerRegularUser.message);
@@ -98,7 +99,6 @@ const Login = () => {
     await registerRegularUser({ variables: { email, password, name } });
   };
 
-  // Determinar logo y estilos según el tema
   const logoSrc = (theme === 'dark' || theme === 'purple')
     ? '/logo-servisoft-30years-dark.png'
     : '/logo-servisoft-30years.png';

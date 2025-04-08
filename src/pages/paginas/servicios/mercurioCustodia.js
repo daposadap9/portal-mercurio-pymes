@@ -97,7 +97,7 @@ const MercurioCustodia = ({disabledProvider}) => {
           text-teal-600 text-center titulo-shadow mb-10
           ${isAnyDropdownActive ? "mt-24" : ""}
         `}
-      ><div className="w-full lg:w-[85%]">
+      ><div className="w-full lg:w-[85%] text-xl">
         <h1>¿Sabías que más del 15% de la superficie de las oficinas está reservado para armarios de papel? La Gestión Documental Avanza, nosotros conservamos tus documentos.</h1>
       </div>  
       </div>
@@ -188,7 +188,7 @@ const MercurioCustodia = ({disabledProvider}) => {
               </div>
 
               {/* Bloque para Observaciones */}
-              <div className="flex flex-col mt-4 space-y-2">
+              <div className="flex flex-col mt-2 space-y-2">
                 <label className="text-sm text-gray-700 font-semibold">
                   Observaciones:
                 </label>
@@ -203,10 +203,7 @@ const MercurioCustodia = ({disabledProvider}) => {
               </div>
 
               {/* Bloque para Inversión y Botones */}
-              <div className="mt-6">
-                <h3 className="text-lg font-bold text-teal-600 mb-2">
-                  Conoce el valor de tu inversión
-                </h3>
+              <div className="mt-1">
                 <div className="flex flex-col gap-4">
                   <style jsx>{`
                     .btn-wave {
@@ -232,53 +229,8 @@ const MercurioCustodia = ({disabledProvider}) => {
                       transform: scale(1.05);
                     }
                   `}</style>
-                  <button 
-                    type="button"
-                    className={`btn-wave w-full p-2 rounded-md text-white font-bold transition-all duration-300 bg-blue-500 hover:bg-blue-600 ${formData.opcionSeleccionada === "Desde 0 hasta 5 Cajas X-300 - $210.000 anual" ? "selected" : ""}`}
-                    onClick={() => handleOptionSelect("Desde 0 hasta 5 Cajas X-300 - $210.000 anual")}
-                  >
-                    Desde 0 hasta 5 Cajas X-300 - $210.000 anual
-                  </button>
-                  <button 
-                    type="button"
-                    className={`btn-wave w-full p-2 rounded-md text-white font-bold transition-all duration-300 bg-purple-500 hover:bg-purple-600 ${formData.opcionSeleccionada === "Desde 6 hasta 10 Cajas X-300 - $384.000 anual" ? "selected" : ""}`}
-                    onClick={() => handleOptionSelect("Desde 6 hasta 10 Cajas X-300 - $384.000 anual")}
-                  >
-                    Desde 6 hasta 10 Cajas X-300 - $384.000 anual
-                  </button>
-                  <button 
-                    type="button"
-                    className={`btn-wave w-full p-2 rounded-md text-white font-bold transition-all duration-300 bg-amber-500 hover:bg-amber-600 ${formData.opcionSeleccionada === "Desde 11 hasta 20 Cajas X-300 - $696.000 anual" ? "selected" : ""}`}
-                    onClick={() => handleOptionSelect("Desde 11 hasta 20 Cajas X-300 - $696.000 anual")}
-                  >
-                    Desde 11 hasta 20 Cajas X-300 - $696.000 anual
-                  </button>
-                  <button 
-                    type="button"
-                    className={`btn-wave w-full p-2 rounded-md text-white font-bold transition-all duration-300 bg-yellow-500 hover:bg-yellow-600 ${formData.opcionSeleccionada === "Desde 21 hasta 30 Cajas X-300 - $936.000 anual" ? "selected" : ""}`}
-                    onClick={() => handleOptionSelect("Desde 21 hasta 30 Cajas X-300 - $936.000 anual")}
-                  >
-                    Desde 21 hasta 30 Cajas X-300 - $936.000 anual
-                  </button>
-                  <button 
-                    type="button"
-                    className={`btn-wave w-full p-2 rounded-md text-white font-bold transition-all duration-300 bg-red-500 hover:bg-red-600 ${formData.opcionSeleccionada === "Desde 31 hasta 40 Cajas X-300 - $1.104.000 anual" ? "selected" : ""}`}
-                    onClick={() => handleOptionSelect("Desde 31 hasta 40 Cajas X-300 - $1.104.000 anual")}
-                  >
-                    Desde 31 hasta 40 Cajas X-300 - $1.104.000 anual
-                  </button>
-                  <button 
-                    type="button"
-                    className={`btn-wave w-full p-2 rounded-md text-white font-bold transition-all duration-300 bg-black hover:bg-yellow-600 ${formData.opcionSeleccionada === "Desde 31 hasta 50 Cajas X-300 - $1.200.000 anual" ? "selected" : ""}`}
-                    onClick={() => handleOptionSelect("Desde 31 hasta 50 Cajas X-300 - $1.200.000 anual")}
-                  >
-                    Desde 31 hasta 50 Cajas X-300 - $1.200.000 anual
-                  </button>
                 </div>
-                <div className="mt-4 text-center text-teal-600 font-semibold">
-                  Opción seleccionada: {formData.opcionSeleccionada}
-                </div>
-                <div className="lg:w-1/2 flex mx-auto items-end mt-4">
+                <div className="lg:w-1/2 flex mx-auto items-end mt-2">
                   <button type="submit" className="w-full bg-teal-500 text-white font-bold py-2 rounded-md transition-colors duration-300 hover:bg-teal-600" disabled={loading}>
                     {loading ? "Procesando..." : "Enviar"}
                   </button>
@@ -290,11 +242,7 @@ const MercurioCustodia = ({disabledProvider}) => {
         </div>
       </div>
         {/* Mensaje final destacado */}
-        <div className="mt-8 bg-gradient-to-r from-teal-500 to-blue-500 p-6 rounded-lg shadow-lg text-white text-center">
-        <p className="text-2xl font-bold">
-        ¡Confía en nosotros para una gestión documental sin preocupaciones!
-        </p>
-      </div>
+        
     </div>
     </>
   );

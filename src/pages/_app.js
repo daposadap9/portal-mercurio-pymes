@@ -1,3 +1,4 @@
+// pages/_app.js
 import "@/styles/globals.css";
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
@@ -9,10 +10,19 @@ import WhatsAppButton from "../components/WhatsAppButton";
 import { ThemeProvider } from '@/context/ThemeContext';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 import { TransactionProvider } from '@/context/TransactionContext';
+import { UserProvider } from '@/context/UserContext';
 
 export default function App({ Component, pageProps }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [isIframe, setIsIframe] = useState(false);
+
+  // Detectar si estamos en un iframe
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setIsIframe(window.self !== window.top);
+    }
+  }, []);
 
   // Función para determinar si se debe animar
   const shouldAnimate = (url) => {
@@ -65,24 +75,30 @@ export default function App({ Component, pageProps }) {
     };
   }, [router]);
 
+  // Si el componente tiene getLayout, se utiliza; de lo contrario, se usa el Layout global
+  const getLayout = Component.getLayout || ((page) => (
+    <Layout handleNavigation={handleDelayedNavigation} loading={loading}>
+      {page}
+    </Layout>
+  ));
+
   return (
     <ApolloProvider client={client}>
       <ThemeProvider>
         <TransactionProvider>
-          <AppRouterCacheProvider>
-            <Layout
-              handleNavigation={handleDelayedNavigation}
-              loading={loading}
-              previousPage={Component.previousPage}
-            >
+          <UserProvider>
+            <AppRouterCacheProvider>
               {loading && <VerticalBarTransition onComplete={() => setLoading(false)} />}
-              <Component {...pageProps} />
-            </Layout>
-            <WhatsAppButton 
-              phoneNumber="3008676122" 
-              message="¡Hola! Quiero más información." 
-            />
-          </AppRouterCacheProvider>
+              {getLayout(<Component {...pageProps} />)}
+              {/* Renderizamos WhatsAppButton solo si no estamos en un iframe */}
+              {!isIframe && (
+                <WhatsAppButton 
+                  phoneNumber="3008676122" 
+                  message="¡Hola! Quiero más información." 
+                />
+              )}
+            </AppRouterCacheProvider>
+          </UserProvider>
         </TransactionProvider>
       </ThemeProvider>
     </ApolloProvider>
