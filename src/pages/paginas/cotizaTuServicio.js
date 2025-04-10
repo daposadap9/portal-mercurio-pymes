@@ -136,7 +136,6 @@ const CotizaTuServicio = ({ disabledProvider }) => {
   const { dropdownActive } = useDropdown();
   const isAnyDropdownActive = disabledProvider ? false : (dropdownActive.services || dropdownActive.tramites);
 
-  // Solo si existe usuario se mostrarán los controles de edición
   useEffect(() => {
     console.log("User:", user);
   }, [user]);
@@ -144,11 +143,29 @@ const CotizaTuServicio = ({ disabledProvider }) => {
   const [servicesData, setServicesData] = useState([]);
   const [localServices, setLocalServices] = useState({});
   const [editableOptions, setEditableOptions] = useState({});
-  const [editMode, setEditMode] = useState(false);
+  // Modo edición persistido mediante localStorage
+  const [editMode, setEditMode] = useState(() => {
+    if (typeof window !== "undefined") {
+      return JSON.parse(localStorage.getItem("editMode")) || false;
+    }
+    return false;
+  });
   const [editingTitles, setEditingTitles] = useState({});
   const [editedTitles, setEditedTitles] = useState({});
 
-  // Estado para la tab activa (servicio actualmente mostrado)
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("editMode", JSON.stringify(editMode));
+    }
+  }, [editMode]);
+
+  // Cuando el usuario existe se activa el modo edición
+  useEffect(() => {
+    if (user) {
+      setEditMode(true);
+    }
+  }, [user]);
+
   const [activeService, setActiveService] = useState(null);
 
   // Generar userId persistente
@@ -185,9 +202,7 @@ const CotizaTuServicio = ({ disabledProvider }) => {
     }
   }, [data, activeService]);
 
-  // ----------------------------
   // Función para agregar un servicio (requiere usuario)
-  // ----------------------------
   const handleAddService = () => {
     if (!user) {
       alert("Debes estar logueado para agregar un servicio.");
@@ -208,9 +223,7 @@ const CotizaTuServicio = ({ disabledProvider }) => {
       .catch((err) => console.error("Error al agregar servicio:", err));
   };
 
-  // ----------------------------
   // Función para agregar una opción a un servicio (requiere usuario)
-  // ----------------------------
   const handleAddOption = (service) => {
     if (!user) {
       alert("Debes estar logueado para agregar una opción.");
@@ -246,9 +259,7 @@ const CotizaTuServicio = ({ disabledProvider }) => {
       .catch((err) => console.error("Error al agregar opción:", err));
   };
 
-  // ----------------------------
   // Cambio de opción en el <select>
-  // ----------------------------
   const handleServiceSelect = (serviceId, optionId) => {
     if (optionId === "") {
       setLocalServices((prev) => {
@@ -266,9 +277,7 @@ const CotizaTuServicio = ({ disabledProvider }) => {
     }));
   };
 
-  // ----------------------------
   // Edición del título del servicio (requiere usuario)
-  // ----------------------------
   const handleServiceTitleChange = (serviceId, newName) => {
     if (!user) return;
     setEditedTitles((prev) => ({ ...prev, [serviceId]: newName }));
@@ -292,9 +301,7 @@ const CotizaTuServicio = ({ disabledProvider }) => {
       .catch((err) => console.error("Error al actualizar el servicio:", err));
   };
 
-  // ----------------------------
   // Función para editar una opción (requiere usuario)
-  // ----------------------------
   const handleEditOption = (service, option) => {
     if (!user) {
       alert("Debes estar logueado para editar opciones.");
@@ -324,9 +331,7 @@ const CotizaTuServicio = ({ disabledProvider }) => {
       .catch((err) => console.error("Error updating option:", err));
   };
 
-  // ----------------------------
   // Cálculo de totales y guardado de transacción
-  // ----------------------------
   useEffect(() => {
     let softwareTotal = 0, custodiaTotal = 0, digitalizacionTotal = 0;
     servicesData.forEach((service) => {
@@ -450,7 +455,7 @@ const CotizaTuServicio = ({ disabledProvider }) => {
           )}
         </div>
 
-        {/* Detalle descriptivo de descuentos */}
+        {/* Descripción de descuentos */}
         <div className="text-center text-gray-600 mb-4">
           <p><strong>Descuentos:</strong></p>
           <p>Con 1 servicio: sin descuento.</p>
@@ -592,10 +597,29 @@ const CotizaTuServicio = ({ disabledProvider }) => {
         </div>
       </div>
 
-      {/* Sección de Resultado de Cotización */}
+      {/* Sección de Resultado de Cotización con resumen de servicios seleccionados */}
       <div className="w-full max-w-2xl mt-4 text-center">
         <h3 className="text-lg font-bold mb-2">RESULTADO COTIZACIÓN</h3>
         <div className="bg-white rounded-xl shadow p-4">
+          {/* Resumen de los servicios seleccionados */}
+          <div className="mb-4">
+            <h4 className="font-semibold text-sm md:text-base">Resumen</h4>
+            <ul className="text-sm md:text-base">
+              {servicesData.map((service) => {
+                const selected = localServices[service.id];
+                if (!selected) return null;
+                return (
+                  <li key={service.id}>
+                    <strong>{service.name}:</strong> {selected.label} - $
+                    {Number(selected.value).toLocaleString("es-ES")}
+                    {service.name.toLowerCase().includes("software") && selected.startup
+                      ? ` + Startup: $${Number(selected.startup).toLocaleString("es-ES")}`
+                      : ""}
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
           <p className="text-sm md:text-base mb-1">
             <strong>Subtotal:</strong> ${Math.round(subtotal).toLocaleString("es-ES")}
           </p>
