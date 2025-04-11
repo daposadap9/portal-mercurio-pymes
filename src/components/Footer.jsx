@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { FaInstagram, FaInfoCircle } from 'react-icons/fa';
+import { FaInstagram, FaInfoCircle, FaTimes } from 'react-icons/fa';
 import Loading from './loading';
 import { ThemeContext } from '@/context/ThemeContext';
 import Link from 'next/link';
@@ -18,34 +18,37 @@ const Footer = ({ handleNavigation }) => {
   const closeModal = () => {
     setModalOpen(false);
   };
+
   const logoSrc =
-  theme === 'dark' || theme === 'purple'
-  ? '/logo-servisoft-30years-dark.png'
-  : '/logo-servisoft-30years.png';
-  const logoStyle = theme === 'dark' || theme === 'purple'
-  ? { transform: 'scale(2.7)' }
-  : {};
-  const cardBgClass =
-  theme === 'dark'
-  ? 'bg-custom-gradient'
-  : theme === 'purple'
-  ? 'bg-custom-gradient2'
-  : 'bg-custom-gradient3';
+    theme === 'dark' || theme === 'purple'
+      ? '/logo-servisoft-30years-dark.png'
+      : '/logo-servisoft-30years.png';
+
+  const logoStyle =
+    theme === 'dark' || theme === 'purple'
+      ? { transform: 'scale(2.7)' }
+      : {};
+
   return (
     <>
-      <footer className={`${cardBgClass}`}>
+      {/* Utilizamos la clase "footer-custom" para aplicar los colores personalizados */}
+      <footer className="footer-custom">
         <div className="container px-4 mx-auto">
           <div className="py-2 flex flex-col md:flex-row items-center justify-evenly">
-            <Link href="/" legacyBehavior className="mb-2 md:mb-0">
-                  <a
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleNavigation('/', true);
-                  }}
-                  
-                ><img src={logoSrc} alt="Servisoft 30 Years" className="h-10 w-auto" style={logoStyle}/>
-                </a>
-              
+            <Link href="/" legacyBehavior>
+              <a
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleNavigation('/', true);
+                }}
+              >
+                <img
+                  src={logoSrc}
+                  alt="Servisoft 30 Years"
+                  className="h-10 w-auto"
+                  style={logoStyle}
+                />
+              </a>
             </Link>
             <div className="flex flex-wrap justify-center items-center space-x-4">
               <Link href="/paginas/contactanos" legacyBehavior>
@@ -54,7 +57,7 @@ const Footer = ({ handleNavigation }) => {
                     e.preventDefault();
                     handleNavigation('/paginas/contactanos', true);
                   }}
-                  className="text-sm text-black hover:text-black font-medium"
+                  className="text-sm font-medium"
                 >
                   Contactanos
                 </a>
@@ -65,7 +68,7 @@ const Footer = ({ handleNavigation }) => {
                     e.preventDefault();
                     handleNavigation('/paginas/servicios', true);
                   }}
-                  className="text-sm text-black hover:text-black font-medium"
+                  className="text-sm font-medium"
                 >
                   Servicios
                 </a>
@@ -76,7 +79,7 @@ const Footer = ({ handleNavigation }) => {
                     e.preventDefault();
                     handleNavigation('/paginas/cotizaTuServicio', true);
                   }}
-                  className="text-sm text-black hover:text-black font-medium"
+                  className="text-sm font-medium"
                 >
                   Cotiza tu servicio
                 </a>
@@ -85,7 +88,7 @@ const Footer = ({ handleNavigation }) => {
                 href="https://www.instagram.com/servisoftsa/#" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="text-sm text-black hover:text-black font-medium"
+                className="text-sm font-medium"
               >
                 <FaInstagram size={16} />
               </a>
@@ -93,14 +96,14 @@ const Footer = ({ handleNavigation }) => {
                 href="https://servisoft.co/" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="text-sm text-black hover:text-black font-medium"
+                className="text-sm font-medium"
               >
                 <img src="/servisoft.png" alt="Servisoft" className="h-6 w-auto" />
               </a>
               <a 
                 href="#"
                 onClick={openModal}
-                className="flex items-center text-sm text-black hover:text-black font-medium"
+                className="flex items-center text-sm font-medium"
               >
                 <FaInfoCircle size={16} className="mr-1" />
                 <span>Información Legal</span>
@@ -110,7 +113,7 @@ const Footer = ({ handleNavigation }) => {
         </div>
         <div className="border-t border-black w-11/12 mx-auto"></div>
         <div className="container px-4 mx-auto">
-          <p className="py-2 text-xs text-black font-medium text-center">
+          <p className="py-2 text-xs font-medium text-center">
             © 2025 Servisoft todos los derechos reservados.
           </p>
         </div>
@@ -121,7 +124,9 @@ const Footer = ({ handleNavigation }) => {
           <div className="absolute inset-0 bg-black opacity-50" onClick={closeModal}></div>
           <div className="relative bg-white rounded-lg shadow-2xl p-4 w-full max-w-3xl mx-auto overflow-auto h-[70vh]">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-bold text-gray-800 flex-1 text-center">Información Legal</h2>
+              <h2 className="text-lg font-bold text-gray-800 flex-1 text-center">
+                Información Legal
+              </h2>
               <button onClick={closeModal} className="text-gray-600 hover:text-gray-900 font-bold text-2xl">
                 &times;
               </button>

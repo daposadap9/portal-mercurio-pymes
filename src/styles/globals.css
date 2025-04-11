@@ -46,8 +46,17 @@
   --border-white-30: rgba(0, 0, 0, 0.3);
   --foreground: var(--text-black);
   --background: var(--bg-white);
+
+  /* Variables específicas para el header en Light */
+  --header-bg: #3F4FD8;     /* Fondo del header */
+  --header-text: #ffffff;    /* Color de las letras del header */
+
+  /* Variables específicas para el footer en Light (valores de ejemplo) */
+  --footer-bg: #3F4FD8;      /* Fondo del footer */
+  --footer-text: #ffffff;     /* Color de las letras del footer */
 }
 
+/* Modo Purple */
 .purple {
   /* Fondo degradado con tonos más intensos y profundos */
   --background: linear-gradient(135deg, #012A4A, #013A63);
@@ -76,8 +85,15 @@
   box-shadow: 0 0 10px rgba(1,42,74,0.5), 0 0 20px rgba(1,58,99,0.3);
   text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
   transition: all 0.3s ease;
+
+  /* Puedes definir variables específicas para header y footer en Purple */
+  --header-bg: #013A63;
+  --header-text: #E0F7FA;
+  --footer-bg: #012A4A;
+  --footer-text: #E0F7FA;
 }
 
+/* Modo Dark */
 .dark {
   --background: #121212;
   /* Fondo oscuro elegante */
@@ -121,23 +137,25 @@
   --red-500:   #e57373;
   --red-600:   #ef5350;
   
-  /* Variables para body en Dark */
   --foreground: var(--text-black);
   --background: var(--bg-white);
 
   box-shadow: 
-  0 0 8px rgba(0, 0, 0, 0.4),
-  0 0 15px rgba(13, 37, 63, 0.2);
+    0 0 8px rgba(0, 0, 0, 0.4),
+    0 0 15px rgba(13, 37, 63, 0.2);
 
-/* Sombra en el texto para mejorar legibilidad */
-text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+  transition: all 0.3s ease;
+  --border-white-30: rgba(255, 255, 255, 0.5);
 
-/* Transición suave para interacciones */
-transition: all 0.3s ease;
---border-white-30: rgba(255, 255, 255, 0.5);
-
+  /* Variables específicas para el header y footer en Dark */
+  --header-bg: #333333;
+  --header-text: var(--text-black);
+  --footer-bg: #222222;
+  --footer-text: #e0e0e0;
 }
 
+/* Modo Blue-Light */
 .blue-light{
   --background: #f0f8ff;
   --bg-white: #ffffff;
@@ -179,6 +197,12 @@ transition: all 0.3s ease;
   
   --foreground: var(--text-black);
   --background: var(--bg-white);
+
+  /* Variables específicas para el header y footer en Blue-Light (si las necesitas) */
+  --header-bg: #f0f8ff;
+  --header-text: #1a1a1a;
+  --footer-bg: #f0f8ff;
+  --footer-text: #1a1a1a;
 }
 
 /* Estilo para la franja de abajo en la tabla de cotizaTuServicio */
@@ -231,7 +255,7 @@ transition: all 0.3s ease;
 
 .table th {
   background-color: var(--table-header-bg);
-  color: var (--table-header-text);
+  color: var(--table-header-text);
 }
 
 .table td {
@@ -281,18 +305,19 @@ body {
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
+
 input:disabled::placeholder,
 textarea:disabled::placeholder,
 select:disabled::placeholder {
-  color: rgb(223, 216, 216); /* Ajusta el color según tu diseño */
-  opacity: 1;     /* Fuerza a que el placeholder se vea con opacidad completa */
+  color: rgb(223, 216, 216);
+  opacity: 1;
 }
 
 .light input:disabled::placeholder,
 .light textarea:disabled::placeholder,
 .light select:disabled::placeholder {
-  color: var(--text-gray-900); /* Usa la variable definida en .light para color negro */
-  opacity: 1;               /* Asegura que el placeholder tenga opacidad completa */
+  color: var(--text-gray-900);
+  opacity: 1;
 }
 
 /* Estilos para sombras espectaculares */
@@ -387,4 +412,22 @@ select:disabled::placeholder {
 .overlay p {
   font-size: 1.2rem;
   max-width: 600px;
+}
+
+/* ===================== */
+/* Clases Personalizadas */
+/* ===================== */
+
+/* Clase exclusiva para el header, que centraliza los colores personalizados */
+.header-custom {
+  background-color: var(--header-bg);
+  color: var(--header-text);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Clase exclusiva para el footer, que centraliza los colores personalizados */
+.footer-custom {
+  background-color: var(--footer-bg);
+  color: var(--footer-text);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }

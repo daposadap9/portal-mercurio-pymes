@@ -73,13 +73,6 @@ const Header = ({ handleNavigation, loading }) => {
     }
   };
 
-  const cardBgClass =
-    theme === "dark"
-      ? "bg-custom-gradient"
-      : theme === "purple"
-      ? "bg-custom-gradient2"
-      : "bg-custom-gradient3";
-
   const logoSrc =
     theme === "dark" || theme === "purple"
       ? "/logo-servisoft-30years-dark.png"
@@ -167,28 +160,12 @@ const Header = ({ handleNavigation, loading }) => {
     })),
   ];
 
-  const filteredMobileServicesItems = mobileServicesDropdownItems.filter(
-    (item) =>
-      !(
-        item.label === "TODOS LOS PLANES" &&
-        router.pathname === "/paginas/servicios"
-      )
-  );
-
-  const filteredMobileTramitesItems = mobileTramitesDropdownItems.filter(
-    (item) =>
-      !(
-        item.label === "TODOS LOS TRÁMITES" &&
-        router.pathname === "/paginas/tramites"
-      )
-  );
-
   const isActive = (href) => router.pathname === href;
 
   const baseLinkClass =
-    "flex items-center font-semibold p-1 transition-transform duration-300 ease-in-out text-teal-600";
+    "flex items-center font-semibold p-1 transition-transform duration-300 ease-in-out";
   const baseLinkClass2 =
-    "flex items-center font-semibold p-1 transition-colors duration-300 ease-in-out text-teal-600";
+    "flex items-center font-semibold p-1 transition-colors duration-300 ease-in-out";
   const activeLinkClass = "bg-teal-600 text-white rounded";
   const inactiveLinkClass = "hover:bg-teal-100 hover:text-teal-600 rounded";
 
@@ -215,13 +192,30 @@ const Header = ({ handleNavigation, loading }) => {
     } else {
       setTimeout(() => {
         router.push(href);
-      }, 1100); // Retardo consistente con el resto de la navegación
+      }, 1100);
     }
   };
 
+  const filteredMobileServicesItems = mobileServicesDropdownItems.filter(
+    (item) =>
+      !(
+        item.label === "TODOS LOS PLANES" &&
+        router.pathname === "/paginas/servicios"
+      )
+  );
+
+  const filteredMobileTramitesItems = mobileTramitesDropdownItems.filter(
+    (item) =>
+      !(
+        item.label === "TODOS LOS TRÁMITES" &&
+        router.pathname === "/paginas/tramites"
+      )
+  );
+
   return (
+    // Se aplica la clase "header-custom" para que los colores (background y texto) sean personalizables
     <header
-      className={`sticky top-0 w-full border-b border-teal-100 z-50 h-14 shadow-lg ${cardBgClass} transition-colors duration-500`}
+      className="sticky top-0 w-full border-b border-teal-100 z-50 h-14 shadow-lg header-custom transition-colors duration-500"
     >
       <nav className="max-w-7xl mx-auto px-4 h-full flex justify-between items-center relative">
         {/* Logo */}
@@ -231,9 +225,7 @@ const Header = ({ handleNavigation, loading }) => {
         >
           <div className="w-48 h-full overflow-hidden relative">
             <Link href="/" legacyBehavior>
-            <a
-              onClick={handleLinkClick("/")}
-            >
+              <a onClick={handleLinkClick("/")}>
                 <Image
                   src={logoSrc}
                   alt="Logo Servisoft"
@@ -299,7 +291,7 @@ const Header = ({ handleNavigation, loading }) => {
             )}
           </div>
 
-          {/* Nueva opción: ¡COTIZA TU SERVICIO! */}
+          {/* Opción: ¡COTIZA TU SERVICIO! */}
           <Link href="/paginas/cotizaTuServicio" legacyBehavior>
             <a
               onClick={handleLinkClick("/paginas/cotizaTuServicio")}
@@ -313,7 +305,7 @@ const Header = ({ handleNavigation, loading }) => {
             </a>
           </Link>
 
-          {/* Nueva opción: INICIO PRUEBA */}
+          {/* Opción: INICIO PRUEBA */}
           <Link href="/inicioPrueba" legacyBehavior>
             <a
               onClick={handleLinkClick("/inicioPrueba")}
