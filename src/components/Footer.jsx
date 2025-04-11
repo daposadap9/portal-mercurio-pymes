@@ -22,12 +22,12 @@ const Footer = ({ handleNavigation }) => {
   const logoSrc =
     theme === 'dark' || theme === 'purple'
       ? '/logo-servisoft-30years-dark.png'
-      : '/logo-servisoft-30years.png';
+      : '/logo-servisoft-30years-dark.png';
 
   const logoStyle =
     theme === 'dark' || theme === 'purple'
       ? { transform: 'scale(2.7)' }
-      : {};
+      : { transform: 'scale(2.7)'};
 
   return (
     <>

@@ -24,7 +24,7 @@ const Layout = ({ children, handleNavigation, loading }) => {
     <DropdownProvider>
       <div className="relative min-h-screen text-black">
         {/* Fondo degradado fijo */}
-        <div className="fixed inset-0 w-screen bg-gradient-to-tl from-teal-500 via-white to-white opacity-95 bg-fixed"></div>
+        <div className="fixed inset-0 w-screen bg-gradient-to-tl from-teal-200 via-white to-white opacity-95 bg-fixed"></div>
 
         {/* Capa de imagen superpuesta */}
         <div className="absolute inset-0 bg-fixed bg-center bg-cover opacity-20"></div>
