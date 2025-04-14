@@ -126,11 +126,6 @@ const Header = ({ handleNavigation, loading }) => {
   // Opciones para el dropdown de TRÁMITES en Desktop
   const desktopTramitesDropdownItems = [
     {
-      label: "PAGA TU FACTURA",
-      action: () => alert("Pagar factura"),
-      icon: <FaFileInvoiceDollar className="mr-2" />,
-    },
-    {
       label: "PQRSDF",
       href: "/paginas/tramites/pqrsdf",
       icon: <FaCommentAlt className="mr-2" />,

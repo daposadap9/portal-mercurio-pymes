@@ -25,12 +25,6 @@ const Tramites = () => {
 
   const cards = [
     { 
-      title: "PAGA TU FACTURA", 
-      icon: <FaFileInvoiceDollar className="text-6xl text-green-500" />, 
-      buttonText: "Pagar factura",
-      action: () => alert("Pagar factura")
-    },
-    { 
       title: "PQRSDF", 
       icon: <FaCommentAlt className="text-6xl text-purple-400" />, 
       buttonText: "Enviar PQRSDF",
@@ -52,25 +46,26 @@ const Tramites = () => {
 
   return (
     <div className={`p-4 transition-all duration-500 ease-in-out ${isAnyDropdownActive ? "mt-24" : ""}`}>
-      {/* Contenedor centrado y con ancho máximo */}
+      {/* Contenedor centrado con ancho máximo */}
       <div className="max-w-6xl mx-auto">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Usamos flex-wrap para centrar las cards, con el gap adecuado */}
+        <div className="flex flex-wrap justify-center gap-8">
           {cards.map((card, index) => (
             <div 
               key={index}
               className={`
-                cursor-pointer rounded-lg shadow-lg p-6 flex flex-col items-center group 
+                cursor-pointer w-60 h-60 rounded-lg shadow-lg p-6 flex flex-col items-center group 
                 transition-transform transform hover:scale-105 transition-colors duration-300
                 relative overflow-hidden border-2 border-white/30
               `}
             >
-              {/* Capa de fondo dinámico (según cardBgClass) */}
+              {/* Capa de fondo dinámico */}
               <div className={`absolute inset-0 ${cardBgClass} transition-opacity duration-300 group-hover:opacity-0`}></div>
-              {/* Capa de fondo sólido teal que aparece en hover */}
+              {/* Capa de fondo sólido teal para hover */}
               <div className="absolute inset-0 bg-teal-600 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
               
-              {/* Contenido centrado en primer plano */}
-              <div className="relative z-10 w-full flex flex-col items-center text-center">
+              {/* Contenedor interno centrado (tanto horizontal como verticalmente) */}
+              <div className="relative z-10 w-full h-full flex flex-col items-center justify-center text-center">
                 <div className="transition-all duration-300 group-hover:drop-shadow-[0_0_3px_rgba(0,0,0,0.9)]">
                   {card.icon}
                 </div>
