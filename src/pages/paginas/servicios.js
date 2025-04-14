@@ -58,7 +58,7 @@ export default function Servicios({ disabledProvider }) {
     ],
     maxLines: 7,
     onViewMore: () => router.push("/paginas/servicios/mercurioCustodia"),
-    additionalButtonText: "Busca tus cajas en nuestro sistema de odin",
+    additionalButtonText: "Busca tus cajas en nuestro sistema de ODIN",
     additionalButtonHref: "https://odin.servisoft.com.co/",
     borderColorClass: "hover:border-orange-500",
     titleColorClass: "text-orange-600",
