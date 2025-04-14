@@ -437,7 +437,7 @@ const CotizaTuServicio = ({ disabledProvider }) => {
               onClick={() => setActiveService(service.id)}
               className={`px-4 py-2 text-center focus:outline-none ${
                 activeService === service.id
-                  ? "border-b-2 border-green-500 text-green-500"
+                  ? "border-b-2 border-teal-500 text-teal-500 font-bold"
                   : "text-gray-700"
               }`}
             >
@@ -456,7 +456,7 @@ const CotizaTuServicio = ({ disabledProvider }) => {
         </div>
 
         {/* Descripción de descuentos */}
-        <div className="text-center text-gray-600 mb-4">
+        <div className="text-center text-teal-500 mb-4">
           <p><strong>Descuentos:</strong></p>
           <p>Con 1 servicio: sin descuento.</p>
           <p>Con 2 servicios: 7% de descuento.</p>
@@ -508,7 +508,7 @@ const CotizaTuServicio = ({ disabledProvider }) => {
 
                 {/* Select de opciones */}
                 <select
-                  className="w-full border rounded px-3 py-2 mb-2"
+                  className="w-full border rounded px-3 py-2 mb-2 text-teal-900"
                   value={localServices[service.id]?.id || ""}
                   onChange={(e) => handleServiceSelect(service.id, e.target.value)}
                 >
@@ -590,7 +590,7 @@ const CotizaTuServicio = ({ disabledProvider }) => {
         <div className="flex justify-center">
           <button
             onClick={handlePayment}
-            className="bg-green-500 text-white px-6 py-2 rounded-full hover:bg-green-600 transition-colors mt-2"
+            className="bg-teal-500 text-white px-6 py-2 rounded-full hover:bg-teal-600 transition-colors mt-2"
           >
             Cotizar
           </button>

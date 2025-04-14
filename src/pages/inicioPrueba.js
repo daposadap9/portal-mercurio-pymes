@@ -103,7 +103,7 @@ export default function InicioPrueba() {
           left: 0;
           width: 100%;
           height: 100%;
-          background: linear-gradient(90deg, #1a2a6e 0%, #0aafb3 70%);
+          background: linear-gradient(90deg, #19199A 0%, #0aafb3 70%);
           z-index: 1;
         }
 
@@ -138,7 +138,7 @@ export default function InicioPrueba() {
           left: 50;       /* Comienza donde termina la barra azul */
           width: 900px;       /* Ajusta el ancho */
           height: 70px;      /* Ajusta el alto */
-          background-color: #1A2A6E;
+          background-color: #19199A;
           z-index: 6;  
         }
 
@@ -260,7 +260,7 @@ export default function InicioPrueba() {
           right: 0;
           width: 20%;
           height: 700px;
-          background-color: #1a2a6e;
+          background-color: #19199A;
           z-index: 2;
         }
 
