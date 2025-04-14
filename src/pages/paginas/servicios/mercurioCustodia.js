@@ -352,10 +352,10 @@ const MercurioCustodia = ({ disabledProvider }) => {
 
             {/* Tarjeta de Cotizador de Custodia */}
             <div className="mt-6 p-4 bg-white rounded-xl shadow-lg border">
-              <h2 className="text-xl font-bold text-center text-green-600 mb-2">Cotizador de Custodia</h2>
+              <h2 className="text-xl font-bold text-center text-teal-600 mb-2">Cotizador de Custodia</h2>
               <label className="block text-sm font-semibold mb-1">Selecciona tu plan:</label>
               <select
-                className="w-full border rounded px-3 py-2 mb-3"
+                className="w-full border rounded px-3 py-2 mb-3 text-teal-950"
                 value={formData.opcionSeleccionada}
                 onChange={handleServiceSelect}
               >
@@ -376,7 +376,7 @@ const MercurioCustodia = ({ disabledProvider }) => {
                   </p>
                 </>
               ) : (
-                <p className="mb-2 text-center text-gray-500">No se ha seleccionado un plan</p>
+                <p className="mb-2 text-center">No se ha seleccionado un plan</p>
               )}
               {user && (
                 <button
@@ -390,7 +390,7 @@ const MercurioCustodia = ({ disabledProvider }) => {
                 <button
                   type="button"
                   onClick={handlePayment}
-                  className="bg-green-500 text-white px-6 py-2 rounded-full hover:bg-green-600 transition-colors"
+                  className="bg-teal-500 text-white px-6 py-2 rounded-full hover:bg-teal-600 transition-colors"
                 >
                   Cotizar
                 </button>
