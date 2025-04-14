@@ -2,13 +2,16 @@
 import React, { useContext } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
+// Se importa FaFrown para la queja, que ofrece una expresión más neutra
 import { 
   FaPenFancy, 
-  FaAngry, 
+  FaFrown, 
   FaCommentDots, 
   FaClipboardCheck, 
   FaGavel, 
-  FaSmileBeam 
+  FaSmileBeam, 
+  FaFrownOpen,
+  FaExclamationCircle
 } from 'react-icons/fa';
 import { ThemeContext } from '@/context/ThemeContext'; // Ajusta la ruta según tu estructura
 
@@ -36,7 +39,7 @@ const PQRSDFPage = () => {
       title: "Ingresa una Queja",
       tipo: "Queja",
       marker: "15 días hábiles", 
-      icon: <FaAngry className="text-6xl text-purple-400" /> 
+      icon: <FaExclamationCircle className="text-6xl text-purple-400" />  // Icono modificado
     },
     { 
       title: "Ingresa un Reclamo",
