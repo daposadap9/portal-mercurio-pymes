@@ -51,7 +51,7 @@ const PQRSDFPage = () => {
       title: "Ingresa una Solicitud",
       tipo: "Solicitud",
       marker: "15 días hábiles", 
-      icon: <FaClipboardCheck className="text-6xl text-teal-500" /> 
+      icon: <FaClipboardCheck className="text-6xl text-purple-400" /> 
     },
     { 
       title: "Ingresa una Denuncia",
