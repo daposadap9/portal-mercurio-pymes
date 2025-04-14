@@ -434,7 +434,7 @@ const Header = ({ handleNavigation, loading }) => {
                 onClick={handleLinkClick("/", () => setMobileMenuOpen(false))}
                 className={`${baseLinkClass2} ${
                   isActive("/") ? activeLinkClass : inactiveLinkClass
-                } text-sm`}
+                } text-sm text-teal-600`}
               >
                 <FaHome className="mr-1 text-base" /> INICIO
               </a>
@@ -448,7 +448,7 @@ const Header = ({ handleNavigation, loading }) => {
                 isActive("/paginas/servicios")
                   ? activeLinkClass
                   : inactiveLinkClass
-              } text-sm`}
+              } text-sm text-teal-600`}
             >
               <FaConciergeBell className="mr-1 text-base" /> SERVICIOS
             </button>
@@ -461,7 +461,7 @@ const Header = ({ handleNavigation, loading }) => {
                   isActive("/paginas/cotizaTuServicio")
                     ? activeLinkClass
                     : inactiveLinkClass
-                } text-sm`}
+                } text-sm text-teal-600`}
               >
                 <FaDollarSign className="mr-1 text-base" /> ¡COTIZA TU SERVICIO!
               </a>
@@ -475,7 +475,7 @@ const Header = ({ handleNavigation, loading }) => {
                   isActive("/inicioPrueba")
                     ? activeLinkClass
                     : inactiveLinkClass
-                } text-sm`}
+                } text-sm text-teal-600`}
               >
                 <FaDollarSign className="mr-1 text-base" /> INICIO PRUEBA
               </a>
@@ -489,7 +489,7 @@ const Header = ({ handleNavigation, loading }) => {
                 isActive("/paginas/tramites")
                   ? activeLinkClass
                   : inactiveLinkClass
-              } text-sm`}
+              } text-sm text-teal-600`}
             >
               <FaFileAlt className="mr-1 text-base" /> TRÁMITES
             </button>
@@ -502,9 +502,9 @@ const Header = ({ handleNavigation, loading }) => {
                   isActive("/paginas/contactanos")
                     ? activeLinkClass
                     : inactiveLinkClass
-                } text-sm`}
+                } text-sm text-teal-600`}
               >
-                <FaEnvelope className="mr-1 text-base" /> CONTÁCTENOS
+                <FaEnvelope className="mr-1 text-base text-teal-600" /> CONTÁCTENOS
               </a>
             </Link>
             <Link href="/paginas/login" legacyBehavior>
@@ -516,7 +516,7 @@ const Header = ({ handleNavigation, loading }) => {
                   isActive("/paginas/login")
                     ? activeLinkClass
                     : inactiveLinkClass
-                } rounded text-sm`}
+                } rounded text-sm text-teal-600`}
               >
                 <FaSignInAlt className="mr-1 text-base" /> INGRESAR
               </a>
