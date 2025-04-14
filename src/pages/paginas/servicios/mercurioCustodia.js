@@ -2,16 +2,13 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useRouter } from 'next/router';
 import { gql, useQuery, useMutation } from '@apollo/client';
 import {
-  FaChevronLeft,
-  FaChevronRight,
-  FaEdit,
-  FaSave,
-  FaTrash,
-  FaMoneyBillWave,
-  FaRocket,
   FaLaptopCode,
   FaBoxOpen,
   FaRegImage,
+  FaEdit,
+  FaSave,
+  FaMoneyBillWave,
+  FaRocket,
 } from 'react-icons/fa';
 import { ThemeContext } from '@/context/ThemeContext';
 import { TransactionContext } from '@/context/TransactionContext';
@@ -132,7 +129,7 @@ const getIconForService = (serviceName) => {
 const MercurioCustodia = ({ disabledProvider }) => {
   const router = useRouter();
   const { theme } = useContext(ThemeContext);
-  const { selectedServices, total: globalTotal, discount: globalDiscount, updateTransaction } = useContext(TransactionContext);
+  const { updateTransaction } = useContext(TransactionContext);
   const { user } = useContext(UserContext);
   const { dropdownActive } = useDropdown();
   const isAnyDropdownActive = disabledProvider
@@ -147,21 +144,20 @@ const MercurioCustodia = ({ disabledProvider }) => {
     email: "",
     telefono: "",
     observaciones: "",
-    opcionSeleccionada: "",
   });
 
   // Estados para el cotizador de custodia
   const [servicesData, setServicesData] = useState([]);
   const [custodiaOptions, setCustodiaOptions] = useState([]);
+  // Usamos selectedOption para almacenar la opción elegida y calcular el total
   const [selectedOption, setSelectedOption] = useState(null);
 
-  // Aquí el subtotal se define basado en el valor seleccionado
+  // Calculamos el total basado en el valor de la opción seleccionada
   const subtotal = selectedOption ? Number(selectedOption.value) : 0;
-  // Para custodia se asume que no hay descuento
-  const calculatedDiscount = 0;
+  const calculatedDiscount = 0; // Para custodia, asumimos sin descuento
   const calculatedTotal = subtotal;
 
-  // Estados para el modo edición
+  // Estados para el modo edición (puedes conservarlos o eliminarlos si no son necesarios)
   const [editMode, setEditMode] = useState(() => {
     if (typeof window !== "undefined")
       return JSON.parse(localStorage.getItem("editMode")) || false;
@@ -179,7 +175,7 @@ const MercurioCustodia = ({ disabledProvider }) => {
     if (user) setEditMode(true);
   }, [user]);
 
-  // Generar userId persistente
+  // Generar un userId persistente
   const [userId] = useState(() => {
     let uid = Cookies.get("userId");
     if (!uid) {
@@ -189,7 +185,7 @@ const MercurioCustodia = ({ disabledProvider }) => {
     return uid;
   });
 
-  const { data, refetch } = useQuery(GET_SERVICES);
+  const { data } = useQuery(GET_SERVICES);
   const [saveTransaction] = useMutation(SAVE_TRANSACTION);
   const [createService] = useMutation(CREATE_SERVICE);
   const [createServiceOption] = useMutation(CREATE_SERVICE_OPTION);
@@ -198,7 +194,7 @@ const MercurioCustodia = ({ disabledProvider }) => {
   const [updateService] = useMutation(UPDATE_SERVICE);
   const [debouncedServices] = useDebounce(selectedOption, 500);
 
-  // Al recibir los datos, se guardan y se filtra el servicio de "custodia"
+  // Cuando llegan los datos, filtramos el servicio "custodia" y sus opciones
   useEffect(() => {
     if (data && data.services) {
       setServicesData(data.services);
@@ -209,15 +205,16 @@ const MercurioCustodia = ({ disabledProvider }) => {
     }
   }, [data]);
 
-  // Manejador para cambios en los inputs del formulario (lado derecho)
+  // Manejador para los cambios en los inputs del formulario
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  // Manejador para el select del cotizador (lado izquierdo)
+  // Manejador para el select del cotizador (parte izquierda)
   const handleServiceSelect = (e) => {
     const optionId = e.target.value;
+    // Se puede guardar el valor en formData.opcionSeleccionada si es necesario
     setFormData(prev => ({ ...prev, opcionSeleccionada: optionId }));
     if (optionId) {
       const op = custodiaOptions.find(opt => opt.id === optionId);
@@ -227,7 +224,7 @@ const MercurioCustodia = ({ disabledProvider }) => {
     }
   };
 
-  // Función para editar el cotizador (solo si hay usuario)
+  // Función para editar la opción en el cotizador (solo si hay usuario)
   const handleEditOptionSummary = () => {
     if (!user) {
       alert("Debes estar logueado para editar el cotizador.");
@@ -238,6 +235,11 @@ const MercurioCustodia = ({ disabledProvider }) => {
       setSelectedOption({ ...selectedOption, label: newLabel });
     }
   };
+
+  // Actualizamos la transacción en el contexto (opcional según el flujo de la app)
+  useEffect(() => {
+    updateTransaction(selectedOption, calculatedTotal, calculatedDiscount);
+  }, [selectedOption, calculatedTotal, calculatedDiscount, updateTransaction]);
 
   // Función para enviar el formulario (lado derecho)
   const handleSubmit = async (e) => {
@@ -258,23 +260,23 @@ const MercurioCustodia = ({ disabledProvider }) => {
       const selectedValue = selectedOption ? selectedOption.value : "";
       const documentInfo = `${formData.nombre} - ${formData.apellido} - ${formData.entidad} - ${formData.email} - ${formData.telefono} - ${formData.observaciones} - ${selectedLabel} - ${selectedValue}`;
       const documentInfoGeneral = "Mercurio Custodia";
-      const { data } = await saveTransaction({
+      const response = await saveTransaction({
         variables: {
           userId,
           input: {
             custodia: selectedOption,
             software: null,
             digitalizacion: null,
-            total: Number(selectedOption ? selectedOption.value : 0),
-            discount: 0,
+            total: calculatedTotal,
+            discount: calculatedDiscount,
             state: "transaccion en formulario de pago",
           },
         },
       });
-      const result = data.saveTransaction;
+      const result = response.data.saveTransaction;
       if (result) {
         router.push({
-          pathname: '/radicadoExitoso',
+          pathname: "/radicadoExitoso",
           query: {
             nombre: formData.nombre,
             observaciones: formData.observaciones,
@@ -287,26 +289,44 @@ const MercurioCustodia = ({ disabledProvider }) => {
         alert("Error al guardar la transacción.");
       }
     } catch (err) {
-      console.error("Error al enviar el formulario:", err);
+      console.error("Error al enviar la transacción:", err);
       alert("Error al procesar la transacción.");
     }
   };
 
-  // Función para el botón "Cotizar" en la tarjeta (lado izquierdo)
-  const handlePayment = () => {
+  // Función para el botón "Cotizar" (lado izquierdo) que redirige a PaymentFormPSE
+  const handlePayment = async () => {
     if (!selectedOption) {
       alert("Por favor, seleccione al menos una opción para cotizar.");
       return;
     }
-    router.push({
-      pathname: "/PaymentFormPSE",
-      query: {
-        previousPage: "/paginas/cotizaTuServicio",
-        total: subtotal, // Aquí se envía el valor seleccionado
-        discount: calculatedDiscount,
-        opcion: selectedOption.label,
-      },
-    });
+    try {
+      const response = await saveTransaction({
+        variables: {
+          userId,
+          input: {
+            custodia: selectedOption,
+            software: null,
+            digitalizacion: null,
+            total: calculatedTotal,
+            discount: calculatedDiscount,
+            state: "transaccion en formulario de pago",
+          },
+        },
+      });
+      const result = response.data.saveTransaction;
+      if (result) {
+        router.push({
+          pathname: "/PaymentFormPSE",
+          query: { previousPage: "/paginas/cotizaTuServicio" },
+        });
+      } else {
+        alert("Error al guardar la transacción.");
+      }
+    } catch (err) {
+      console.error("Error en handlePayment:", err);
+      alert("Error al procesar la transacción.");
+    }
   };
 
   return (
@@ -315,42 +335,41 @@ const MercurioCustodia = ({ disabledProvider }) => {
       <div className={`flex justify-center text-2xl md:text-4xl font-bold transition-all duration-500 ease-in-out text-teal-600 text-center titulo-shadow mb-10 ${isAnyDropdownActive ? "mt-24" : ""}`}>
         <div className="w-full lg:w-[85%] text-xl">
           <h1>
-            ¿Sabías que más del 15% de la superficie de las oficinas está reservado para armarios de papel?
-            La Gestión Documental Avanza, nosotros conservamos tus documentos.
+            ¿Sabías que más del 15% de la superficie de las oficinas está reservado para archivos físicos? Redirige tus recursos y deja en nuestras manos la custodia de tus documentos.
           </h1>
         </div>
       </div>
 
       <div className="flex flex-col justify-between p-4">
         <div className="w-full mx-auto flex flex-col lg:flex-row justify-evenly gap-4 flex-1">
-          {/* === Columna Izquierda: Información + Tarjeta Cotizador de Custodia === */}
+          {/* Columna Izquierda: Tarjeta Cotizador de Custodia */}
           <div className="w-full lg:w-[40%]">
-            {/* Bloque de Información Original */}
+            {/* Bloque de Información */}
             <div className="lg:text-left bg-white bg-opacity-0 backdrop-blur-xl p-6 rounded-xl border border-white/30">
               <p className="mb-4 text-lg font-bold text-black text-justify">
                 Custodia de Documentos: Seguridad, Accesibilidad y Eficiencia
               </p>
               <p className="mb-4 text-md font-medium text-black text-justify">
-                Olvídate del almacenamiento de documentos físicos y enfócate en el crecimiento de tu empresa. Nuestro servicio de custodia documental garantiza la seguridad, organización y disponibilidad de tu información sin los costos ni el espacio que implica almacenarla.
+                Olvídate del almacenamiento físico de documentos y enfócate en el crecimiento de tu empresa. Nuestro servicio de custodia garantiza la seguridad, organización y disponibilidad de tu información.
               </p>
               <ul className="list-disc list-inside mb-4 text-md font-medium text-black text-justify">
-                <li>Acceso rápido y seguro a tus documentos cuando los necesites.</li>
-                <li>Optimización de recursos al reducir gastos operativos y liberar espacio.</li>
-                <li>Gestión profesional que garantiza el cumplimiento normativo y la conservación de tu archivo.</li>
+                <li>Acceso rápido y seguro a tus documentos.</li>
+                <li>Reducción de costos y optimización de recursos.</li>
+                <li>Gestión profesional y cumplimiento normativo.</li>
               </ul>
               <p className="mb-4 text-md font-medium text-black text-justify">
-                Tercerizar la administración de documentos mejora la eficiencia de la empresa y permite redirigir esfuerzos hacia áreas estratégicas.
+                Tercerizar la custodia de documentos te permite redirigir recursos hacia áreas estratégicas. Para conocer los planes, cotiza tu servicio.
               </p>
               <p className="mb-4 text-md font-medium text-black text-justify">
-                Si estás interesado: en la sección{" "}
+                Si estás interesado, en la sección{" "}
                 <Link href="/paginas/cotizaTuServicio" legacyBehavior>
                   <a className="text-blue-600 underline">¡cotiza tu servicio!</a>
                 </Link>{" "}
-                podrás conocer los precios y planes del servicio.
+                podrás conocer los precios y planes.
               </p>
             </div>
 
-            {/* Tarjeta de Cotizador de Custodia */}
+            {/* Tarjeta de Cotizador */}
             <div className="mt-6 p-4 bg-white rounded-xl shadow-lg border">
               <h2 className="text-xl font-bold text-center text-teal-600 mb-2">Cotizador de Custodia</h2>
               <label className="block text-sm font-semibold mb-1">Selecciona tu plan:</label>
@@ -378,9 +397,6 @@ const MercurioCustodia = ({ disabledProvider }) => {
               ) : (
                 <p className="mb-2 text-center">No se ha seleccionado un plan</p>
               )}
-              {user && (
-                <></>
-              )}
               <div className="mt-4 flex justify-center">
                 <button
                   type="button"
@@ -393,7 +409,7 @@ const MercurioCustodia = ({ disabledProvider }) => {
             </div>
           </div>
 
-          {/* === Columna Derecha: Formulario Original === */}
+          {/* Columna Derecha: Formulario de Compra */}
           <div className="w-full lg:w-[40%]">
             <div className="bg-gray-50 p-6 rounded-lg shadow-lg h-full flex flex-col">
               <h2 className="text-xl font-bold text-teal-600 text-center mb-6">¡Adquiérelo ahora!</h2>
@@ -424,7 +440,7 @@ const MercurioCustodia = ({ disabledProvider }) => {
                     type="text" 
                     name="entidad"
                     placeholder="Entidad y/o empresa:" 
-                    className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
+                    className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900 w-full"
                     value={formData.entidad}
                     onChange={handleChange}
                     required
@@ -433,7 +449,7 @@ const MercurioCustodia = ({ disabledProvider }) => {
                     <input 
                       type="email" 
                       name="email"
-                      placeholder="E_mail:" 
+                      placeholder="E-mail:" 
                       className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900 w-full"
                       value={formData.email}
                       onChange={handleChange}
@@ -453,9 +469,7 @@ const MercurioCustodia = ({ disabledProvider }) => {
 
                 {/* Bloque para Observaciones */}
                 <div className="flex flex-col mt-2 space-y-2">
-                  <label className="text-sm text-gray-700 font-semibold">
-                    Observaciones:
-                  </label>
+                  <label className="text-sm text-gray-700 font-semibold">Observaciones:</label>
                   <textarea 
                     name="observaciones"
                     placeholder="Ingresa tus observaciones aquí..."
@@ -481,7 +495,7 @@ const MercurioCustodia = ({ disabledProvider }) => {
                         left: -100%;
                         width: 100%;
                         height: 100%;
-                        background: rgba(255, 255, 255, 0.2);
+                        background: rgba(255,255,255,0.2);
                         transform: skewX(-20deg);
                         transition: left 0.5s ease;
                       }

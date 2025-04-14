@@ -2,16 +2,13 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useRouter } from 'next/router';
 import { gql, useQuery, useMutation } from '@apollo/client';
 import {
-  FaChevronLeft,
-  FaChevronRight,
-  FaEdit,
-  FaSave,
-  FaTrash,
-  FaMoneyBillWave,
-  FaRocket,
   FaLaptopCode,
   FaBoxOpen,
   FaRegImage,
+  FaEdit,
+  FaSave,
+  FaMoneyBillWave,
+  FaRocket,
 } from 'react-icons/fa';
 import { ThemeContext } from '@/context/ThemeContext';
 import { TransactionContext } from '@/context/TransactionContext';
@@ -127,12 +124,12 @@ const getIconForService = (serviceName) => {
 };
 
 // ----------------------------
-// Componente MercurioDigitalizacion (adaptado para Digitalización)
+// Componente MercurioDigitalizacion (para Digitalización)
 // ----------------------------
 const MercurioDigitalizacion = ({ disabledProvider }) => {
   const router = useRouter();
   const { theme } = useContext(ThemeContext);
-  const { selectedServices, total: globalTotal, discount: globalDiscount, updateTransaction } = useContext(TransactionContext);
+  const { updateTransaction } = useContext(TransactionContext);
   const { user } = useContext(UserContext);
   const { dropdownActive } = useDropdown();
   const isAnyDropdownActive = disabledProvider
@@ -147,20 +144,19 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
     email: "",
     telefono: "",
     observaciones: "",
-    opcionSeleccionada: "",
   });
 
   // Estados para el cotizador de digitalización
   const [servicesData, setServicesData] = useState([]);
   const [digitalizacionOptions, setDigitalizacionOptions] = useState([]);
+  // Usamos selectedOption para almacenar la opción elegida y calcular el total
   const [selectedOption, setSelectedOption] = useState(null);
 
-  // Se fuerza el subtotal a 0
-  const subtotal = 0;
-  const calculatedDiscount = 0;
-  const calculatedTotal = subtotal;
+  // Eliminamos la forzatura de subtotal; se calculará a partir de selectedOption
+  const calculatedTotal = selectedOption ? Number(selectedOption.value) : 0;
+  const calculatedDiscount = 0; // Si aplica descuento, ajústalo acá
 
-  // Estados para el modo edición
+  // Estados para el modo edición (persistidos en localStorage)
   const [editMode, setEditMode] = useState(() => {
     if (typeof window !== "undefined")
       return JSON.parse(localStorage.getItem("editMode")) || false;
@@ -188,8 +184,8 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
     return uid;
   });
 
-  const { data, refetch } = useQuery(GET_SERVICES);
-  // Extraemos loading y error para evitar ReferenceError
+  const { data } = useQuery(GET_SERVICES);
+  // Extraemos la mutación para guardar la transacción
   const [saveTransaction, { loading, error }] = useMutation(SAVE_TRANSACTION);
   const [createService] = useMutation(CREATE_SERVICE);
   const [createServiceOption] = useMutation(CREATE_SERVICE_OPTION);
@@ -198,7 +194,7 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
   const [updateService] = useMutation(UPDATE_SERVICE);
   const [debouncedServices] = useDebounce(selectedOption, 500);
 
-  // Al recibir los datos, se guardan y se filtra el servicio de digitalización
+  // Cuando llegan los datos, filtramos el servicio de digitalización y sus opciones
   useEffect(() => {
     if (data && data.services) {
       setServicesData(data.services);
@@ -209,7 +205,7 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
     }
   }, [data]);
 
-  // Manejador para cambios en los inputs del formulario (lado derecho)
+  // Manejador para cambios en los inputs del formulario
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
@@ -218,7 +214,7 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
   // Manejador para el select del cotizador (lado izquierdo)
   const handleServiceSelect = (e) => {
     const optionId = e.target.value;
-    setFormData(prev => ({ ...prev, opcionSeleccionada: optionId }));
+    // Puedes guardar en formData si lo requieres, pero lo importante es actualizar selectedOption
     if (optionId) {
       const op = digitalizacionOptions.find(opt => opt.id === optionId);
       setSelectedOption(op);
@@ -239,6 +235,11 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
     }
   };
 
+  // Actualizamos la transacción en el contexto (opcional según flujo de la app)
+  useEffect(() => {
+    updateTransaction(selectedOption, calculatedTotal, calculatedDiscount);
+  }, [selectedOption, calculatedTotal, calculatedDiscount, updateTransaction]);
+
   // Función para enviar el formulario (lado derecho)
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -248,9 +249,9 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
       !formData.entidad ||
       !formData.email ||
       !formData.telefono ||
-      !formData.opcionSeleccionada
+      !selectedOption
     ) {
-      alert("Por favor, complete todos los campos obligatorios.");
+      alert("Por favor, complete todos los campos obligatorios y seleccione un plan.");
       return;
     }
     try {
@@ -258,23 +259,23 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
       const selectedValue = selectedOption ? selectedOption.value : "";
       const documentInfo = `${formData.nombre} - ${formData.apellido} - ${formData.entidad} - ${formData.email} - ${formData.telefono} - ${formData.observaciones} - ${selectedLabel} - ${selectedValue}`;
       const documentInfoGeneral = "Mercurio Digitalización";
-      const { data } = await saveTransaction({
+      const response = await saveTransaction({
         variables: {
           userId,
           input: {
             digitalizacion: selectedOption,
             software: null,
             custodia: null,
-            total: Number(selectedOption ? selectedOption.value : 0),
-            discount: 0,
+            total: calculatedTotal,
+            discount: calculatedDiscount,
             state: "transaccion en formulario de pago",
           },
         },
       });
-      const result = data.saveTransaction;
+      const result = response.data.saveTransaction;
       if (result) {
         router.push({
-          pathname: '/radicadoExitoso',
+          pathname: "/radicadoExitoso",
           query: {
             nombre: formData.nombre,
             observaciones: formData.observaciones,
@@ -287,26 +288,44 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
         alert("Error al guardar la transacción.");
       }
     } catch (err) {
-      console.error("Error al enviar el formulario:", err);
+      console.error("Error al enviar la transacción:", err);
       alert("Error al procesar la transacción.");
     }
   };
 
-  // Función para el botón "Cotizar" en la tarjeta (lado izquierdo)
-  const handlePayment = () => {
+  // Función para el botón "Cotizar" (lado izquierdo) que redirige a PaymentFormPSE
+  const handlePayment = async () => {
     if (!selectedOption) {
       alert("Por favor, seleccione al menos una opción para cotizar.");
       return;
     }
-    router.push({
-      pathname: "/PaymentFormPSE",
-      query: {
-        previousPage: "/paginas/cotizaTuServicio",
-        total: calculatedTotal, // Se envía 0
-        discount: calculatedDiscount, // 0
-        opcion: selectedOption.label,
-      },
-    });
+    try {
+      const response = await saveTransaction({
+        variables: {
+          userId,
+          input: {
+            digitalizacion: selectedOption,
+            software: null,
+            custodia: null,
+            total: calculatedTotal,
+            discount: calculatedDiscount,
+            state: "transaccion en formulario de pago",
+          },
+        },
+      });
+      const result = response.data.saveTransaction;
+      if (result) {
+        router.push({
+          pathname: "/PaymentFormPSE",
+          query: { previousPage: "/paginas/cotizaTuServicio" },
+        });
+      } else {
+        alert("Error al guardar la transacción.");
+      }
+    } catch (err) {
+      console.error("Error en handlePayment:", err);
+      alert("Error al procesar la transacción.");
+    }
   };
 
   return (
@@ -322,7 +341,7 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
 
       <div className="flex flex-col justify-between p-4">
         <div className="w-full mx-auto flex flex-col lg:flex-row justify-evenly gap-4 flex-1">
-          {/* === Columna Izquierda: Información + Tarjeta Cotizador de Digitalización === */}
+          {/* Columna Izquierda: Tarjeta Cotizador de Digitalización */}
           <div className="w-full lg:w-[40%]">
             {/* Bloque de Información */}
             <div className="lg:text-left bg-white bg-opacity-0 backdrop-blur-xl p-6 rounded-xl border border-white/30">
@@ -338,7 +357,7 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
                 <li>Optimiza espacio y reduce costos.</li>
               </ul>
               <p className="mb-4 leading-relaxed text-black text-base font-medium text-justify">
-                Si estás interesado: en la sección{" "}
+                Si estás interesado, en la sección{" "}
                 <Link href="/paginas/cotizaTuServicio" legacyBehavior>
                   <a className="text-blue-600 underline">¡cotiza tu servicio!</a>
                 </Link>{" "}
@@ -346,17 +365,17 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
               </p>
             </div>
 
-            {/* Tarjeta de Cotizador de Digitalización */}
+            {/* Tarjeta de Cotizador */}
             <div className="mt-6 p-4 bg-white rounded-xl shadow-lg border">
               <h2 className="text-xl font-bold text-center text-teal-600 mb-2">Cotizador de Digitalización</h2>
               <label className="block text-sm font-semibold mb-1">Selecciona tu plan:</label>
               <select
                 className="w-full border rounded px-3 py-2 mb-3 text-teal-950"
-                value={formData.opcionSeleccionada}
+                value={selectedOption ? selectedOption.id : ""}
                 onChange={handleServiceSelect}
               >
                 <option value="">-- Escoge un plan --</option>
-                {digitalizacionOptions.map(option => (
+                {digitalizacionOptions.map((option) => (
                   <option key={option.id} value={option.id}>
                     {option.label} - ${Number(option.value).toLocaleString("es-ES")}
                   </option>
@@ -374,9 +393,6 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
               ) : (
                 <p className="mb-2 text-center">No se ha seleccionado un plan</p>
               )}
-              {user && (
-                <></>
-              )}
               <div className="mt-4 flex justify-center">
                 <button
                   type="button"
@@ -389,12 +405,11 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
             </div>
           </div>
 
-          {/* === Columna Derecha: Formulario Original === */}
+          {/* Columna Derecha: Formulario de Compra */}
           <div className="w-full lg:w-[40%]">
             <div className="bg-gray-50 p-6 rounded-lg shadow-lg h-full flex flex-col">
               <h2 className="text-xl font-bold text-teal-600 text-center mb-6">¡Adquiérelo ahora!</h2>
               <form onSubmit={handleSubmit} className="flex flex-col gap-4 flex-1">
-                {/* Datos Personales */}
                 <div className="flex flex-col space-y-4">
                   <div className="flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0">
                     <input 
@@ -447,11 +462,8 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
                   </div>
                 </div>
 
-                {/* Observaciones */}
                 <div className="flex flex-col mt-4 space-y-2">
-                  <label className="text-sm text-gray-700 font-semibold">
-                    Observaciones:
-                  </label>
+                  <label className="text-sm text-gray-700 font-semibold">Observaciones:</label>
                   <textarea 
                     name="observaciones"
                     placeholder="Ingresa tus observaciones aquí..."
@@ -462,7 +474,6 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
                   />
                 </div>
 
-                {/* Bloque para Inversión y Botones */}
                 <div className="mt-6">
                   <div className="flex flex-col gap-4">
                     <style jsx>{`
@@ -477,7 +488,7 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
                         left: -100%;
                         width: 100%;
                         height: 100%;
-                        background: rgba(255, 255, 255, 0.2);
+                        background: rgba(255,255,255,0.2);
                         transform: skewX(-20deg);
                         transition: left 0.5s ease;
                       }
