@@ -224,10 +224,10 @@ const Infinite3DFadingSlider = () => {
       onPointerDown={handlePointerDown}
       onPointerUp={handlePointerUp}
     >
-      <button onClick={handlePrev} className="nav-button prev-button text-gray-900 border-gray-900">
+      <button onClick={handlePrev} className="nav-button prev-button text-gray-950 border-gray-950">
         <FaChevronLeft size={18} />
       </button>
-      <button onClick={handleNext} className="nav-button next-button text-gray-900 border-gray-900">
+      <button onClick={handleNext} className="nav-button next-button text-gray-950 border-gray-950">
         <FaChevronRight size={18} />
       </button>
 
