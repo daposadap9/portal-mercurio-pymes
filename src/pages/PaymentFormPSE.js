@@ -65,13 +65,33 @@ const PaymentFormPSE = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert('¡Pago procesado con éxito!');
-    router.push({
-      pathname: '/paginas/servicios/PaymentSuccess',
-      query: { previousPage: previousPage || '/paginas/cotizaTuServicio' }
-    });
+    
+    // Construir el payload para enviar a nuestro API interno
+    const payload = {
+      ...formData,
+      total
+    };
+
+    try {
+      const res = await fetch('/api/payu/create-payment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      const result = await res.json();
+      if (result.redirectUrl) {
+        // Redirigir al usuario a la URL de pago recibida
+        window.location.href = result.redirectUrl;
+      } else {
+        alert('Error al procesar el pago. Por favor, inténtalo de nuevo.');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Error en la conexión. Verifica tu configuración.');
+    }
   };
 
   if (loading) return <p>Cargando datos...</p>;
