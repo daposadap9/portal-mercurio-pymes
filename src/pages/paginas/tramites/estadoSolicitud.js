@@ -93,7 +93,7 @@ const EstadoSolicitud = () => {
           </div>
         </div>
       ) : (
-        resultado && <p className="text-white">ℹ️ No se encontraron resultados.</p>
+        resultado && <p className="text-black">ℹ️ No se encontraron resultados.</p>
       )}
     </div>
   );
