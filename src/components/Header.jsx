@@ -21,6 +21,7 @@ import {
   FaInfoCircle,
   FaPalette,
   FaDollarSign,
+  FaBoxOpen,
 } from "react-icons/fa";
 import { useDropdown } from "@/context/DropdownContext";
 import { ThemeContext } from "@/context/ThemeContext";
@@ -140,6 +141,13 @@ const Header = ({ handleNavigation, loading }) => {
       href: "/paginas/tramites/estadoSolicitud",
       icon: <FaInfoCircle className="mr-2" />,
     },
+    { 
+      label: "IR A ODIN", 
+      href: "https://odin.servisoft.com.co/", 
+      icon: <FaBoxOpen className="mr-2" />, 
+      target: "_blank", 
+      rel: "noopener noreferrer" 
+    },    
   ];
 
   // Opciones para el menú de TRÁMITES en Mobile
@@ -335,31 +343,33 @@ const Header = ({ handleNavigation, loading }) => {
             {showTramitesDropdown && (
               <div className="absolute left-0 top-full w-64 bg-white shadow rounded border border-teal-50 transition-opacity duration-300 ease-in-out opacity-100 z-50">
                 <ul>
-                  {desktopTramitesDropdownItems.map((item, index) => (
-                    <li key={index}>
-                      {item.href ? (
-                        <Link href={item.href} legacyBehavior>
-                          <a
-                            onClick={handleLinkClick(item.href)}
-                            className="flex items-center justify-start text-left px-3 py-1 text-teal-600 hover:bg-teal-100 hover:text-teal-700 transition-colors duration-300 text-sm"
-                          >
-                            {item.icon}
-                            {item.label}
-                          </a>
-                        </Link>
-                      ) : (
-                        <button
-                          onClick={() => {
-                            item.action && item.action();
-                          }}
-                          className="flex items-center justify-start text-left w-full px-3 py-1 text-teal-600 hover:bg-teal-100 hover:text-teal-700 transition-colors duration-300 text-sm"
-                        >
-                          {item.icon}
-                          {item.label}
-                        </button>
-                      )}
-                    </li>
-                  ))}
+                {desktopTramitesDropdownItems.map((item, index) => (
+  <li key={index}>
+    {item.target ? (
+      // enlace externo, abre en pestaña nueva
+      <a
+        href={item.href}
+        target={item.target}
+        rel={item.rel}
+        className="flex items-center justify-start px-3 py-1 text-teal-600 hover:bg-teal-100 hover:text-teal-700 text-sm"
+      >
+        {item.icon}
+        {item.label}
+      </a>
+    ) : (
+      // enlace interno
+      <Link href={item.href} legacyBehavior>
+        <a
+          onClick={handleLinkClick(item.href)}
+          className="flex items-center justify-start px-3 py-1 text-teal-600 hover:bg-teal-100 hover:text-teal-700 text-sm"
+        >
+          {item.icon}
+          {item.label}
+        </a>
+      </Link>
+    )}
+  </li>
+))}
                 </ul>
               </div>
             )}
@@ -580,34 +590,28 @@ const Header = ({ handleNavigation, loading }) => {
               TRÁMITES
             </h2>
             <ul className="space-y-1">
-              {filteredMobileTramitesItems.map((item, index) => (
-                <li key={index}>
-                  {item.href ? (
-                    <Link href={item.href} legacyBehavior>
-                      <a
-                        onClick={handleLinkClick(item.href, () =>
-                          setMobileTramitesModalOpen(false)
-                        )}
-                        className="flex items-center justify-start text-left px-3 py-1 rounded text-teal-600 hover:bg-teal-100 hover:text-teal-700 transition-colors duration-300 text-sm"
-                      >
-                        {item.icon}
-                        {item.label}
-                      </a>
-                    </Link>
-                  ) : (
-                    <button
-                      onClick={() => {
-                        item.action && item.action();
-                        setMobileTramitesModalOpen(false);
-                      }}
-                      className="flex items-center justify-start text-left w-full px-3 py-1 rounded text-teal-600 hover:bg-teal-100 hover:text-teal-700 transition-colors duration-300 text-sm"
-                    >
-                      {item.icon}
-                      {item.label}
-                    </button>
-                  )}
-                </li>
-              ))}
+            {filteredMobileTramitesItems.map((item, index) => (
+  <li key={index}>
+    {item.target ? (
+      <a
+        href={item.href}
+        target={item.target}
+        rel={item.rel}
+        className="flex items-center justify-start px-3 py-1 text-teal-600 hover:bg-teal-100 hover:text-teal-700 text-sm"
+      >
+        {item.icon}
+        {item.label}
+      </a>
+    ) : (
+      <Link href={item.href} legacyBehavior>
+        <a onClick={() => setMobileTramitesModalOpen(false)} className="flex items-center justify-start px-3 py-1 text-teal-600 hover:bg-teal-100 hover:text-teal-700 text-sm">
+          {item.icon}
+          {item.label}
+        </a>
+      </Link>
+    )}
+  </li>
+))}
             </ul>
           </div>
         </div>

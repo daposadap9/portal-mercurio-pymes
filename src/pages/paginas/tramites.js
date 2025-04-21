@@ -4,7 +4,8 @@ import {
   FaFileInvoiceDollar, 
   FaCommentAlt, 
   FaListAlt, 
-  FaInfoCircle 
+  FaInfoCircle, 
+  FaBoxOpen
 } from 'react-icons/fa';
 import { useDropdown } from '@/context/DropdownContext';
 import { ThemeContext } from '@/context/ThemeContext';
@@ -41,6 +42,12 @@ const Tramites = () => {
       icon: <FaInfoCircle className="text-6xl text-amber-600" />, 
       buttonText: "Consultar estado",
       href: "/paginas/tramites/estadoSolicitud"
+    },
+    { 
+      title: "Busca tus cajas en nuestro sistema de ODIN", 
+      icon: <FaBoxOpen className="text-6xl text-green-600" />, 
+      buttonText: "Ir a ODIN",
+      href: "https://odin.servisoft.com.co/"
     }
   ];
 
