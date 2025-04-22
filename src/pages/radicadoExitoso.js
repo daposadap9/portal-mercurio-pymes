@@ -5,25 +5,14 @@ import { useRouter } from 'next/router';
 const RadicadoExitoso = () => {
   const router = useRouter();
 
-  // Al montar, mostramos la alerta
+  // Mostrar alerta al montar el componente
   useEffect(() => {
     alert(
-      "Gracias por interesarte en nuestro Servicio de Custodia, por favor diligencia el siguiente formulario y a la mayor brevedad posible uno de nuestros asesores te enviará una ampliación de la información que estás buscando."
+      "Gracias por interesarte en nuestro Servicio, uno de nuestros asesores te enviará una ampliación de la información que estás buscando."
     );
   }, []);
 
-  // Cuando el router esté listo, comprobamos que vengan los parámetros
-  useEffect(() => {
-    if (!router.isReady) return;
-
-    const { radicado, nombre, fecha } = router.query;
-    // Si falta alguno de los parámetros clave, redirigimos al inicio
-    if (!radicado || !nombre || !fecha) {
-      router.replace('/');
-    }
-  }, [router.isReady, router.query, router]);
-
-  // Mientras router.no está listo o en proceso de redirección, mostramos "Cargando"
+  // Esperamos a que se cargue el router para tener acceso a los query params
   if (!router.isReady) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -32,7 +21,7 @@ const RadicadoExitoso = () => {
     );
   }
 
-  // Extraemos los query params, poniendo valores por defecto
+  // Asignamos valores por defecto en caso de que no existan
   const {
     nombre = '',
     fecha = '',
@@ -56,11 +45,9 @@ const RadicadoExitoso = () => {
           <p className="text-lg">
             <span className="font-semibold">Fecha agendada:</span> {fecha}
           </p>
-          {observaciones && (
-            <p className="text-lg">
-              <span className="font-semibold">Observaciones:</span> {observaciones}
-            </p>
-          )}
+          <p className="text-lg">
+            <span className="font-semibold">Observaciones:</span> {observaciones}
+          </p>
         </div>
         <div className="border-t mt-6 pt-4 text-left">
           <h2 className="text-xl font-bold mb-2">Información del Formulario</h2>
