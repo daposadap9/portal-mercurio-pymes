@@ -5,10 +5,6 @@ import {
   FaLaptopCode,
   FaBoxOpen,
   FaRegImage,
-  FaEdit,
-  FaSave,
-  FaMoneyBillWave,
-  FaRocket,
 } from 'react-icons/fa';
 import { ThemeContext } from '@/context/ThemeContext';
 import { TransactionContext } from '@/context/TransactionContext';
@@ -33,6 +29,16 @@ const SAVE_TRANSACTION = gql`
       discount
       state
       createdAt
+    }
+  }
+`;
+
+const INSERT_MERT_RECIBIDO = gql`
+  mutation InsertMertRecibido($documentInfo: String!, $documentInfoGeneral: String!) {
+    insertMertRecibido(documentInfo: $documentInfo, documentInfoGeneral: $documentInfoGeneral) {
+      success
+      message
+      idDocumento
     }
   }
 `;
@@ -127,7 +133,6 @@ const getIconForService = (serviceName) => {
 // ----------------------------
 const MercurioPYMES = ({ disabledProvider }) => {
   const router = useRouter();
-  const { theme } = useContext(ThemeContext);
   const { updateTransaction } = useContext(TransactionContext);
   const { user } = useContext(UserContext);
   const { dropdownActive } = useDropdown();
@@ -135,7 +140,7 @@ const MercurioPYMES = ({ disabledProvider }) => {
     ? false
     : (dropdownActive.services || dropdownActive.tramites);
 
-  // Estado del formulario (lado derecho)
+  // Formulario (derecha)
   const [formData, setFormData] = useState({
     nombre: "",
     apellido: "",
@@ -143,146 +148,107 @@ const MercurioPYMES = ({ disabledProvider }) => {
     email: "",
     telefono: "",
     observaciones: "",
+    opcionSeleccionada: "",
   });
 
-  // Estados para el cotizador de software
-  const [servicesData, setServicesData] = useState([]);
+  // Cotizador (izquierda)
   const [softwareOptions, setSoftwareOptions] = useState([]);
-  const [selectedOption, setSelectedOption] = useState(null);
+  const [leftSelectedId, setLeftSelectedId] = useState("");
+  const [leftOption, setLeftOption] = useState(null);
 
-  // Estados para el modo edición (persistidos en localStorage)
-  const [editMode, setEditMode] = useState(() => {
-    if (typeof window !== "undefined")
-      return JSON.parse(localStorage.getItem("editMode")) || false;
-    return false;
-  });
-  const [editingTitles, setEditingTitles] = useState({});
-  const [editedTitles, setEditedTitles] = useState({});
+  // Toggle Anual/Mensual
+  const [isMonthly, setIsMonthly] = useState(false);
 
-  useEffect(() => {
-    if (typeof window !== "undefined")
-      localStorage.setItem("editMode", JSON.stringify(editMode));
-  }, [editMode]);
+  // Radicación
+  const [newRadicado, setNewRadicado] = useState(null);
+  const [insertMertRecibido, { loading: loadingRad, error: radError }] = useMutation(INSERT_MERT_RECIBIDO);
 
-  useEffect(() => {
-    if (user) setEditMode(true);
-  }, [user]);
+  // Pago (izquierda)
+  const [savePayment] = useMutation(SAVE_TRANSACTION);
 
-  // Generar userId persistente
+  // Totales
+  const annualTotal    = leftOption ? Number(leftOption.value) + Number(leftOption.startup || 0) : 0;
+  const monthlyPayment = leftOption ? (annualTotal / 12) : 0;
+  const calculatedDiscount = 0;
+
+  // userId persistente
   const [userId] = useState(() => {
     let uid = Cookies.get("userId");
-    if (!uid) {
-      uid = uuidv4();
-      Cookies.set("userId", uid, { expires: 7 });
-    }
-    console.log("UserId:", uid);
+    if (!uid) { uid = uuidv4(); Cookies.set("userId", uid, { expires: 7 }); }
     return uid;
   });
 
+  // Traer servicios
   const { data } = useQuery(GET_SERVICES);
-  const [saveTransaction, { loading, error }] = useMutation(SAVE_TRANSACTION);
-  const [createService] = useMutation(CREATE_SERVICE);
-  const [createServiceOption] = useMutation(CREATE_SERVICE_OPTION);
-  const [updateServiceOption] = useMutation(UPDATE_SERVICE_OPTION);
-  const [deleteServiceOption] = useMutation(DELETE_SERVICE_OPTION);
-  const [updateService] = useMutation(UPDATE_SERVICE);
-
-  // Al recibir los servicios, extraemos las opciones de software
   useEffect(() => {
-    if (data && data.services) {
-      setServicesData(data.services);
-      const softwareService = data.services.find(
-        (s) => s.name.toLowerCase().includes("software")
-      );
-      if (softwareService) {
-        setSoftwareOptions(softwareService.options || []);
-        console.log("Software options:", softwareService.options);
-      }
+    if (data?.services) {
+      const svc = data.services.find(s => s.name.toLowerCase().includes("software"));
+      if (svc) setSoftwareOptions(svc.options || []);
     }
   }, [data]);
 
+  // Actualizar contexto
+  useEffect(() => {
+    updateTransaction(leftOption, isMonthly ? monthlyPayment : annualTotal, calculatedDiscount);
+  }, [leftOption, isMonthly, monthlyPayment, annualTotal]);
+
+  // Handlers
+  const handleLeftSelect = (e) => {
+    const id = e.target.value;
+    setLeftSelectedId(id);
+    setFormData(prev => ({ ...prev, opcionSeleccionada: id }));
+    setLeftOption(softwareOptions.find(o => o.id === id) || null);
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  // Manejador para el select (lado izquierdo)
-  const handleServiceSelect = (e) => {
-    const optionId = e.target.value;
-    if (optionId) {
-      const op = softwareOptions.find((opt) => opt.id === optionId);
-      setSelectedOption(op);
-      console.log("Opción seleccionada:", op);
+  const handlePayment = async () => {
+    if (!leftOption) { alert("Selecciona un plan."); return; }
+    const totalToPay = isMonthly ? monthlyPayment : annualTotal;
+    const { data } = await savePayment({
+      variables: {
+        userId,
+        input: {
+          software: leftOption,
+          custodia: null,
+          digitalizacion: null,
+          total: totalToPay,
+          discount: calculatedDiscount,
+          state: "transaccion en formulario de pago",
+        },
+      },
+    });
+    if (data.saveTransaction) {
+      router.push({ pathname: "/PaymentFormPSE", query: { previousPage: "/paginas/cotizaTuServicio" } });
     } else {
-      setSelectedOption(null);
+      alert("Error al guardar la transacción.");
     }
   };
 
-  // Función para editar la tarjeta (solo si hay usuario)
-  const handleEditOptionSummary = () => {
-    if (!user) {
-      alert("Debes estar logueado para editar el cotizador.");
-      return;
-    }
-    const newLabel = prompt(
-      "Nuevo label para la opción seleccionada:",
-      selectedOption ? selectedOption.label : ""
-    );
-    if (newLabel !== null && newLabel.trim() !== "") {
-      const updated = { ...selectedOption, label: newLabel };
-      setSelectedOption(updated);
-      console.log("Opción actualizada:", updated);
-    }
-  };
-
-  // Calcular el total basado en la opción seleccionada
-  const calculatedTotal = selectedOption
-    ? Number(selectedOption.value) + Number(selectedOption.startup || 0)
-    : 0;
-  const calculatedDiscount = 0; // Aquí se puede ajustar el descuento si es necesario
-
-  // Actualizamos la transacción en el contexto (opcional)
-  useEffect(() => {
-    updateTransaction(selectedOption, calculatedTotal, calculatedDiscount);
-    console.log("Transacción actualizada:", { selectedOption, calculatedTotal, calculatedDiscount });
-  }, [selectedOption, calculatedTotal, calculatedDiscount, updateTransaction]);
-
-  // Función para enviar el formulario (lado derecho)
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (
-      !formData.nombre ||
-      !formData.apellido ||
-      !formData.entidad ||
-      !formData.email ||
-      !formData.telefono ||
-      !selectedOption
-    ) {
-      alert("Por favor, complete todos los campos obligatorios y seleccione un plan.");
-      return;
+    if (!formData.nombre || !formData.apellido || !formData.entidad ||
+        !formData.email || !formData.telefono || !formData.opcionSeleccionada) {
+      alert("Completa todos los campos y selecciona un plan."); return;
     }
-    console.log("Enviando transacción con:", { formData, selectedOption, calculatedTotal });
+    const chosen = softwareOptions.find(o => o.id === formData.opcionSeleccionada);
+    const planType = isMonthly ? "Mensual" : "Anual";
+    const valor    = isMonthly ? monthlyPayment : annualTotal;
+    const documentInfo = `
+      ${formData.nombre} - ${formData.apellido} - ${formData.entidad} -
+      ${formData.email} - ${formData.telefono} - ${formData.observaciones} -
+      Plan: ${chosen.label} (${planType}) -
+      Valor: ${valor.toLocaleString("es-ES")}
+    `;
+    const documentInfoGeneral = "Mercurio PYMES";
     try {
-      const selectedLabel = selectedOption.label;
-      const selectedValue = selectedOption.value;
-      const documentInfo = `${formData.nombre} - ${formData.apellido} - ${formData.entidad} - ${formData.email} - ${formData.telefono} - ${formData.observaciones} - ${selectedLabel} - ${selectedValue}`;
-      const documentInfoGeneral = "Mercurio PYMES";
-      const response = await saveTransaction({
-        variables: {
-          userId,
-          input: {
-            software: selectedOption,
-            custodia: null,
-            digitalizacion: null,
-            total: calculatedTotal,
-            discount: calculatedDiscount,
-            state: "transaccion en formulario de pago",
-          },
-        },
-      });
-      console.log("Respuesta de saveTransaction (submit):", response);
-      const result = response.data.saveTransaction;
-      if (result) {
+      const { data } = await insertMertRecibido({ variables: { documentInfo, documentInfoGeneral } });
+      const res = data.insertMertRecibido;
+      if (res.success) {
+        setNewRadicado(res.idDocumento);
         router.push({
           pathname: "/radicadoExitoso",
           query: {
@@ -290,77 +256,30 @@ const MercurioPYMES = ({ disabledProvider }) => {
             observaciones: formData.observaciones,
             documentInfo,
             documentInfoGeneral,
-            radicado: result.id,
-          },
+            radicado: res.idDocumento
+          }
         });
       } else {
-        alert("Error al guardar la transacción.");
+        alert("Error: " + res.message);
       }
-    } catch (err) {
-      console.error("Error al enviar la transacción:", err);
-      alert("Error al procesar la transacción.");
-    }
-  };
-
-  // Función para el botón "Cotizar" (lado izquierdo) para guardar la transacción y redirigir a PaymentFormPSE
-  const handlePayment = async () => {
-    if (!selectedOption) {
-      alert("Por favor, seleccione al menos una opción para cotizar.");
-      return;
-    }
-    console.log("Guardando transacción para redirigir a PaymentFormPSE con:", {
-      total: calculatedTotal,
-      discount: calculatedDiscount,
-      opcion: selectedOption.label,
-    });
-    try {
-      const response = await saveTransaction({
-        variables: {
-          userId,
-          input: {
-            software: selectedOption,
-            custodia: null,
-            digitalizacion: null,
-            total: calculatedTotal,
-            discount: calculatedDiscount,
-            state: "transaccion en formulario de pago",
-          },
-        },
-      });
-      console.log("Respuesta de saveTransaction (cotizar):", response);
-      const result = response.data.saveTransaction;
-      if (result) {
-        router.push({
-          pathname: "/PaymentFormPSE",
-          query: { previousPage: "/paginas/cotizaTuServicio" },
-        });
-      } else {
-        alert("Error al guardar la transacción.");
-      }
-    } catch (err) {
-      console.error("Error en handlePayment:", err);
-      alert("Error al procesar la transacción.");
+    } catch {
+      alert("Error al radicar");
     }
   };
 
   return (
     <div className="min-h-full flex flex-col items-center px-2 md:px-0">
       {/* Título Principal */}
-      <div
-        className={`flex justify-center text-2xl md:text-4xl font-bold transition-all duration-500 ease-in-out text-teal-600 text-center titulo-shadow mb-10 ${
-          isAnyDropdownActive ? "mt-24" : ""
-        }`}
-      >
+      <div className={`flex justify-center text-2xl md:text-4xl font-bold transition-all duration-500 ease-in-out text-teal-600 text-center titulo-shadow mb-10 ${isAnyDropdownActive ? "mt-24" : ""}`}>
         <div className="w-full lg:w-[85%] text-xl">
-          <h1>
-            Mercurio PYMES es una forma ágil, fácil y práctica para la gestión documental de pequeñas y medianas empresas.
-          </h1>
+          <h1>Mercurio PYMES es una forma ágil, fácil y práctica para la gestión documental de pequeñas y medianas empresas.</h1>
         </div>
       </div>
 
       <div className="flex flex-col justify-between p-4">
         <div className="w-full mx-auto flex flex-col lg:flex-row justify-evenly gap-4 flex-1">
-          {/* Columna Izquierda: Tarjeta de Cotizador */}
+
+          {/* IZQUIERDA: Cotizador */}
           <div className="w-full lg:w-[40%]">
             <div className="lg:text-left bg-white bg-opacity-0 backdrop-blur-xl p-6 rounded-xl border border-white/30">
               <p className="mb-4 text-xl font-bold text-black text-justify">
@@ -382,55 +301,63 @@ const MercurioPYMES = ({ disabledProvider }) => {
                 podrás conocer los precios y planes. El valor final depende del número de licencias (usuarios) requeridas.
               </p>
             </div>
-
-            {/* Tarjeta de Cotizador */}
             <div className="mt-6 p-4 bg-white rounded-xl shadow-lg border">
               <h2 className="text-xl font-bold text-center text-teal-600 mb-2">Cotizador de Software</h2>
               <label className="block text-sm font-semibold mb-1">Selecciona tu plan:</label>
               <select
                 className="w-full border rounded px-3 py-2 mb-3 text-teal-950"
-                value={selectedOption ? selectedOption.id : ""}
-                onChange={handleServiceSelect}
+                value={leftSelectedId}
+                onChange={handleLeftSelect}
               >
                 <option value="">-- Escoge un plan --</option>
-                {softwareOptions.map((option) => (
+                {softwareOptions.map(option => (
                   <option key={option.id} value={option.id}>
-                    {option.label} - ${Number(option.value).toLocaleString("es-ES")}
-                    {option.startup !== undefined &&
-                      ` (Startup: $${Number(option.startup).toLocaleString("es-ES")})`}
+                    {option.label} — ${Number(option.value).toLocaleString("es-ES")}
+                    {option.startup !== undefined && ` + Startup: $${Number(option.startup).toLocaleString("es-ES")}`}
                   </option>
                 ))}
               </select>
-              {selectedOption ? (
+              {leftOption ? (
                 <>
-                  <p className="mb-2 text-center">
-                    <strong>Opción:</strong> {selectedOption.label}
-                  </p>
-                  <p className="mb-2 text-center">
-                    <strong>Precio:</strong> ${Number(selectedOption.value).toLocaleString("es-ES")}
-                  </p>
-                  {selectedOption.startup !== undefined && (
-                    <p className="mb-2 text-center">
-                      <strong>Startup:</strong> ${Number(selectedOption.startup).toLocaleString("es-ES")}
-                    </p>
-                  )}
+                  <p className="mb-2 text-center"><strong>Opción:</strong> {leftOption.label}</p>
+                  <p className="mb-2 text-center"><strong>Precio:</strong> ${Number(leftOption.value).toLocaleString("es-ES")}</p>
+                  <p className="mb-2 text-center"><strong>Startup:</strong> ${Number(leftOption.startup).toLocaleString("es-ES")} (único Pago)</p>
+                  <p className="mb-2 text-center"><strong>Total, Inversión Anual:</strong> ${annualTotal.toLocaleString("es-ES")}</p>
+                  <p className="mb-2 text-center"><strong>Pago mensual:</strong> ${monthlyPayment.toLocaleString("es-ES",{minimumFractionDigits:2,maximumFractionDigits:2})}</p>
+                  <div className="flex justify-center gap-4 mb-4">
+                    <label className="flex items-center space-x-1 text-xs">
+                      <input type="radio" checked={!isMonthly} onChange={() => setIsMonthly(false)} />
+                      <span>Anual</span>
+                    </label>
+                    <label className="flex items-center space-x-1 text-xs">
+                      <input type="radio" checked={isMonthly} onChange={() => setIsMonthly(true)} />
+                      <span>Mensual</span>
+                    </label>
+                  </div>
                 </>
               ) : (
                 <p className="mb-2 text-center">No se ha seleccionado un plan</p>
               )}
-              <div className="mt-4 flex justify-center">
+              <div className="mt-4 gap-2 flex justify-center">
                 <button
                   type="button"
                   onClick={handlePayment}
                   className="bg-teal-500 text-white px-6 py-2 rounded-full hover:bg-teal-600 transition-colors"
                 >
-                  Cotizar
+                  Cotizar {isMonthly ? "Mensual" : "Anual"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => router.push("/paginas/contactanos")}
+                  className="bg-teal-500 text-white px-6 py-2 rounded-full hover:bg-teal-600 transition-colors"
+                >
+                  Ampliar Información
                 </button>
               </div>
             </div>
           </div>
 
-          {/* Columna Derecha: Formulario de Compra */}
+          {/* DERECHA: Formulario “¡Adquiérelo ahora!” */}
           <div className="w-full lg:w-[40%]">
             <div className="bg-gray-50 p-6 rounded-lg shadow-lg h-full flex flex-col">
               <h2 className="text-xl font-bold text-teal-600 text-center mb-6">¡Adquiérelo ahora!</h2>
@@ -486,7 +413,8 @@ const MercurioPYMES = ({ disabledProvider }) => {
                     />
                   </div>
                 </div>
-                <div className="flex flex-col mt-4 space-y-2">
+
+                <div className="flex flex-col mt-2 space-y-2">
                   <label className="text-sm text-gray-700 font-semibold">Observaciones:</label>
                   <textarea
                     name="observaciones"
@@ -497,7 +425,41 @@ const MercurioPYMES = ({ disabledProvider }) => {
                     onChange={handleChange}
                   />
                 </div>
-                <div className="mt-6">
+
+                <div className="flex flex-col mt-2">
+                  <label className="text-sm text-gray-700 font-semibold mb-1">Plan de Software:</label>
+                  <select
+                    name="opcionSeleccionada"
+                    value={formData.opcionSeleccionada}
+                    onChange={handleChange}
+                    required
+                    className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
+                  >
+                    <option value="">-- Escoge un plan --</option>
+                    {softwareOptions.map(o => (
+                      <option key={o.id} value={o.id}>
+                        {o.label} — ${Number(o.value).toLocaleString("es-ES")}
+                        {o.startup ? ` + Startup: $${Number(o.startup).toLocaleString("es-ES")}` : ""}
+                      </option>
+                    ))}
+                  </select>
+                  {formData.opcionSeleccionada && (
+                    <div className="flex justify-center gap-4 mt-2 text-xs">
+                      <label className="flex items-center space-x-1">
+                        <input type="radio" checked={!isMonthly} onChange={() => setIsMonthly(false)} />
+                        <span>Anual</span>
+                      </label>
+                      <label className="flex items-center space-x-1">
+                        <input type="radio" checked={isMonthly} onChange={() => setIsMonthly(true)} />
+                        <span>Mensual</span>
+                      </label>
+                    </div>
+                  )}
+                </div>
+
+                {radError && <p className="text-red-600">Error: {radError.message}</p>}
+
+                <div className="mt-1">
                   <div className="flex flex-col gap-4">
                     <style jsx>{`
                       .btn-wave {
@@ -520,22 +482,23 @@ const MercurioPYMES = ({ disabledProvider }) => {
                       }
                     `}</style>
                   </div>
-                  <div className="lg:w-1/2 flex mx-auto items-end mt-4">
+                  <div className="lg:w-1/2 flex mx-auto items-end mt-2">
                     <button
                       type="submit"
-                      className="w-full bg-teal-500 text-white font-bold py-2 rounded-md transition-colors duration-300 hover:bg-teal-600"
-                      disabled={loading}
+                      className="btn-wave w-full bg-teal-500 text-white font-bold py-2 rounded-md transition-colors duration-300 hover:bg-teal-600"
+                      disabled={loadingRad}
                     >
-                      {loading ? "Procesando..." : "Enviar"}
+                      {loadingRad ? "Procesando..." : "Enviar"}
                     </button>
                   </div>
                 </div>
-                {error && <p className="text-red-600">Error: {error.message}</p>}
               </form>
             </div>
           </div>
+
         </div>
       </div>
+
       {/* Mensaje final */}
       <div className="mt-8 bg-gradient-to-r from-teal-500 to-blue-500 p-6 rounded-lg shadow-lg text-white text-center">
         <p className="text-2xl font-bold">

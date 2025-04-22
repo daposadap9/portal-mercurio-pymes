@@ -38,6 +38,16 @@ const SAVE_TRANSACTION = gql`
   }
 `;
 
+const INSERT_MERT_RECIBIDO = gql`
+  mutation InsertMertRecibido($documentInfo: String!, $documentInfoGeneral: String!) {
+    insertMertRecibido(documentInfo: $documentInfo, documentInfoGeneral: $documentInfoGeneral) {
+      success
+      message
+      idDocumento
+    }
+  }
+`;
+
 const GET_SERVICES = gql`
   query GetServices {
     services {
@@ -136,7 +146,7 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
     ? false
     : (dropdownActive.services || dropdownActive.tramites);
 
-  // Estado del formulario (lado derecho)
+  // Formulario (derecha)
   const [formData, setFormData] = useState({
     nombre: "",
     apellido: "",
@@ -144,19 +154,35 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
     email: "",
     telefono: "",
     observaciones: "",
+    opcionSeleccionada: "",
   });
 
-  // Estados para el cotizador de digitalización
-  const [servicesData, setServicesData] = useState([]);
+  // Cotizador (izquierda)
   const [digitalizacionOptions, setDigitalizacionOptions] = useState([]);
-  // Usamos selectedOption para almacenar la opción elegida y calcular el total
-  const [selectedOption, setSelectedOption] = useState(null);
+  const [leftSelectedId, setLeftSelectedId] = useState("");
+  const [leftOption, setLeftOption] = useState(null);
 
-  // Eliminamos la forzatura de subtotal; se calculará a partir de selectedOption
-  const calculatedTotal = selectedOption ? Number(selectedOption.value) : 0;
-  const calculatedDiscount = 0; // Si aplica descuento, ajústalo acá
+  // Radicación
+  const [newRadicado, setNewRadicado] = useState(null);
+  const [insertMertRecibido, { loading: loadingRad, error: radError }] = useMutation(INSERT_MERT_RECIBIDO);
 
-  // Estados para el modo edición (persistidos en localStorage)
+  // Guardar transacción para Pago
+  const [savePayment, { loading: loadingPay, error: payError }] = useMutation(SAVE_TRANSACTION);
+
+  // Cálculo de totales
+  const calculatedTotal = leftOption ? Number(leftOption.value) : 0;
+  const calculatedDiscount = 0;
+
+  // Otros hooks
+  const { data } = useQuery(GET_SERVICES);
+  const [createService] = useMutation(CREATE_SERVICE);
+  const [createServiceOption] = useMutation(CREATE_SERVICE_OPTION);
+  const [updateServiceOption] = useMutation(UPDATE_SERVICE_OPTION);
+  const [deleteServiceOption] = useMutation(DELETE_SERVICE_OPTION);
+  const [updateService] = useMutation(UPDATE_SERVICE);
+  const [debounced] = useDebounce(leftOption, 500);
+
+  // Edit mode persisted
   const [editMode, setEditMode] = useState(() => {
     if (typeof window !== "undefined")
       return JSON.parse(localStorage.getItem("editMode")) || false;
@@ -166,15 +192,16 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
   const [editedTitles, setEditedTitles] = useState({});
 
   useEffect(() => {
-    if (typeof window !== "undefined")
+    if (typeof window !== "undefined") {
       localStorage.setItem("editMode", JSON.stringify(editMode));
+    }
   }, [editMode]);
 
   useEffect(() => {
     if (user) setEditMode(true);
   }, [user]);
 
-  // Generar userId persistente
+  // userId persistente
   const [userId] = useState(() => {
     let uid = Cookies.get("userId");
     if (!uid) {
@@ -184,127 +211,49 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
     return uid;
   });
 
-  const { data } = useQuery(GET_SERVICES);
-  // Extraemos la mutación para guardar la transacción
-  const [saveTransaction, { loading, error }] = useMutation(SAVE_TRANSACTION);
-  const [createService] = useMutation(CREATE_SERVICE);
-  const [createServiceOption] = useMutation(CREATE_SERVICE_OPTION);
-  const [updateServiceOption] = useMutation(UPDATE_SERVICE_OPTION);
-  const [deleteServiceOption] = useMutation(DELETE_SERVICE_OPTION);
-  const [updateService] = useMutation(UPDATE_SERVICE);
-  const [debouncedServices] = useDebounce(selectedOption, 500);
-
-  // Cuando llegan los datos, filtramos el servicio de digitalización y sus opciones
+  // Filtrar opciones de digitalización
   useEffect(() => {
     if (data && data.services) {
-      setServicesData(data.services);
-      const digitalizacionService = data.services.find(s => s.name.toLowerCase().includes("digital"));
-      if (digitalizacionService) {
-        setDigitalizacionOptions(digitalizacionService.options || []);
-      }
+      const svc = data.services.find(s => s.name.toLowerCase().includes("digital"));
+      if (svc) setDigitalizacionOptions(svc.options || []);
     }
   }, [data]);
 
-  // Manejador para cambios en los inputs del formulario
+  // Actualizar contexto
+  useEffect(() => {
+    updateTransaction(leftOption, calculatedTotal, calculatedDiscount);
+  }, [leftOption, calculatedTotal, calculatedDiscount, updateTransaction]);
+
+  // Handlers
+  const handleLeftSelect = (e) => {
+    const id = e.target.value;
+    setLeftSelectedId(id);
+    setFormData(prev => ({ ...prev, opcionSeleccionada: id }));
+    if (id) {
+      const opt = digitalizacionOptions.find(o => o.id === id);
+      setLeftOption(opt || null);
+    } else {
+      setLeftOption(null);
+    }
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  // Manejador para el select del cotizador (lado izquierdo)
-  const handleServiceSelect = (e) => {
-    const optionId = e.target.value;
-    // Puedes guardar en formData si lo requieres, pero lo importante es actualizar selectedOption
-    if (optionId) {
-      const op = digitalizacionOptions.find(opt => opt.id === optionId);
-      setSelectedOption(op);
-    } else {
-      setSelectedOption(null);
-    }
-  };
-
-  // Función para editar el cotizador (solo si hay usuario)
-  const handleEditOptionSummary = () => {
-    if (!user) {
-      alert("Debes estar logueado para editar el cotizador.");
-      return;
-    }
-    const newLabel = prompt("Nuevo label para la opción seleccionada:", selectedOption ? selectedOption.label : "");
-    if (newLabel !== null && newLabel.trim() !== "") {
-      setSelectedOption({ ...selectedOption, label: newLabel });
-    }
-  };
-
-  // Actualizamos la transacción en el contexto (opcional según flujo de la app)
-  useEffect(() => {
-    updateTransaction(selectedOption, calculatedTotal, calculatedDiscount);
-  }, [selectedOption, calculatedTotal, calculatedDiscount, updateTransaction]);
-
-  // Función para enviar el formulario (lado derecho)
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (
-      !formData.nombre ||
-      !formData.apellido ||
-      !formData.entidad ||
-      !formData.email ||
-      !formData.telefono ||
-      !selectedOption
-    ) {
-      alert("Por favor, complete todos los campos obligatorios y seleccione un plan.");
-      return;
-    }
-    try {
-      const selectedLabel = selectedOption ? selectedOption.label : "";
-      const selectedValue = selectedOption ? selectedOption.value : "";
-      const documentInfo = `${formData.nombre} - ${formData.apellido} - ${formData.entidad} - ${formData.email} - ${formData.telefono} - ${formData.observaciones} - ${selectedLabel} - ${selectedValue}`;
-      const documentInfoGeneral = "Mercurio Digitalización";
-      const response = await saveTransaction({
-        variables: {
-          userId,
-          input: {
-            digitalizacion: selectedOption,
-            software: null,
-            custodia: null,
-            total: calculatedTotal,
-            discount: calculatedDiscount,
-            state: "transaccion en formulario de pago",
-          },
-        },
-      });
-      const result = response.data.saveTransaction;
-      if (result) {
-        router.push({
-          pathname: "/radicadoExitoso",
-          query: {
-            nombre: formData.nombre,
-            observaciones: formData.observaciones,
-            documentInfo,
-            documentInfoGeneral,
-            radicado: result.id,
-          },
-        });
-      } else {
-        alert("Error al guardar la transacción.");
-      }
-    } catch (err) {
-      console.error("Error al enviar la transacción:", err);
-      alert("Error al procesar la transacción.");
-    }
-  };
-
-  // Función para el botón "Cotizar" (lado izquierdo) que redirige a PaymentFormPSE
+  // Pago (izquierda)
   const handlePayment = async () => {
-    if (!selectedOption) {
-      alert("Por favor, seleccione al menos una opción para cotizar.");
+    if (!leftOption) {
+      alert("Por favor, seleccione un plan para cotizar.");
       return;
     }
     try {
-      const response = await saveTransaction({
+      const { data } = await savePayment({
         variables: {
           userId,
           input: {
-            digitalizacion: selectedOption,
+            digitalizacion: leftOption,
             software: null,
             custodia: null,
             total: calculatedTotal,
@@ -313,8 +262,7 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
           },
         },
       });
-      const result = response.data.saveTransaction;
-      if (result) {
+      if (data.saveTransaction) {
         router.push({
           pathname: "/PaymentFormPSE",
           query: { previousPage: "/paginas/cotizaTuServicio" },
@@ -324,27 +272,70 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
       }
     } catch (err) {
       console.error("Error en handlePayment:", err);
-      alert("Error al procesar la transacción.");
+      alert("Error de conexión. Por favor intente de nuevo.");
+    }
+  };
+
+  // Radicar demo (derecha)
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (
+      !formData.nombre ||
+      !formData.apellido ||
+      !formData.entidad ||
+      !formData.email ||
+      !formData.telefono ||
+      !formData.opcionSeleccionada
+    ) {
+      alert("Por favor, complete todos los campos obligatorios y seleccione un plan.");
+      return;
+    }
+    const chosen = digitalizacionOptions.find(o => o.id === formData.opcionSeleccionada);
+    const documentInfo = `${formData.nombre} - ${formData.apellido} - ${formData.entidad} - ${formData.email} - ${formData.telefono} - ${formData.observaciones} - ${chosen?.label || ""} - ${chosen?.value || 0}`;
+    const documentInfoGeneral = "Mercurio Digitalización";
+    try {
+      const { data } = await insertMertRecibido({
+        variables: { documentInfo, documentInfoGeneral }
+      });
+      const result = data.insertMertRecibido;
+      if (result.success) {
+        setNewRadicado(result.idDocumento);
+        router.push({
+          pathname: "/radicadoExitoso",
+          query: {
+            nombre: formData.nombre,
+            observaciones: formData.observaciones,
+            documentInfo,
+            documentInfoGeneral,
+            radicado: result.idDocumento
+          }
+        });
+      } else {
+        alert("Error: " + result.message);
+      }
+    } catch (err) {
+      console.error("Error al radicar:", err);
+      alert("Error al radicar");
     }
   };
 
   return (
     <div className="min-h-full flex flex-col items-center px-2 md:px-0">
-      {/* Título Principal */}
+      {/* Título */}
       <div className={`flex justify-center text-2xl md:text-4xl font-bold transition-all duration-500 ease-in-out text-teal-600 text-center titulo-shadow mb-10 ${isAnyDropdownActive ? "mt-24" : ""}`}>
         <div className="w-full lg:w-[85%] text-xl">
           <h1>
-            Olvídate de los documentos físicos, digitalízalos con nosotros. La Gestión Documental Avanza y tu compañía también.
+            Olvídate de los documentos físicos, digitalízalos con nosotros. La Gestión Documental avanza y tu compañía también.
           </h1>
         </div>
       </div>
 
       <div className="flex flex-col justify-between p-4">
         <div className="w-full mx-auto flex flex-col lg:flex-row justify-evenly gap-4 flex-1">
-          {/* Columna Izquierda: Tarjeta Cotizador de Digitalización */}
+
+          {/* Izquierda: Cotizador */}
           <div className="w-full lg:w-[40%]">
-            {/* Bloque de Información */}
-            <div className="lg:text-left bg-white bg-opacity-0 backdrop-blur-xl p-6 rounded-xl border border-white/30">
+          <div className="lg:text-left bg-white bg-opacity-0 backdrop-blur-xl p-6 rounded-xl border border-white/30">
               <p className="mb-4 text-xl font-bold text-black text-justify">
                 Digitalización de Documentos: Seguridad, Orden y Accesibilidad
               </p>
@@ -365,35 +356,30 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
               </p>
             </div>
 
-            {/* Tarjeta de Cotizador */}
             <div className="mt-6 p-4 bg-white rounded-xl shadow-lg border">
               <h2 className="text-xl font-bold text-center text-teal-600 mb-2">Cotizador de Digitalización</h2>
               <label className="block text-sm font-semibold mb-1">Selecciona tu plan:</label>
               <select
                 className="w-full border rounded px-3 py-2 mb-3 text-teal-950"
-                value={selectedOption ? selectedOption.id : ""}
-                onChange={handleServiceSelect}
+                value={leftSelectedId}
+                onChange={handleLeftSelect}
               >
                 <option value="">-- Escoge un plan --</option>
-                {digitalizacionOptions.map((option) => (
-                  <option key={option.id} value={option.id}>
-                    {option.label} - ${Number(option.value).toLocaleString("es-ES")}
+                {digitalizacionOptions.map(opt => (
+                  <option key={opt.id} value={opt.id}>
+                    {opt.label} — ${Number(opt.value).toLocaleString("es-ES")}
                   </option>
                 ))}
               </select>
-              {selectedOption ? (
+              {leftOption ? (
                 <>
-                  <p className="mb-2 text-center">
-                    <strong>Opción:</strong> {selectedOption.label}
-                  </p>
-                  <p className="mb-2 text-center">
-                    <strong>Precio:</strong> ${Number(selectedOption.value).toLocaleString("es-ES")}
-                  </p>
+                  <p className="mb-2 text-center"><strong>Opción:</strong> {leftOption.label}</p>
+                  <p className="mb-2 text-center"><strong>Precio:</strong> ${Number(leftOption.value).toLocaleString("es-ES")}</p>
                 </>
               ) : (
                 <p className="mb-2 text-center">No se ha seleccionado un plan</p>
               )}
-              <div className="mt-4 flex justify-center">
+                            <div className="mt-4 gap-2 flex justify-center">
                 <button
                   type="button"
                   onClick={handlePayment}
@@ -401,59 +387,66 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
                 >
                   Cotizar
                 </button>
+                <button
+                  type="button"
+                  onClick={() => router.push("/paginas/contactanos")}
+                  className="bg-teal-500 text-white px-6 py-2 rounded-full hover:bg-teal-600 transition-colors"
+                >
+                  Ampliar Información
+                </button>
               </div>
             </div>
           </div>
 
-          {/* Columna Derecha: Formulario de Compra */}
+          {/* Derecha: Formulario de Compra */}
           <div className="w-full lg:w-[40%]">
             <div className="bg-gray-50 p-6 rounded-lg shadow-lg h-full flex flex-col">
               <h2 className="text-xl font-bold text-teal-600 text-center mb-6">¡Adquiérelo ahora!</h2>
               <form onSubmit={handleSubmit} className="flex flex-col gap-4 flex-1">
                 <div className="flex flex-col space-y-4">
-                  <div className="flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0">
-                    <input 
-                      type="text" 
+                <div className="flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0">
+                    <input
+                      type="text"
                       name="nombre"
-                      placeholder="Nombre:" 
+                      placeholder="Nombre:"
                       className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900 w-full"
                       value={formData.nombre}
                       onChange={handleChange}
                       required
                     />
-                    <input 
-                      type="text" 
+                    <input
+                      type="text"
                       name="apellido"
-                      placeholder="Apellido:" 
+                      placeholder="Apellido:"
                       className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900 w-full"
                       value={formData.apellido}
                       onChange={handleChange}
                       required
                     />
                   </div>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     name="entidad"
-                    placeholder="Entidad y/o empresa:" 
+                    placeholder="Entidad y/o empresa:"
                     className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900 w-full"
                     value={formData.entidad}
                     onChange={handleChange}
                     required
                   />
                   <div className="flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0">
-                    <input 
-                      type="email" 
+                    <input
+                      type="email"
                       name="email"
-                      placeholder="E-mail:" 
+                      placeholder="E-mail:"
                       className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900 w-full"
                       value={formData.email}
                       onChange={handleChange}
                       required
                     />
-                    <input 
-                      type="tel" 
+                    <input
+                      type="tel"
                       name="telefono"
-                      placeholder="Teléfono celular:" 
+                      placeholder="Teléfono celular:"
                       className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900 w-full"
                       value={formData.telefono}
                       onChange={handleChange}
@@ -462,9 +455,9 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
                   </div>
                 </div>
 
-                <div className="flex flex-col mt-4 space-y-2">
+                <div className="flex flex-col mt-2 space-y-2">
                   <label className="text-sm text-gray-700 font-semibold">Observaciones:</label>
-                  <textarea 
+                  <textarea
                     name="observaciones"
                     placeholder="Ingresa tus observaciones aquí..."
                     className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
@@ -474,7 +467,29 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
                   />
                 </div>
 
-                <div className="mt-6">
+                {/* Select dentro del formulario */}
+                <div className="flex flex-col mt-2">
+                  <label className="text-sm text-gray-700 font-semibold mb-1">Plan de Digitalización:</label>
+                  <select
+                    name="opcionSeleccionada"
+                    value={formData.opcionSeleccionada}
+                    onChange={handleChange}
+                    required
+                    className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
+                  >
+                    <option value="">-- Escoge un plan --</option>
+                    {digitalizacionOptions.map(opt => (
+                      <option key={opt.id} value={opt.id}>
+                        {opt.label} — ${Number(opt.value).toLocaleString("es-ES")}
+                        {opt.startup > 0 ? ` + Startup: $${Number(opt.startup).toLocaleString("es-ES")}` : ""}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {radError && <p className="text-red-600">Error: {radError.message}</p>}
+
+                <div className="mt-1">
                   <div className="flex flex-col gap-4">
                     <style jsx>{`
                       .btn-wave {
@@ -497,20 +512,20 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
                       }
                     `}</style>
                   </div>
-                  <div className="lg:w-1/2 flex mx-auto items-end mt-4">
-                    <button 
-                      type="submit" 
-                      className="w-full bg-teal-500 text-white font-bold py-2 rounded-md transition-colors duration-300 hover:bg-teal-600"
-                      disabled={loading}
+                  <div className="lg:w-1/2 flex mx-auto items-end mt-2">
+                    <button
+                      type="submit"
+                      className="btn-wave w-full bg-teal-500 text-white font-bold py-2 rounded-md transition-colors duration-300 hover:bg-teal-600"
+                      disabled={loadingRad}
                     >
-                      {loading ? "Procesando..." : "Enviar"}
+                      {loadingRad ? "Procesando..." : "Enviar"}
                     </button>
                   </div>
                 </div>
-                {error && <p className="text-red-600">Error: {error.message}</p>}
               </form>
             </div>
           </div>
+
         </div>
       </div>
     </div>

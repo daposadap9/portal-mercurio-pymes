@@ -11,7 +11,7 @@ const images = [
   '/cliente4.png',
   '/cliente1.png',
   '/cliente11.png',
-  '/cliente12.png',
+  /*'/cliente12.png', finagro, inder medellin, indeportes antioquia, contraloria general, */
   '/cliente13.png',
   '/cliente14.png',
   '/cliente15.png',

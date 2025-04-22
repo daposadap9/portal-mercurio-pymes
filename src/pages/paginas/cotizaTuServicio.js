@@ -2,11 +2,9 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useRouter } from 'next/router';
 import { gql, useQuery, useMutation } from '@apollo/client';
 import {
-  FaChevronLeft,
-  FaChevronRight,
+  FaTrash,
   FaEdit,
   FaSave,
-  FaTrash,
   FaMoneyBillWave,
   FaRocket,
   FaLaptopCode,
@@ -46,6 +44,7 @@ const GET_SERVICES = gql`
       id
       name
       icon
+      linkUrl
       options {
         id
         label
@@ -64,6 +63,7 @@ const CREATE_SERVICE = gql`
       id
       name
       icon
+      linkUrl
       options {
         id
         label
@@ -105,11 +105,27 @@ const DELETE_SERVICE_OPTION = gql`
   }
 `;
 
+const DELETE_SERVICE = gql`
+  mutation DeleteService($id: ID!) {
+    deleteService(id: $id) {
+      id
+    }
+  }
+`;
+
 const UPDATE_SERVICE = gql`
-  mutation UpdateService($id: ID!, $name: String!) {
-    updateService(id: $id, name: $name) {
+  mutation UpdateService($id: ID!, $name: String, $linkUrl: String) {
+    updateService(id: $id, name: $name, linkUrl: $linkUrl) {
       id
       name
+      icon
+      linkUrl
+      options {
+        id
+        label
+        value
+        startup
+      }
     }
   }
 `;
@@ -126,24 +142,22 @@ const getIconForService = (serviceName) => {
 };
 
 // ----------------------------
-// Componente CotizaTuServicio (se muestran los controles de edición solo si hay usuario)
+// Componente CotizaTuServicio
 // ----------------------------
 const CotizaTuServicio = ({ disabledProvider }) => {
   const router = useRouter();
   const { theme } = useContext(ThemeContext);
-  const { selectedServices, total: globalTotal, discount: globalDiscount, updateTransaction } = useContext(TransactionContext);
+  const { total: globalTotal, discount: globalDiscount, updateTransaction } = useContext(TransactionContext);
   const { user } = useContext(UserContext);
   const { dropdownActive } = useDropdown();
-  const isAnyDropdownActive = disabledProvider ? false : (dropdownActive.services || dropdownActive.tramites);
+  const isAnyDropdownActive = disabledProvider
+    ? false
+    : (dropdownActive.services || dropdownActive.tramites);
 
-  useEffect(() => {
-    console.log("User:", user);
-  }, [user]);
-
+  // Estados
   const [servicesData, setServicesData] = useState([]);
   const [localServices, setLocalServices] = useState({});
   const [editableOptions, setEditableOptions] = useState({});
-  // Modo edición persistido mediante localStorage
   const [editMode, setEditMode] = useState(() => {
     if (typeof window !== "undefined") {
       return JSON.parse(localStorage.getItem("editMode")) || false;
@@ -152,21 +166,20 @@ const CotizaTuServicio = ({ disabledProvider }) => {
   });
   const [editingTitles, setEditingTitles] = useState({});
   const [editedTitles, setEditedTitles] = useState({});
+  const [editedLinkUrls, setEditedLinkUrls] = useState({});
+  const [activeService, setActiveService] = useState(null);
 
+  // Persistir editMode
   useEffect(() => {
     if (typeof window !== "undefined") {
       localStorage.setItem("editMode", JSON.stringify(editMode));
     }
   }, [editMode]);
 
-  // Cuando el usuario existe se activa el modo edición
+  // Activar modo edición si hay usuario
   useEffect(() => {
-    if (user) {
-      setEditMode(true);
-    }
+    if (user) setEditMode(true);
   }, [user]);
-
-  const [activeService, setActiveService] = useState(null);
 
   // Generar userId persistente
   const [userId] = useState(() => {
@@ -178,250 +191,210 @@ const CotizaTuServicio = ({ disabledProvider }) => {
     return uid;
   });
 
+  // GraphQL hooks
   const { data, refetch } = useQuery(GET_SERVICES);
   const [saveTransaction] = useMutation(SAVE_TRANSACTION);
   const [createService] = useMutation(CREATE_SERVICE);
   const [createServiceOption] = useMutation(CREATE_SERVICE_OPTION);
   const [updateServiceOption] = useMutation(UPDATE_SERVICE_OPTION);
   const [deleteServiceOption] = useMutation(DELETE_SERVICE_OPTION);
+  const [deleteService] = useMutation(DELETE_SERVICE);
   const [updateService] = useMutation(UPDATE_SERVICE);
 
   const [debouncedServices] = useDebounce(localServices, 500);
 
+  // Cargar datos de servicios
   useEffect(() => {
     if (data && data.services) {
       setServicesData(data.services);
-      const optionsMap = {};
-      data.services.forEach((service) => {
-        optionsMap[service.id] = service.options;
+      const map = {};
+      data.services.forEach(s => {
+        map[s.id] = s.options;
       });
-      setEditableOptions(optionsMap);
+      setEditableOptions(map);
       if (!activeService && data.services.length) {
         setActiveService(data.services[0].id);
       }
     }
   }, [data, activeService]);
 
-  // Función para agregar un servicio (requiere usuario)
+  // Agregar servicio
   const handleAddService = () => {
-    if (!user) {
-      alert("Debes estar logueado para agregar un servicio.");
-      return;
-    }
+    if (!user) return alert("Debes estar logueado para agregar un servicio.");
     const name = prompt("Ingrese el nombre del nuevo servicio:");
-    if (!name || name.trim() === "") {
-      alert("El nombre del servicio es obligatorio.");
-      return;
-    }
+    if (!name?.trim()) return alert("El nombre es obligatorio.");
     createService({ variables: { name, icon: "" } })
-      .then((res) => {
-        const newService = res.data.createService;
-        setServicesData((prev) => [...prev, newService]);
-        setEditableOptions((prev) => ({ ...prev, [newService.id]: newService.options || [] }));
-        if (!activeService) setActiveService(newService.id);
+      .then(res => {
+        const s = res.data.createService;
+        setServicesData(prev => [...prev, s]);
+        setEditableOptions(prev => ({ ...prev, [s.id]: s.options || [] }));
+        if (!activeService) setActiveService(s.id);
       })
-      .catch((err) => console.error("Error al agregar servicio:", err));
+      .catch(console.error);
   };
 
-  // Función para agregar una opción a un servicio (requiere usuario)
+  // Eliminar servicio
+  const handleDeleteService = (id) => {
+    if (!user) return;
+    if (confirm("¿Eliminar servicio?")) {
+      deleteService({ variables: { id } })
+        .then(() => refetch())
+        .catch(console.error);
+    }
+  };
+
+  // Agregar opción
   const handleAddOption = (service) => {
-    if (!user) {
-      alert("Debes estar logueado para agregar una opción.");
-      return;
-    }
+    if (!user) return alert("Debes estar logueado para agregar una opción.");
     const label = prompt("Ingrese el label de la nueva opción:");
-    if (!label || label.trim() === "") {
-      alert("El label es obligatorio.");
-      return;
-    }
+    if (!label?.trim()) return alert("El label es obligatorio.");
     const valueInput = prompt("Ingrese el valor de la nueva opción:");
     const value = parseFloat(valueInput);
-    if (isNaN(value)) {
-      alert("El valor debe ser numérico.");
-      return;
-    }
+    if (isNaN(value)) return alert("El valor debe ser numérico.");
     let startup = 0;
     if (service.name.toLowerCase().includes("software")) {
-      const startupInput = prompt("Ingrese el valor de startup (opcional):", "0");
-      startup = parseFloat(startupInput);
-      if (isNaN(startup)) startup = 0;
+      const sInput = prompt("Ingrese el valor de startup (opcional):", "0");
+      const su = parseFloat(sInput);
+      if (!isNaN(su)) startup = su;
     }
     createServiceOption({
-      variables: { serviceId: service.id, label, value, startup },
+      variables: { serviceId: service.id, label, value, startup }
     })
-      .then((res) => {
-        const newOption = res.data.createServiceOption;
-        setEditableOptions((prev) => ({
+      .then(res => {
+        const o = res.data.createServiceOption;
+        setEditableOptions(prev => ({
           ...prev,
-          [service.id]: [...(prev[service.id] || []), newOption],
+          [service.id]: [...(prev[service.id] || []), o]
         }));
       })
-      .catch((err) => console.error("Error al agregar opción:", err));
+      .catch(console.error);
   };
 
-  // Cambio de opción en el <select>
+  // Eliminar opción
+  const handleDeleteOption = (id) => {
+    if (!user) return;
+    if (confirm("¿Eliminar opción?")) {
+      deleteServiceOption({ variables: { id } })
+        .then(() => refetch())
+        .catch(console.error);
+    }
+  };
+
+  // Selección de opción
   const handleServiceSelect = (serviceId, optionId) => {
-    if (optionId === "") {
-      setLocalServices((prev) => {
-        const updated = { ...prev };
-        delete updated[serviceId];
-        return updated;
-      });
+    if (!optionId) {
+      setLocalServices(prev => { const u = { ...prev }; delete u[serviceId]; return u; });
       return;
     }
-    const optionSelected = editableOptions[serviceId].find((opt) => opt.id === optionId);
-    if (!optionSelected) return;
-    setLocalServices((prev) => ({
-      ...prev,
-      [serviceId]: optionSelected,
-    }));
+    const opt = editableOptions[serviceId]?.find(o => o.id === optionId);
+    if (opt) setLocalServices(prev => ({ ...prev, [serviceId]: opt }));
   };
 
-  // Edición del título del servicio (requiere usuario)
-  const handleServiceTitleChange = (serviceId, newName) => {
+  // Cambio de título/linkUrl
+  const handleServiceTitleChange = (id, name) => {
     if (!user) return;
-    setEditedTitles((prev) => ({ ...prev, [serviceId]: newName }));
+    setEditedTitles(prev => ({ ...prev, [id]: name }));
+  };
+  const handleServiceLinkChange = (id, link) => {
+    if (!user) return;
+    setEditedLinkUrls(prev => ({ ...prev, [id]: link }));
   };
 
-  const handleServiceTitleSave = (serviceId) => {
+  // Guardar nombre y linkUrl (solo campos modificados)
+  const handleServiceSave = (id) => {
     if (!user) return;
-    const newName = editedTitles[serviceId] || "";
-    updateService({ variables: { id: serviceId, name: newName } })
+    const vars = { id };
+    if (editedTitles[id] !== undefined)   vars.name    = editedTitles[id];
+    if (editedLinkUrls[id] !== undefined) vars.linkUrl = editedLinkUrls[id];
+
+    updateService({ variables: vars })
       .then(() => {
-        setServicesData((prev) =>
-          prev.map((s) => (s.id === serviceId ? { ...s, name: newName } : s))
+        setServicesData(prev =>
+          prev.map(s => {
+            if (s.id !== id) return s;
+            return {
+              ...s,
+              ...(vars.name    !== undefined ? { name: vars.name }     : {}),
+              ...(vars.linkUrl !== undefined ? { linkUrl: vars.linkUrl } : {}),
+            };
+          })
         );
-        setEditingTitles((prev) => ({ ...prev, [serviceId]: false }));
-        setEditedTitles((prev) => {
-          const updated = { ...prev };
-          delete updated[serviceId];
-          return updated;
-        });
+        setEditingTitles(prev => ({ ...prev, [id]: false }));
+        setEditedTitles(prev => { const u = { ...prev }; delete u[id]; return u; });
+        setEditedLinkUrls(prev => { const u = { ...prev }; delete u[id]; return u; });
       })
-      .catch((err) => console.error("Error al actualizar el servicio:", err));
+      .catch(console.error);
   };
 
-  // Función para editar una opción (requiere usuario)
-  const handleEditOption = (service, option) => {
-    if (!user) {
-      alert("Debes estar logueado para editar opciones.");
-      return;
-    }
-    const newLabel = prompt("Nuevo Label:", option.label);
-    if (newLabel === null || newLabel.trim() === "") {
-      alert("El nuevo label es obligatorio.");
-      return;
-    }
-    const valueInput = prompt("Nuevo Valor:", option.value);
-    const newValue = parseFloat(valueInput);
-    if (isNaN(newValue)) {
-      alert("El nuevo valor debe ser numérico.");
-      return;
-    }
-    let newStartup = option.startup;
+  // Editar opción
+  const handleEditOption = (service, opt) => {
+    if (!user) return alert("Debes estar logueado para editar opciones.");
+    const newLabel = prompt("Nuevo Label:", opt.label);
+    if (!newLabel?.trim()) return alert("El label es obligatorio.");
+    const vInput = prompt("Nuevo Valor:", opt.value);
+    const newValue = parseFloat(vInput);
+    if (isNaN(newValue)) return alert("El valor debe ser numérico.");
+    let newStartup = opt.startup;
     if (service.name.toLowerCase().includes("software")) {
-      const startupInput = prompt("Nuevo Startup:", option.startup || 0);
-      newStartup = parseFloat(startupInput);
-      if (isNaN(newStartup)) newStartup = 0;
+      const sInput = prompt("Nuevo Startup:", opt.startup || 0);
+      const su = parseFloat(sInput);
+      if (!isNaN(su)) newStartup = su;
     }
     updateServiceOption({
-      variables: { id: option.id, label: newLabel, value: newValue, startup: newStartup },
+      variables: { id: opt.id, label: newLabel, value: newValue, startup: newStartup }
     })
       .then(() => refetch())
-      .catch((err) => console.error("Error updating option:", err));
+      .catch(console.error);
   };
 
   // Cálculo de totales y guardado de transacción
   useEffect(() => {
-    let softwareTotal = 0, custodiaTotal = 0, digitalizacionTotal = 0;
-    servicesData.forEach((service) => {
-      const serviceName = service.name.toLowerCase();
-      const selectedOption = localServices[service.id];
-      if (selectedOption) {
-        if (serviceName.includes("software")) {
-          softwareTotal = Number(selectedOption.value) + Number(selectedOption.startup || 0);
-        } else if (serviceName.includes("custodia")) {
-          custodiaTotal = Number(selectedOption.value);
-        } else if (serviceName.includes("digital")) {
-          digitalizacionTotal = Number(selectedOption.value);
-        }
-      }
+    let sw = 0, cu = 0, di = 0;
+    servicesData.forEach(s => {
+      const sel = localServices[s.id];
+      if (!sel) return;
+      const nm = s.name.toLowerCase();
+      if (nm.includes("software")) sw = sel.value + (sel.startup || 0);
+      else if (nm.includes("custodia")) cu = sel.value;
+      else if (nm.includes("digital")) di = sel.value;
     });
-    let count = Object.values(localServices).filter((opt) => opt).length;
-    let calculatedDiscount = 0;
-    let calculatedTotal = 0;
-    if (count === 1) {
-      calculatedTotal = softwareTotal || custodiaTotal || digitalizacionTotal;
-    } else {
-      const subtotal = softwareTotal + custodiaTotal + digitalizacionTotal;
-      if (count === 3) {
-        calculatedDiscount = 0.1;
-      } else if (count === 2) {
-        calculatedDiscount = 0.07;
-      }
-      calculatedTotal = subtotal - subtotal * calculatedDiscount;
+    const cnt = Object.values(localServices).filter(Boolean).length;
+    let disc = 0, tot = 0;
+    if (cnt === 1) tot = sw || cu || di;
+    else {
+      const sub = sw + cu + di;
+      if (cnt >= 3) disc = 0.1;
+      else if (cnt === 2) disc = 0.07;
+      tot = sub - sub * disc;
     }
-    updateTransaction(localServices, calculatedTotal, calculatedDiscount);
+    updateTransaction(localServices, tot, disc);
     if (userId) {
       saveTransaction({
         variables: {
-          userId,
-          input: {
-            software: servicesData.find((s) =>
-              s.name.toLowerCase().includes("software")
-            )
-              ? localServices[
-                  servicesData.find((s) =>
-                    s.name.toLowerCase().includes("software")
-                  ).id
-                ]
-              : null,
-            custodia: servicesData.find((s) =>
-              s.name.toLowerCase().includes("custodia")
-            )
-              ? localServices[
-                  servicesData.find((s) =>
-                    s.name.toLowerCase().includes("custodia")
-                  ).id
-                ]
-              : null,
-            digitalizacion: servicesData.find((s) =>
-              s.name.toLowerCase().includes("digital")
-            )
-              ? localServices[
-                  servicesData.find((s) =>
-                    s.name.toLowerCase().includes("digital")
-                  ).id
-                ]
-              : null,
-            total: calculatedTotal,
-            discount: calculatedDiscount,
-            state: "transaccion en formulario de pago",
-          },
-        },
-      }).catch((err) => console.error("Error al guardar la transacción:", err));
+          userId, input: {
+            software:   servicesData.find(s=>s.name.toLowerCase().includes("software"))   ? localServices[servicesData.find(s=>s.name.toLowerCase().includes("software")).id]   : null,
+            custodia:  servicesData.find(s=>s.name.toLowerCase().includes("custodia"))  ? localServices[servicesData.find(s=>s.name.toLowerCase().includes("custodia")).id]  : null,
+            digitalizacion: servicesData.find(s=>s.name.toLowerCase().includes("digital")) ? localServices[servicesData.find(s=>s.name.toLowerCase().includes("digital")).id] : null,
+            total: tot, discount: disc, state: "transaccion en formulario de pago"
+          }
+        }
+      }).catch(console.error);
     }
-  }, [debouncedServices, userId, saveTransaction, updateTransaction, servicesData, localServices]);
+  }, [debouncedServices, userId, servicesData, localServices]);
 
-  const subtotal = servicesData.reduce((acc, service) => {
-    const selected = localServices[service.id];
-    if (selected) {
-      if (service.name.toLowerCase().includes("software")) {
-        return acc + Number(selected.value) + Number(selected.startup || 0);
-      }
-      return acc + Number(selected.value);
-    }
-    return acc;
+  const subtotal = servicesData.reduce((acc,s) => {
+    const sel = localServices[s.id];
+    if (!sel) return acc;
+    return acc + sel.value + (s.name.toLowerCase().includes("software") ? (sel.startup||0) : 0);
   }, 0);
 
   const handlePayment = () => {
-    if (globalTotal === 0 || !Object.values(localServices).some((opt) => opt)) {
-      alert("Por favor, seleccione al menos un servicio para pagar.");
-      return;
+    if (globalTotal === 0 || !Object.values(localServices).some(Boolean)) {
+      return alert("Por favor, seleccione al menos un servicio para pagar.");
     }
     router.push({
       pathname: "/PaymentFormPSE",
-      query: { previousPage: "/paginas/cotizaTuServicio" },
+      query: { previousPage: "/paginas/cotizaTuServicio" }
     });
   };
 
@@ -429,33 +402,39 @@ const CotizaTuServicio = ({ disabledProvider }) => {
     <div className="min-h-full flex flex-col items-center px-2 md:px-0">
       {/* Contenedor principal */}
       <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl p-6 md:p-8">
-        {/* Tabs de servicios centradas */}
-        <div className="flex justify-center border-b mb-2">
-          {servicesData.map((service) => (
-            <button
-              key={service.id}
-              onClick={() => setActiveService(service.id)}
-              className={`px-4 py-2 text-center focus:outline-none ${
-                activeService === service.id
-                  ? "border-b-2 border-teal-500 text-teal-500 font-bold"
-                  : "text-gray-700"
-              }`}
-            >
-              {getIconForService(service.name)}
-              {service.name}
-            </button>
+        {/* Tabs con eliminación */}
+        <div className="flex flex-wrap justify-center border-b mb-2">
+          {servicesData.map(svc => (
+            <div key={svc.id} className="relative m-1 inline-block">
+              <button
+                onClick={() => setActiveService(svc.id)}
+                className={`px-4 py-2 focus:outline-none ${
+                  activeService === svc.id
+                    ? "border-b-2 border-teal-500 text-teal-500 font-bold"
+                    : "text-gray-700"
+                }`}
+              >
+                {getIconForService(svc.name)}{svc.name}
+              </button>
+              {user && (
+                <FaTrash
+                  onClick={() => handleDeleteService(svc.id)}
+                  className="absolute -top-2 -right-2 text-red-500 cursor-pointer"
+                />
+              )}
+            </div>
           ))}
           {user && (
             <button
               onClick={handleAddService}
-              className="px-4 py-2 text-center text-blue-500 hover:text-blue-600"
+              className="px-4 py-2 text-blue-500 hover:text-blue-600"
             >
               + Agregar
             </button>
           )}
         </div>
 
-        {/* Descripción de descuentos */}
+        {/* Descuentos */}
         <div className="text-center text-teal-500 mb-4">
           <p><strong>Descuentos:</strong></p>
           <p>Con 1 servicio: sin descuento.</p>
@@ -463,130 +442,141 @@ const CotizaTuServicio = ({ disabledProvider }) => {
           <p>Con 3 o más servicios: 10% de descuento.</p>
         </div>
 
-        {/* Contenido del servicio activo */}
-        {servicesData.length > 0 &&
-          activeService &&
-          (() => {
-            const service = servicesData.find((s) => s.id === activeService);
-            if (!service) return null;
-            return (
-              <div className="p-4 border rounded-xl shadow-sm mb-6">
-                {/* Título editable o normal (solo si hay usuario) */}
-                <div className="flex items-center justify-center mb-2">
-                  <h3 className="text-lg font-bold">{service.name}</h3>
-                  {user && (
-                    <button
-                      onClick={() =>
-                        setEditingTitles((prev) => ({ ...prev, [service.id]: true }))
-                      }
-                      className="ml-2"
-                    >
-                      <FaEdit className="text-yellow-500 text-xl" />
-                    </button>
-                  )}
-                </div>
-                {editingTitles[service.id] && user && (
-                  <div className="flex items-center justify-center mb-2">
-                    <input
-                      type="text"
-                      className="text-lg font-bold p-1 border rounded text-center"
-                      value={
-                        editedTitles[service.id] !== undefined
-                          ? editedTitles[service.id]
-                          : service.name
-                      }
-                      onChange={(e) => handleServiceTitleChange(service.id, e.target.value)}
-                    />
-                    <button
-                      className="ml-2"
-                      onClick={() => handleServiceTitleSave(service.id)}
-                    >
-                      <FaSave className="text-green-600 text-xl" />
-                    </button>
-                  </div>
-                )}
-
-                {/* Select de opciones */}
-                <select
-                  className="w-full border rounded px-3 py-2 mb-2 text-teal-900"
-                  value={localServices[service.id]?.id || ""}
-                  onChange={(e) => handleServiceSelect(service.id, e.target.value)}
-                >
-                  <option value="">-- Selecciona una opción --</option>
-                  {editableOptions[service.id]?.map((option) => (
-                    <option key={option.id} value={option.id}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-
-                {/* Mostrar detalles de la opción seleccionada */}
-                {localServices[service.id] && !editMode && (
-                  <div className="mt-4 bg-gray-50 p-3 rounded">
-                    <div className="flex items-center mb-2">
-                      <FaMoneyBillWave className="text-green-500 mr-2 text-xl" />
-                      <span className="font-bold">Precio:</span>
-                      <span className="ml-2 text-xl font-extrabold">
-                        ${Number(localServices[service.id].value).toLocaleString("es-ES")}
-                      </span>
-                    </div>
-                    {service.name.toLowerCase().includes("software") &&
-                      localServices[service.id].startup && (
-                        <div className="flex items-center">
-                          <FaRocket className="text-teal-500 mr-2 text-xl" />
-                          <span className="font-bold">Startup:</span>
-                          <span className="ml-2 text-xl font-extrabold">
-                            ${Number(localServices[service.id].startup).toLocaleString("es-ES")}
-                          </span>
-                        </div>
-                      )}
-                  </div>
-                )}
-
-                {/* Listado de todas las opciones con botones "Editar" y "Eliminar" (solo si hay usuario) */}
+        {/* Servicio activo */}
+        {servicesData.length > 0 && activeService && (() => {
+          const svc = servicesData.find(s => s.id === activeService);
+          if (!svc) return null;
+          return (
+            <div className="p-4 border rounded-xl shadow-sm mb-6">
+              {/* Título editable */}
+              <div className="flex items-center justify-center mb-2">
+                <h3 className="text-lg font-bold">{svc.name}</h3>
                 {user && (
-                  <div className="mt-2 border-t pt-2">
-                    {editableOptions[service.id]?.map((option) => (
-                      <div key={option.id} className="flex items-center justify-between mb-1">
-                        <span className="text-sm">
-                          {option.label} - ${Number(option.value).toLocaleString("es-ES")}
-                          {service.name.toLowerCase().includes("software") && option.startup ? ` (Startup: ${option.startup})` : ""}
-                        </span>
-                        <div className="flex space-x-2">
-                          <button
-                            onClick={() => handleEditOption(service, option)}
-                            className="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600 text-xs"
-                          >
-                            Editar
-                          </button>
-                          <button
-                            onClick={() => {
-                              if (confirm("¿Eliminar opción?")) {
-                                deleteServiceOption({ variables: { id: option.id } })
-                                  .then(() => refetch())
-                                  .catch((err) => console.error("Error deleting option:", err));
-                              }
-                            }}
-                            className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 text-xs"
-                          >
-                            Eliminar
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                    <button
-                      onClick={() => handleAddOption(service)}
-                      className="mt-2 bg-indigo-500 text-white px-3 py-1 rounded hover:bg-indigo-600 text-sm"
-                    >
-                      Agregar Opción
-                    </button>
-                  </div>
+                  <button
+                    onClick={() => setEditingTitles(prev => ({ ...prev, [svc.id]: true }))}
+                    className="ml-2"
+                  >
+                    <FaEdit className="text-yellow-500 text-xl" />
+                  </button>
                 )}
               </div>
-            );
-          })()}
+              {editingTitles[svc.id] && user && (
+                <div className="flex flex-col items-center space-y-2 mb-2">
+                  <input
+                    type="text"
+                    className="text-lg font-bold p-1 border rounded text-center"
+                    value={editedTitles[svc.id] ?? svc.name}
+                    onChange={e => handleServiceTitleChange(svc.id, e.target.value)}
+                  />
+                  <input
+                    type="text"
+                    className="w-full p-1 border rounded text-center"
+                    placeholder="Enlace externo (linkUrl)"
+                    value={editedLinkUrls[svc.id] ?? svc.linkUrl ?? ''}
+                    onChange={e => handleServiceLinkChange(svc.id, e.target.value)}
+                  />
+                  <button
+                    className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
+                    onClick={() => handleServiceSave(svc.id)}
+                  >
+                    <FaSave />
+                  </button>
+                </div>
+              )}
 
-        {/* Botón principal para cotizar */}
+              {/* Botón a linkUrl */}
+              {svc.linkUrl && (
+                <div className="text-center mb-2">
+                  <a
+                    href={svc.linkUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-block bg-blue-500 text-blue-100 px-4 py-2 rounded hover:bg-blue-600 transition"
+                  >
+                    Mas detalles
+                  </a>
+                </div>
+              )}
+
+              {/* Select de opciones */}
+              <select
+                className="w-full border rounded px-3 py-2 mb-2 text-teal-900"
+                value={localServices[svc.id]?.id || ""}
+                onChange={e => handleServiceSelect(svc.id, e.target.value)}
+              >
+                <option value="">-- Selecciona una opción --</option>
+                {editableOptions[svc.id]?.map(o => (
+                  <option key={o.id} value={o.id}>
+                  {o.label} — ${o.value.toLocaleString("es-ES")}
+                  { svc.name.toLowerCase().includes("software") && o.startup
+                      ? ` + Startup: $${o.startup.toLocaleString("es-ES")}`
+                      : "" }
+                </option>
+                ))}
+              </select>
+
+              {/* Detalles de la opción */}
+              {localServices[svc.id] && !editMode && (
+                <div className="mt-4 bg-gray-50 p-3 rounded">
+                  <div className="flex items-center mb-2">
+                    <FaMoneyBillWave className="text-green-500 mr-2 text-xl" />
+                    <span className="font-bold">Precio:</span>
+                    <span className="ml-2 text-xl font-extrabold">
+                      ${Number(localServices[svc.id].value).toLocaleString("es-ES")}
+                    </span>
+                  </div>
+                  {svc.name.toLowerCase().includes("software") && localServices[svc.id].startup && (
+                    <div className="flex items-center">
+                      <FaRocket className="text-teal-500 mr-2 text-xl" />
+                      <span className="font-bold">Startup:</span>
+                      <span className="ml-2 text-xl font-extrabold">
+                        ${Number(localServices[svc.id].startup).toLocaleString("es-ES")}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Admin opciones */}
+              {user && (
+                <div className="mt-2 border-t pt-2">
+                  {editableOptions[svc.id]?.map(o => (
+                    <div key={o.id} className="flex items-center justify-between mb-1">
+                      <span className="text-sm">
+                        {o.label} - ${Number(o.value).toLocaleString("es-ES")}
+                        {svc.name.toLowerCase().includes("software") && o.startup
+                          ? ` (Startup: ${o.startup})`
+                          : ""}
+                      </span>
+                      <div className="flex space-x-2">
+                        <button
+                          onClick={() => handleEditOption(svc, o)}
+                          className="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600 text-xs"
+                        >
+                          Editar
+                        </button>
+                        <button
+                          onClick={() => handleDeleteOption(o.id)}
+                          className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 text-xs"
+                        >
+                          Eliminar
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                  <button
+                    onClick={() => handleAddOption(svc)}
+                    className="mt-2 bg-indigo-500 text-white px-3 py-1 rounded hover:bg-indigo-600 text-sm"
+                  >
+                    Agregar Opción
+                  </button>
+                </div>
+              )}
+            </div>
+          );
+        })()}
+
+        {/* Botón Cotizar */}
         <div className="flex justify-center">
           <button
             onClick={handlePayment}
@@ -597,23 +587,22 @@ const CotizaTuServicio = ({ disabledProvider }) => {
         </div>
       </div>
 
-      {/* Sección de Resultado de Cotización con resumen de servicios seleccionados */}
+      {/* Resultado Cotización */}
       <div className="w-full max-w-2xl mt-4 text-center">
         <h3 className="text-lg font-bold mb-2">RESULTADO COTIZACIÓN</h3>
         <div className="bg-white rounded-xl shadow p-4">
-          {/* Resumen de los servicios seleccionados */}
           <div className="mb-4">
             <h4 className="font-semibold text-sm md:text-base">Resumen</h4>
             <ul className="text-sm md:text-base">
-              {servicesData.map((service) => {
-                const selected = localServices[service.id];
-                if (!selected) return null;
+              {servicesData.map(svc => {
+                const sel = localServices[svc.id];
+                if (!sel) return null;
                 return (
-                  <li key={service.id}>
-                    <strong>{service.name}:</strong> {selected.label} - $
-                    {Number(selected.value).toLocaleString("es-ES")}
-                    {service.name.toLowerCase().includes("software") && selected.startup
-                      ? ` + Startup: $${Number(selected.startup).toLocaleString("es-ES")}`
+                  <li key={svc.id}>
+                    <strong>{svc.name}:</strong> {sel.label} - $
+                    {Number(sel.value).toLocaleString("es-ES")}
+                    {svc.name.toLowerCase().includes("software") && sel.startup
+                      ? ` + Startup: $${Number(sel.startup).toLocaleString("es-ES")}`
                       : ""}
                   </li>
                 );
@@ -631,6 +620,15 @@ const CotizaTuServicio = ({ disabledProvider }) => {
           <p className="text-2xl md:text-3xl font-bold">
             Total: ${Math.round(globalTotal).toLocaleString("es-ES")}
           </p>
+          <div className="mt-4 gap-2 flex justify-center">
+                <button
+                  type="button"
+                  onClick={() => router.push("/paginas/contactanos")}
+                  className="bg-teal-500 text-white px-6 py-2 rounded-full hover:bg-teal-600 transition-colors"
+                >
+                  Contacta a uno de nuestros asesores
+                </button>
+              </div>
         </div>
       </div>
     </div>

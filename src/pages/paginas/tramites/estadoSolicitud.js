@@ -35,7 +35,7 @@ const EstadoSolicitud = () => {
   return (
     <div className="max-w-3xl mx-auto p-8">
       <h1 className="text-3xl font-bold mb-6 text-center text-teal-500">
-        Consulta el Estado de tu Solicitud
+      Consulta el Estado de tú Solicitud Mercurio
       </h1>
 
       <div className="flex flex-col sm:flex-row items-stretch gap-4 mb-8">

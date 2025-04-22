@@ -113,6 +113,19 @@ const UPDATE_SERVICE = gql`
 `;
 
 // ----------------------------
+// Mutation de radicación
+// ----------------------------
+const INSERT_MERT_RECIBIDO = gql`
+  mutation InsertMertRecibido($documentInfo: String!, $documentInfoGeneral: String!) {
+    insertMertRecibido(documentInfo: $documentInfo, documentInfoGeneral: $documentInfoGeneral) {
+      success
+      message
+      idDocumento
+    }
+  }
+`;
+
+// ----------------------------
 // Función para obtener el icono según el nombre del servicio
 // ----------------------------
 const getIconForService = (serviceName) => {
@@ -124,7 +137,7 @@ const getIconForService = (serviceName) => {
 };
 
 // ----------------------------
-// Componente MercurioCustodia (para el servicio de custodia)
+// Componente MercurioCustodia
 // ----------------------------
 const MercurioCustodia = ({ disabledProvider }) => {
   const router = useRouter();
@@ -136,7 +149,7 @@ const MercurioCustodia = ({ disabledProvider }) => {
     ? false
     : (dropdownActive.services || dropdownActive.tramites);
 
-  // Estado del formulario (lado derecho)
+  // Formulario de compra (derecha)
   const [formData, setFormData] = useState({
     nombre: "",
     apellido: "",
@@ -144,20 +157,23 @@ const MercurioCustodia = ({ disabledProvider }) => {
     email: "",
     telefono: "",
     observaciones: "",
+    opcionSeleccionada: "",
   });
 
-  // Estados para el cotizador de custodia
-  const [servicesData, setServicesData] = useState([]);
+  // Cotizador (izquierda)
   const [custodiaOptions, setCustodiaOptions] = useState([]);
-  // Usamos selectedOption para almacenar la opción elegida y calcular el total
-  const [selectedOption, setSelectedOption] = useState(null);
+  const [leftSelectedId, setLeftSelectedId] = useState("");
+  const [leftOption, setLeftOption] = useState(null);
 
-  // Calculamos el total basado en el valor de la opción seleccionada
-  const subtotal = selectedOption ? Number(selectedOption.value) : 0;
-  const calculatedDiscount = 0; // Para custodia, asumimos sin descuento
+  // Estado para el nuevo radicado
+  const [newRadicado, setNewRadicado] = useState(null);
+
+  // Cálculo de totales
+  const subtotal = leftOption ? Number(leftOption.value) : 0;
+  const calculatedDiscount = 0;
   const calculatedTotal = subtotal;
 
-  // Estados para el modo edición (puedes conservarlos o eliminarlos si no son necesarios)
+  // Modo edición
   const [editMode, setEditMode] = useState(() => {
     if (typeof window !== "undefined")
       return JSON.parse(localStorage.getItem("editMode")) || false;
@@ -175,7 +191,7 @@ const MercurioCustodia = ({ disabledProvider }) => {
     if (user) setEditMode(true);
   }, [user]);
 
-  // Generar un userId persistente
+  // userId persistente
   const [userId] = useState(() => {
     let uid = Cookies.get("userId");
     if (!uid) {
@@ -185,6 +201,7 @@ const MercurioCustodia = ({ disabledProvider }) => {
     return uid;
   });
 
+  // GraphQL hooks
   const { data } = useQuery(GET_SERVICES);
   const [saveTransaction] = useMutation(SAVE_TRANSACTION);
   const [createService] = useMutation(CREATE_SERVICE);
@@ -192,56 +209,75 @@ const MercurioCustodia = ({ disabledProvider }) => {
   const [updateServiceOption] = useMutation(UPDATE_SERVICE_OPTION);
   const [deleteServiceOption] = useMutation(DELETE_SERVICE_OPTION);
   const [updateService] = useMutation(UPDATE_SERVICE);
-  const [debouncedServices] = useDebounce(selectedOption, 500);
+  const [insertMertRecibido, { loading: loadingRadicado, error: radicadoError }] = useMutation(INSERT_MERT_RECIBIDO);
+  const [debounced] = useDebounce(leftOption, 500);
 
-  // Cuando llegan los datos, filtramos el servicio "custodia" y sus opciones
+  // Cuando llegan los datos, filtramos el servicio "custodia"
   useEffect(() => {
     if (data && data.services) {
-      setServicesData(data.services);
-      const custodiaService = data.services.find(s => s.name.toLowerCase().includes("custodia"));
-      if (custodiaService) {
-        setCustodiaOptions(custodiaService.options || []);
-      }
+      const cust = data.services.find(s => s.name.toLowerCase().includes("custodia"));
+      if (cust) setCustodiaOptions(cust.options || []);
     }
   }, [data]);
 
-  // Manejador para los cambios en los inputs del formulario
+  // Actualizamos el contexto con cotizador izquierdo
+  useEffect(() => {
+    updateTransaction(leftOption, calculatedTotal, calculatedDiscount);
+  }, [leftOption, calculatedTotal, calculatedDiscount, updateTransaction]);
+
+  // Handler del cotizador (izquierda)
+  const handleLeftSelect = (e) => {
+    const id = e.target.value;
+    setLeftSelectedId(id);
+    if (id) {
+      const op = custodiaOptions.find(opt => opt.id === id);
+      setLeftOption(op || null);
+    } else {
+      setLeftOption(null);
+    }
+  };
+
+  // Handler inputs y select del formulario (derecha)
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  // Manejador para el select del cotizador (parte izquierda)
-  const handleServiceSelect = (e) => {
-    const optionId = e.target.value;
-    // Se puede guardar el valor en formData.opcionSeleccionada si es necesario
-    setFormData(prev => ({ ...prev, opcionSeleccionada: optionId }));
-    if (optionId) {
-      const op = custodiaOptions.find(opt => opt.id === optionId);
-      setSelectedOption(op);
-    } else {
-      setSelectedOption(null);
-    }
-  };
-
-  // Función para editar la opción en el cotizador (solo si hay usuario)
-  const handleEditOptionSummary = () => {
-    if (!user) {
-      alert("Debes estar logueado para editar el cotizador.");
+  // Botón "Cotizar" (izquierda) → PSE
+  const handlePayment = async () => {
+    if (!leftOption) {
+      alert("Por favor, seleccione al menos una opción para cotizar.");
       return;
     }
-    const newLabel = prompt("Nuevo label para la opción seleccionada:", selectedOption ? selectedOption.label : "");
-    if (newLabel !== null && newLabel.trim() !== "") {
-      setSelectedOption({ ...selectedOption, label: newLabel });
+    try {
+      const { data } = await saveTransaction({
+        variables: {
+          userId,
+          input: {
+            custodia: leftOption,
+            software: null,
+            digitalizacion: null,
+            total: leftOption.value,
+            discount: 0,
+            state: "transaccion en formulario de pago",
+          },
+        },
+      });
+      if (data.saveTransaction) {
+        router.push({
+          pathname: "/PaymentFormPSE",
+          query: { previousPage: "/paginas/cotizaTuServicio" },
+        });
+      } else {
+        alert("Error al guardar la transacción.");
+      }
+    } catch (err) {
+      console.error("Error en handlePayment:", err);
+      alert("Error de conexión. Por favor, intente de nuevo.");
     }
   };
 
-  // Actualizamos la transacción en el contexto (opcional según el flujo de la app)
-  useEffect(() => {
-    updateTransaction(selectedOption, calculatedTotal, calculatedDiscount);
-  }, [selectedOption, calculatedTotal, calculatedDiscount, updateTransaction]);
-
-  // Función para enviar el formulario (lado derecho)
+  // Envío del formulario (derecha) → radicación
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (
@@ -255,26 +291,16 @@ const MercurioCustodia = ({ disabledProvider }) => {
       alert("Por favor, complete todos los campos obligatorios.");
       return;
     }
+    const chosen = custodiaOptions.find(opt => opt.id === formData.opcionSeleccionada);
+    const documentInfo = `${formData.nombre} - ${formData.apellido} - ${formData.entidad} - ${formData.email} - ${formData.telefono} - ${formData.observaciones} - ${chosen?.label || ""} - ${chosen?.value || 0}`;
+    const documentInfoGeneral = "Mercurio Custodia";
     try {
-      const selectedLabel = selectedOption ? selectedOption.label : "";
-      const selectedValue = selectedOption ? selectedOption.value : "";
-      const documentInfo = `${formData.nombre} - ${formData.apellido} - ${formData.entidad} - ${formData.email} - ${formData.telefono} - ${formData.observaciones} - ${selectedLabel} - ${selectedValue}`;
-      const documentInfoGeneral = "Mercurio Custodia";
-      const response = await saveTransaction({
-        variables: {
-          userId,
-          input: {
-            custodia: selectedOption,
-            software: null,
-            digitalizacion: null,
-            total: calculatedTotal,
-            discount: calculatedDiscount,
-            state: "transaccion en formulario de pago",
-          },
-        },
+      const { data } = await insertMertRecibido({
+        variables: { documentInfo, documentInfoGeneral }
       });
-      const result = response.data.saveTransaction;
-      if (result) {
+      const result = data.insertMertRecibido;
+      if (result.success) {
+        setNewRadicado(result.idDocumento);
         router.push({
           pathname: "/radicadoExitoso",
           query: {
@@ -282,50 +308,15 @@ const MercurioCustodia = ({ disabledProvider }) => {
             observaciones: formData.observaciones,
             documentInfo,
             documentInfoGeneral,
-            radicado: result.id,
+            radicado: result.idDocumento,
           },
         });
       } else {
-        alert("Error al guardar la transacción.");
+        alert("Error: " + result.message);
       }
     } catch (err) {
-      console.error("Error al enviar la transacción:", err);
-      alert("Error al procesar la transacción.");
-    }
-  };
-
-  // Función para el botón "Cotizar" (lado izquierdo) que redirige a PaymentFormPSE
-  const handlePayment = async () => {
-    if (!selectedOption) {
-      alert("Por favor, seleccione al menos una opción para cotizar.");
-      return;
-    }
-    try {
-      const response = await saveTransaction({
-        variables: {
-          userId,
-          input: {
-            custodia: selectedOption,
-            software: null,
-            digitalizacion: null,
-            total: calculatedTotal,
-            discount: calculatedDiscount,
-            state: "transaccion en formulario de pago",
-          },
-        },
-      });
-      const result = response.data.saveTransaction;
-      if (result) {
-        router.push({
-          pathname: "/PaymentFormPSE",
-          query: { previousPage: "/paginas/cotizaTuServicio" },
-        });
-      } else {
-        alert("Error al guardar la transacción.");
-      }
-    } catch (err) {
-      console.error("Error en handlePayment:", err);
-      alert("Error al procesar la transacción.");
+      console.error("Error al radicar:", err);
+      alert("Error de conexión. Por favor, intente de nuevo.");
     }
   };
 
@@ -342,9 +333,9 @@ const MercurioCustodia = ({ disabledProvider }) => {
 
       <div className="flex flex-col justify-between p-4">
         <div className="w-full mx-auto flex flex-col lg:flex-row justify-evenly gap-4 flex-1">
-          {/* Columna Izquierda: Tarjeta Cotizador de Custodia */}
+
+          {/* Columna Izquierda: Cotizador */}
           <div className="w-full lg:w-[40%]">
-            {/* Bloque de Información */}
             <div className="lg:text-left bg-white bg-opacity-0 backdrop-blur-xl p-6 rounded-xl border border-white/30">
               <p className="mb-4 text-lg font-bold text-black text-justify">
                 Custodia de Documentos: Seguridad, Accesibilidad y Eficiencia
@@ -369,41 +360,43 @@ const MercurioCustodia = ({ disabledProvider }) => {
               </p>
             </div>
 
-            {/* Tarjeta de Cotizador */}
             <div className="mt-6 p-4 bg-white rounded-xl shadow-lg border">
               <h2 className="text-xl font-bold text-center text-teal-600 mb-2">Cotizador de Custodia</h2>
               <label className="block text-sm font-semibold mb-1">Selecciona tu plan:</label>
               <select
                 className="w-full border rounded px-3 py-2 mb-3 text-teal-950"
-                value={formData.opcionSeleccionada}
-                onChange={handleServiceSelect}
+                value={leftSelectedId}
+                onChange={handleLeftSelect}
               >
                 <option value="">-- Escoge un plan --</option>
                 {custodiaOptions.map(option => (
                   <option key={option.id} value={option.id}>
-                    {option.label} - ${Number(option.value).toLocaleString("es-ES")}
+                    {option.label} — ${Number(option.value).toLocaleString("es-ES")}
                   </option>
                 ))}
               </select>
-              {selectedOption ? (
+              {leftOption ? (
                 <>
-                  <p className="mb-2 text-center">
-                    <strong>Opción:</strong> {selectedOption.label}
-                  </p>
-                  <p className="mb-2 text-center">
-                    <strong>Precio:</strong> ${Number(selectedOption.value).toLocaleString("es-ES")}
-                  </p>
+                  <p className="mb-2 text-center"><strong>Opción:</strong> {leftOption.label}</p>
+                  <p className="mb-2 text-center"><strong>Precio:</strong> ${Number(leftOption.value).toLocaleString("es-ES")}</p>
                 </>
               ) : (
                 <p className="mb-2 text-center">No se ha seleccionado un plan</p>
               )}
-              <div className="mt-4 flex justify-center">
+              <div className="mt-4 gap-2 flex justify-center">
                 <button
                   type="button"
                   onClick={handlePayment}
                   className="bg-teal-500 text-white px-6 py-2 rounded-full hover:bg-teal-600 transition-colors"
                 >
                   Cotizar
+                </button>
+                <button
+                  type="button"
+                  onClick={() => router.push("/paginas/contactanos")}
+                  className="bg-teal-500 text-white px-6 py-2 rounded-full hover:bg-teal-600 transition-colors"
+                >
+                  Ampliar Información
                 </button>
               </div>
             </div>
@@ -417,48 +410,48 @@ const MercurioCustodia = ({ disabledProvider }) => {
                 {/* Datos Personales */}
                 <div className="flex flex-col space-y-4">
                   <div className="flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0">
-                    <input 
-                      type="text" 
+                    <input
+                      type="text"
                       name="nombre"
-                      placeholder="Nombre:" 
+                      placeholder="Nombre:"
                       className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900 w-full"
                       value={formData.nombre}
                       onChange={handleChange}
                       required
                     />
-                    <input 
-                      type="text" 
+                    <input
+                      type="text"
                       name="apellido"
-                      placeholder="Apellido:" 
+                      placeholder="Apellido:"
                       className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900 w-full"
                       value={formData.apellido}
                       onChange={handleChange}
                       required
                     />
                   </div>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     name="entidad"
-                    placeholder="Entidad y/o empresa:" 
+                    placeholder="Entidad y/o empresa:"
                     className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900 w-full"
                     value={formData.entidad}
                     onChange={handleChange}
                     required
                   />
                   <div className="flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0">
-                    <input 
-                      type="email" 
+                    <input
+                      type="email"
                       name="email"
-                      placeholder="E-mail:" 
+                      placeholder="E-mail:"
                       className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900 w-full"
                       value={formData.email}
                       onChange={handleChange}
                       required
                     />
-                    <input 
-                      type="tel" 
+                    <input
+                      type="tel"
                       name="telefono"
-                      placeholder="Teléfono celular:" 
+                      placeholder="Teléfono celular:"
                       className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900 w-full"
                       value={formData.telefono}
                       onChange={handleChange}
@@ -467,10 +460,10 @@ const MercurioCustodia = ({ disabledProvider }) => {
                   </div>
                 </div>
 
-                {/* Bloque para Observaciones */}
-                <div className="flex flex-col mt-2 space-y-2">
+                {/* Observaciones */}
+                <div className="flex flex-col mt-2 space-y-2">  
                   <label className="text-sm text-gray-700 font-semibold">Observaciones:</label>
-                  <textarea 
+                  <textarea
                     name="observaciones"
                     placeholder="Ingresa tus observaciones aquí..."
                     className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
@@ -479,6 +472,33 @@ const MercurioCustodia = ({ disabledProvider }) => {
                     onChange={handleChange}
                   />
                 </div>
+
+                {/* Select dentro del formulario */}
+                <div className="flex flex-col mt-2">
+                  <label className="text-sm text-gray-700 font-semibold mb-1">Plan de Custodia:</label>
+                  <select
+                    name="opcionSeleccionada"
+                    value={formData.opcionSeleccionada}
+                    onChange={handleChange}
+                    required
+                    className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
+                  >
+                    <option value="">-- Escoge un plan --</option>
+                    {custodiaOptions.map(option => (
+                      <option key={option.id} value={option.id}>
+                        {option.label} — ${Number(option.value).toLocaleString("es-ES")}
+                        {option.startup > 0
+                          ? ` + Startup: $${Number(option.startup).toLocaleString("es-ES")}`
+                          : ""}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Error de radicado */}
+                {radicadoError && (
+                  <p className="text-red-600">Error: {radicadoError.message}</p>
+                )}
 
                 {/* Botón para Enviar el Formulario */}
                 <div className="mt-1">
@@ -505,17 +525,19 @@ const MercurioCustodia = ({ disabledProvider }) => {
                     `}</style>
                   </div>
                   <div className="lg:w-1/2 flex mx-auto items-end mt-2">
-                    <button 
-                      type="submit" 
-                      className="w-full bg-teal-500 text-white font-bold py-2 rounded-md transition-colors duration-300 hover:bg-teal-600"
+                    <button
+                      type="submit"
+                      className="btn-wave w-full bg-teal-500 text-white font-bold py-2 rounded-md transition-colors duration-300 hover:bg-teal-600"
+                      disabled={loadingRadicado}
                     >
-                      Enviar
+                      {loadingRadicado ? "Procesando..." : "Enviar"}
                     </button>
                   </div>
                 </div>
               </form>
             </div>
           </div>
+
         </div>
       </div>
     </div>

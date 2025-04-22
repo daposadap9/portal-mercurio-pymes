@@ -17,7 +17,8 @@ const VerticalBarTransition = ({ onComplete }) => {
       router.pathname === '/PaymentFormPSE' ||
       router.pathname === '/paginas/servicios/mercurioPYMES' ||
       router.pathname === '/paginas/servicios/mercurioDigitalizacion' ||
-      router.pathname === '/paginas/servicios/mercurioCustodia'
+      router.pathname === '/paginas/servicios/mercurioCustodia' ||
+      router.pathname === '/paginas/cotizaTuServicio'
     ) {
       onComplete?.();
       return;

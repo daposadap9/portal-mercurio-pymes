@@ -102,7 +102,8 @@ const typeDefs = gql`
   type Service { 
     id: ID!, 
     name: String!, 
-    icon: String, 
+    icon: String,
+    linkUrl: String,
     createdAt: DateTime!, 
     updatedAt: DateTime!, 
     options: [ServiceOption!]! 
@@ -128,7 +129,7 @@ const typeDefs = gql`
 
     createService(name: String!, icon: String): Service!
     createServiceOption(serviceId: String!, label: String!, value: Float!, startup: Float): ServiceOption!
-    updateService(id: ID!, name: String, icon: String): Service!
+    updateService(id: ID!, name: String, icon: String, linkUrl: String): Service!
     updateServiceOption(id: ID!, label: String, value: Float, startup: Float): ServiceOption!
     deleteService(id: ID!): Service!
     deleteServiceOption(id: ID!): ServiceOption!
@@ -522,12 +523,19 @@ const resolvers = {
       }),
     createServiceOption: (_, { serviceId, label, value, startup }) =>
       prisma.serviceOption.create({ data: { serviceId, label, value, startup } }),
-    updateService: (_, { id, name, icon }) =>
-      prisma.service.update({
+    updateService: async (_, { id, name, icon, linkUrl }) => {
+      // Construimos el objeto `data` solo con los campos que vienen definidos
+      const data = {};
+      if (name    !== undefined) data.name    = name;
+      if (icon    !== undefined) data.icon    = icon;
+      if (linkUrl !== undefined) data.linkUrl = linkUrl;
+
+      return prisma.service.update({
         where: { id },
-        data: { name, icon },
-        include: { options: true }
-      }),
+        data,
+        include: { options: true },    // para que siga trayendo las opciones
+      });
+    },
     updateServiceOption: (_, { id, label, value, startup }) =>
       prisma.serviceOption.update({ where: { id }, data: { label, value, startup } }),
     deleteService: async (_, { id }) => {
