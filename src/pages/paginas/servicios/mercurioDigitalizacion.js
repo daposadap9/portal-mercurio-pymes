@@ -62,7 +62,7 @@ const GET_SERVICES = gql`
 `;
 
 // ----------------------------
-// Componente MercurioDigitalizacion (para Digitalización)
+// Componente MercurioDigitalizacion
 // ----------------------------
 const MercurioDigitalizacion = ({ disabledProvider }) => {
   const router = useRouter();
@@ -74,7 +74,7 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
     ? false
     : (dropdownActive.services || dropdownActive.tramites);
 
-  // Formulario de radicación (derecha)
+  // Formulario (derecha)
   const [formData, setFormData] = useState({
     nombre: "",
     apellido: "",
@@ -85,15 +85,13 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
     opcionSeleccionada: "",
   });
 
-  // Cotizador de digitalización (izquierda)
-  const [options, setOptions] = useState([]);
-  const [selectedId, setSelectedId] = useState("");
-  const [selectedOpt, setSelectedOpt] = useState(null);
+  // Cotizador (izquierda)
+  const [options, setOptions]           = useState([]);
+  const [selectedId, setSelectedId]     = useState("");
+  const [selectedOpt, setSelectedOpt]   = useState(null);
+  const [isMonthly, setIsMonthly]       = useState(false);
 
-  // Toggle Anual/Mensual
-  const [isMonthly, setIsMonthly] = useState(false);
-
-  // Persistir userId
+  // userId persistente
   const [userId] = useState(() => {
     let uid = Cookies.get("userId");
     if (!uid) {
@@ -103,21 +101,25 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
     return uid;
   });
 
-  // Cálculos de totales
-  const annualTotal = selectedOpt ? Number(selectedOpt.value) + Number(selectedOpt.startup || 0) : 0;
-  const monthlyPrice = Math.ceil(annualTotal / 12);
-  const displayTotal = isMonthly ? monthlyPrice : annualTotal;
+  // Totales
+  const annualTotal   = selectedOpt ? Number(selectedOpt.value) + Number(selectedOpt.startup || 0) : 0;
+  const monthlyPrice  = Math.ceil(annualTotal / 12);
+  const displayTotal  = isMonthly ? monthlyPrice : annualTotal;
   const calculatedDiscount = 0;
 
-  // Cargar servicios y filtrar "digital"
-  const { data, loading: loadingServices, error: errorServices } = useQuery(GET_SERVICES, {
-    onError: (err) => {
-      if (err.networkError?.statusCode === 504) {
-        console.error("504 Gateway Timeout al cargar servicios");
+  // Traer servicios
+  const { data, loading: loadingServices, error: errorServices } = useQuery(
+    GET_SERVICES,
+    {
+      onError: err => {
+        if (err.networkError?.statusCode === 504) {
+          console.error("504 Gateway Timeout al cargar servicios");
+        }
       }
     }
-  });
+  );
 
+  // Cuando lleguen, filtrar “digitalización”
   useEffect(() => {
     if (data?.services) {
       const svc = data.services.find(s => s.name.toLowerCase().includes("digital"));
@@ -125,31 +127,29 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
     }
   }, [data]);
 
-  // Actualizar contexto con la transacción actual
+  // Mantener contexto de transacción
   useEffect(() => {
     updateTransaction(selectedOpt, displayTotal, calculatedDiscount);
-  }, [selectedOpt, isMonthly, displayTotal]);
+  }, [selectedOpt, displayTotal, calculatedDiscount, updateTransaction]);
 
   // Mutations
   const [insertMertRecibido, { loading: loadingRad, error: radError }] = useMutation(INSERT_MERT_RECIBIDO);
-  const [savePayment, { loading: loadingPay, error: payError }] = useMutation(SAVE_TRANSACTION);
+  const [savePayment,       { loading: loadingPay, error: payError }]  = useMutation(SAVE_TRANSACTION);
 
   // Handlers
-  const handleSelect = (e) => {
+  const handleSelect = e => {
     const id = e.target.value;
     setSelectedId(id);
     setFormData(f => ({ ...f, opcionSeleccionada: id }));
-    const opt = options.find(o => o.id === id) || null;
-    setSelectedOpt(opt);
+    setSelectedOpt(options.find(o => o.id === id) || null);
   };
 
-  const handleChange = (e) => {
+  const handleChange = e => {
     const { name, value } = e.target;
     setFormData(f => ({ ...f, [name]: value }));
     if (name === "opcionSeleccionada") {
       setSelectedId(value);
-      const opt = options.find(o => o.id === value) || null;
-      setSelectedOpt(opt);
+      setSelectedOpt(options.find(o => o.id === value) || null);
     }
   };
 
@@ -159,7 +159,9 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
       return;
     }
     try {
-      const stateLabel = isMonthly ? "suscripción mensual" : "transacción en formulario de pago";
+      const stateLabel = isMonthly
+        ? "suscripción mensual"
+        : "transacción en formulario de pago";
       const { data } = await savePayment({
         variables: {
           userId,
@@ -170,8 +172,8 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
             total: displayTotal,
             discount: calculatedDiscount,
             state: stateLabel,
-          },
-        },
+          }
+        }
       });
       if (data.saveTransaction) {
         router.push({
@@ -187,7 +189,7 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
     }
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
     if (
       !formData.nombre ||
@@ -210,7 +212,7 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
 
     try {
       const { data } = await insertMertRecibido({
-        variables: { documentInfo, documentInfoGeneral },
+        variables: { documentInfo, documentInfoGeneral }
       });
       const result = data.insertMertRecibido;
       if (result.success) {
@@ -221,8 +223,8 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
             observaciones: formData.observaciones,
             documentInfo,
             documentInfoGeneral,
-            radicado: result.idDocumento,
-          },
+            radicado: result.idDocumento
+          }
         });
       } else {
         alert("Error: " + result.message);
@@ -233,6 +235,7 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
     }
   };
 
+  // ——— RENDERIZADO ———
   return (
     <div className="min-h-full flex flex-col items-center px-2 md:px-0">
       {loadingServices ? (
@@ -242,9 +245,16 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
       ) : (
         <>
           {/* Título */}
-          <div className={`flex justify-center text-2xl md:text-4xl font-bold transition-all duration-500 ease-in-out text-teal-600 text-center titulo-shadow mb-10 ${isAnyDropdownActive ? "mt-24" : ""}`}>
+          <div className={`
+            flex justify-center text-2xl md:text-4xl font-bold transition-all
+            duration-500 ease-in-out text-teal-600 text-center titulo-shadow mb-10
+            ${isAnyDropdownActive ? "mt-24" : ""}
+          `}>
             <div className="w-full lg:w-[85%] text-xl">
-              <h1>Olvídate de los documentos físicos, digitalízalos con nosotros. Seguridad, orden y accesibilidad.</h1>
+              <h1>
+                Olvídate de los documentos físicos, digitalízalos con nosotros.
+                Seguridad, orden y accesibilidad.
+              </h1>
             </div>
           </div>
 
@@ -258,7 +268,9 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
                     Digitalización de Documentos: Seguridad, Orden y Accesibilidad
                   </p>
                   <p className="mb-4 leading-relaxed text-black text-base font-medium text-justify">
-                    Dile adiós al desorden y al riesgo de pérdida de documentos. Con nuestro servicio de digitalización, transformamos tu archivo físico en un sistema seguro, accesible y eficiente.
+                    Dile adiós al desorden y al riesgo de pérdida de documentos. 
+                    Con nuestro servicio de digitalización, transformamos tu archivo físico 
+                    en un sistema seguro, accesible y eficiente.
                   </p>
                   <ul className="list-disc list-inside mb-4 text-black text-base font-medium text-justify">
                     <li>Organización y protección en formato digital.</li>
@@ -275,7 +287,11 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
                 </div>
 
                 <div className="mt-6 p-4 bg-white rounded-xl shadow-lg border">
-                  <h2 className="text-xl font-bold text-center text-teal-600 mb-2">Cotizador de Digitalización</h2>
+                  <h2 className="text-xl font-bold text-center text-teal-600 mb-2">
+                    Cotizador de Digitalización
+                  </h2>
+
+                  {/* SELECT DEL COTIZADOR */}
                   <label className="block text-sm font-semibold mb-1">Selecciona tu plan:</label>
                   <select
                     className="w-full border rounded px-3 py-2 mb-3 text-teal-950"
@@ -286,33 +302,48 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
                     {options.map(opt => (
                       <option key={opt.id} value={opt.id}>
                         {opt.label} — ${Number(opt.value).toLocaleString("es-ES")}
+                        {opt.startup > 0 ? ` + Startup: $${Number(opt.startup).toLocaleString("es-ES")}` : ""}
                       </option>
                     ))}
                   </select>
 
                   {selectedOpt && (
                     <>
-                      <div className="flex justify-center gap-4 mb-4">
-                        <label className="flex items-center space-x-1 text-sm">
-                          <input
-                            type="radio"
-                            checked={!isMonthly}
-                            onChange={() => setIsMonthly(false)}
-                          />
-                          <span>Anual: ${annualTotal.toLocaleString("es-ES")}</span>
-                        </label>
-                        <label className="flex items-center space-x-1 text-sm">
-                          <input
-                            type="radio"
-                            checked={isMonthly}
-                            onChange={() => setIsMonthly(true)}
-                          />
-                          <span>Mensual: ${monthlyPrice.toLocaleString("es-ES")}/mes</span>
-                        </label>
+                      <div className="mb-4 flex justify-center space-x-4">
+                        <button
+                          type="button"
+                          className={`
+                            px-4 py-2 rounded-full
+                            ${!isMonthly
+                              ? 'bg-teal-600 text-white'
+                              : 'bg-gray-200 text-gray-800'
+                            }
+                          `}
+                          onClick={() => setIsMonthly(false)}
+                        >
+                          Pago único
+                        </button>
+                        <button
+                          type="button"
+                          className={`
+                            px-4 py-2 rounded-full
+                            ${isMonthly
+                              ? 'bg-teal-600 text-white'
+                              : 'bg-gray-200 text-gray-800'
+                            }
+                          `}
+                          onClick={() => setIsMonthly(true)}
+                        >
+                          Mensual: ${monthlyPrice.toLocaleString("es-ES")}/mes
+                        </button>
                       </div>
-
-                      <p className="mb-2 text-center"><strong>Opción:</strong> {selectedOpt.label}</p>
-                      <p className="mb-2 text-center"><strong>Precio {isMonthly ? "(mensual)" : "(anual)"}:</strong> ${displayTotal.toLocaleString("es-ES")}</p>
+                      <p className="mb-2 text-center">
+                        <strong>Opción:</strong> {selectedOpt.label}
+                      </p>
+                      <p className="mb-2 text-center">
+                        <strong>Precio {isMonthly ? '(mensual)' : ''}:</strong> $
+                        {displayTotal.toLocaleString("es-ES")}
+                      </p>
                     </>
                   )}
 
@@ -322,7 +353,7 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
                       onClick={handlePayment}
                       className="bg-teal-500 text-white px-6 py-2 rounded-full hover:bg-teal-600 transition-colors"
                     >
-                      Cotizar {isMonthly ? "Mensual" : "Anual"}
+                      Cotizar
                     </button>
                     <button
                       type="button"
@@ -335,10 +366,13 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
                 </div>
               </div>
 
-              {/* Derecha: Formulario de Compra */}
+              {/* Derecha: Formulario “¡Adquiérelo ahora!” */}
               <div className="w-full lg:w-[40%]">
                 <div className="bg-gray-50 p-6 rounded-lg shadow-lg h-full flex flex-col">
-                  <h2 className="text-xl font-bold text-teal-600 text-center mb-6">¡Adquiérelo ahora!</h2>
+                  <h2 className="text-xl font-bold text-teal-600 text-center mb-6">
+                    ¡Adquiérelo ahora!
+                  </h2>
+
                   <form onSubmit={handleSubmit} className="flex flex-col gap-4 flex-1">
                     {/* Campos personales */}
                     <div className="flex flex-col space-y-4">
@@ -406,9 +440,11 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
                       />
                     </div>
 
-                    {/* Plan de Digitalización */}
+                    {/* SELECT del formulario */}
                     <div className="flex flex-col mt-2">
-                      <label className="text-sm text-gray-700 font-semibold mb-1">Plan de Digitalización:</label>
+                      <label className="text-sm text-gray-700 font-semibold mb-1">
+                        Plan de Digitalización:
+                      </label>
                       <select
                         name="opcionSeleccionada"
                         value={formData.opcionSeleccionada}
@@ -426,11 +462,19 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
                       {formData.opcionSeleccionada && (
                         <div className="flex justify-center gap-4 mt-2 text-xs">
                           <label className="flex items-center space-x-1">
-                            <input type="radio" checked={!isMonthly} onChange={() => setIsMonthly(false)} />
+                            <input
+                              type="radio"
+                              checked={!isMonthly}
+                              onChange={() => setIsMonthly(false)}
+                            />
                             <span>Anual</span>
                           </label>
                           <label className="flex items-center space-x-1">
-                            <input type="radio" checked={isMonthly} onChange={() => setIsMonthly(true)} />
+                            <input
+                              type="radio"
+                              checked={isMonthly}
+                              onChange={() => setIsMonthly(true)}
+                            />
                             <span>Mensual</span>
                           </label>
                         </div>
