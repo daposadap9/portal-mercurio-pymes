@@ -232,8 +232,10 @@ const MercurioCustodia = ({ disabledProvider }) => {
     if (id) {
       const op = custodiaOptions.find(opt => opt.id === id);
       setLeftOption(op || null);
+      setFormData(prev => ({ ...prev, opcionSeleccionada: id }));
     } else {
       setLeftOption(null);
+      setFormData(prev => ({ ...prev, opcionSeleccionada: "" }));
     }
   };
 
@@ -241,6 +243,11 @@ const MercurioCustodia = ({ disabledProvider }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+    if (name === "opcionSeleccionada") {
+      const op = custodiaOptions.find(opt => opt.id === value);
+      setLeftSelectedId(value);
+      setLeftOption(op || null);
+    }
   };
 
   // Botón "Cotizar" (izquierda) → PSE
@@ -257,8 +264,8 @@ const MercurioCustodia = ({ disabledProvider }) => {
             custodia: leftOption,
             software: null,
             digitalizacion: null,
-            total: leftOption.value,
-            discount: 0,
+            total: calculatedTotal,
+            discount: calculatedDiscount,
             state: "transaccion en formulario de pago",
           },
         },
@@ -280,19 +287,13 @@ const MercurioCustodia = ({ disabledProvider }) => {
   // Envío del formulario (derecha) → radicación
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (
-      !formData.nombre ||
-      !formData.apellido ||
-      !formData.entidad ||
-      !formData.email ||
-      !formData.telefono ||
-      !formData.opcionSeleccionada
-    ) {
+    const { nombre, apellido, entidad, email, telefono, observaciones, opcionSeleccionada } = formData;
+    if (!nombre || !apellido || !entidad || !email || !telefono || !opcionSeleccionada) {
       alert("Por favor, complete todos los campos obligatorios.");
       return;
     }
-    const chosen = custodiaOptions.find(opt => opt.id === formData.opcionSeleccionada);
-    const documentInfo = `${formData.nombre} - ${formData.apellido} - ${formData.entidad} - ${formData.email} - ${formData.telefono} - ${formData.observaciones} - ${chosen?.label || ""} - ${chosen?.value || 0}`;
+    const chosen = custodiaOptions.find(opt => opt.id === opcionSeleccionada);
+    const documentInfo = `${nombre} - ${apellido} - ${entidad} - ${email} - ${telefono} - ${observaciones} - ${chosen?.label || ""} - ${chosen?.value || 0}`;
     const documentInfoGeneral = "Mercurio Custodia";
     try {
       const { data } = await insertMertRecibido({
@@ -304,8 +305,8 @@ const MercurioCustodia = ({ disabledProvider }) => {
         router.push({
           pathname: "/radicadoExitoso",
           query: {
-            nombre: formData.nombre,
-            observaciones: formData.observaciones,
+            nombre,
+            observaciones,
             documentInfo,
             documentInfoGeneral,
             radicado: result.idDocumento,
@@ -461,7 +462,7 @@ const MercurioCustodia = ({ disabledProvider }) => {
                 </div>
 
                 {/* Observaciones */}
-                <div className="flex flex-col mt-2 space-y-2">  
+                <div className="flex flex-col mt-2 space-y-2">
                   <label className="text-sm text-gray-700 font-semibold">Observaciones:</label>
                   <textarea
                     name="observaciones"
