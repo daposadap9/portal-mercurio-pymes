@@ -62,17 +62,6 @@ const GET_SERVICES = gql`
 `;
 
 // ----------------------------
-// Función para obtener el icono según el nombre del servicio
-// ----------------------------
-const getIconForService = (serviceName) => {
-  const name = serviceName.toLowerCase();
-  if (name.includes("software")) return <FaLaptopCode className="mr-2 inline-block" />;
-  if (name.includes("custodia")) return <FaBoxOpen className="mr-2 inline-block" />;
-  if (name.includes("digital"))  return <FaRegImage className="mr-2 inline-block" />;
-  return null;
-};
-
-// ----------------------------
 // Componente MercurioDigitalizacion (para Digitalización)
 // ----------------------------
 const MercurioDigitalizacion = ({ disabledProvider }) => {
@@ -97,22 +86,12 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
   });
 
   // Cotizador de digitalización (izquierda)
-  const [options, setOptions]      = useState([]);
-  const [selectedId, setSelectedId]= useState("");
+  const [options, setOptions] = useState([]);
+  const [selectedId, setSelectedId] = useState("");
   const [selectedOpt, setSelectedOpt] = useState(null);
 
   // Toggle Anual/Mensual
   const [isMonthly, setIsMonthly] = useState(false);
-
-  // Mutations
-  const [insertMertRecibido, { loading: loadingRad, error: radError }] = useMutation(INSERT_MERT_RECIBIDO);
-  const [savePayment,       { loading: loadingPay, error: payError }]  = useMutation(SAVE_TRANSACTION);
-
-  // Cálculos de totales
-  const annualTotal   = selectedOpt ? Number(selectedOpt.value) + Number(selectedOpt.startup || 0) : 0;
-  const monthlyPrice  = Math.ceil(annualTotal / 12);
-  const displayTotal  = isMonthly ? monthlyPrice : annualTotal;
-  const calculatedDiscount = 0;
 
   // Persistir userId
   const [userId] = useState(() => {
@@ -124,8 +103,21 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
     return uid;
   });
 
+  // Cálculos de totales
+  const annualTotal = selectedOpt ? Number(selectedOpt.value) + Number(selectedOpt.startup || 0) : 0;
+  const monthlyPrice = Math.ceil(annualTotal / 12);
+  const displayTotal = isMonthly ? monthlyPrice : annualTotal;
+  const calculatedDiscount = 0;
+
   // Cargar servicios y filtrar "digital"
-  const { data } = useQuery(GET_SERVICES);
+  const { data, loading: loadingServices, error: errorServices } = useQuery(GET_SERVICES, {
+    onError: (err) => {
+      if (err.networkError?.statusCode === 504) {
+        console.error("504 Gateway Timeout al cargar servicios");
+      }
+    }
+  });
+
   useEffect(() => {
     if (data?.services) {
       const svc = data.services.find(s => s.name.toLowerCase().includes("digital"));
@@ -138,18 +130,22 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
     updateTransaction(selectedOpt, displayTotal, calculatedDiscount);
   }, [selectedOpt, isMonthly, displayTotal]);
 
+  // Mutations
+  const [insertMertRecibido, { loading: loadingRad, error: radError }] = useMutation(INSERT_MERT_RECIBIDO);
+  const [savePayment, { loading: loadingPay, error: payError }] = useMutation(SAVE_TRANSACTION);
+
   // Handlers
   const handleSelect = (e) => {
     const id = e.target.value;
     setSelectedId(id);
-    setFormData(prev => ({ ...prev, opcionSeleccionada: id }));
+    setFormData(f => ({ ...f, opcionSeleccionada: id }));
     const opt = options.find(o => o.id === id) || null;
     setSelectedOpt(opt);
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData(f => ({ ...f, [name]: value }));
     if (name === "opcionSeleccionada") {
       setSelectedId(value);
       const opt = options.find(o => o.id === value) || null;
@@ -239,248 +235,254 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
 
   return (
     <div className="min-h-full flex flex-col items-center px-2 md:px-0">
-      {/* Título */}
-      <div className={`flex justify-center text-2xl md:text-4xl font-bold transition-all duration-500 ease-in-out text-teal-600 text-center titulo-shadow mb-10 ${isAnyDropdownActive ? "mt-24" : ""}`}>
-        <div className="w-full lg:w-[85%] text-xl">
-          <h1>
-            Olvídate de los documentos físicos, digitalízalos con nosotros. Seguridad, orden y accesibilidad.
-          </h1>
-        </div>
-      </div>
-
-      <div className="flex flex-col justify-between p-4">
-        <div className="w-full mx-auto flex flex-col lg:flex-row justify-evenly gap-4 flex-1">
-
-          {/* Izquierda: Cotizador */}
-          <div className="w-full lg:w-[40%]">
-            <div className="lg:text-left bg-white bg-opacity-0 backdrop-blur-xl p-6 rounded-xl border border-white/30">
-              <p className="mb-4 text-xl font-bold text-black text-justify">
-                Digitalización de Documentos: Seguridad, Orden y Accesibilidad
-              </p>
-              <p className="mb-4 leading-relaxed text-black text-base font-medium text-justify">
-                Dile adiós al desorden y al riesgo de pérdida de documentos. Con nuestro servicio de digitalización, transformamos tu archivo físico en un sistema seguro, accesible y eficiente.
-              </p>
-              <ul className="list-disc list-inside mb-4 text-black text-base font-medium text-justify">
-                <li>Organización y protección en formato digital.</li>
-                <li>Acceso rápido y respaldo seguro desde cualquier lugar.</li>
-                <li>Optimiza espacio y reduce costos.</li>
-              </ul>
-              <p className="mb-4 leading-relaxed text-black text-base font-medium text-justify">
-                En la sección{" "}
-                <Link href="/paginas/cotizaTuServicio" legacyBehavior>
-                  <a className="text-blue-600 underline">¡cotiza tu servicio!</a>
-                </Link>{" "}
-                podrás conocer los precios y planes. El valor depende del número de folios.
-              </p>
-            </div>
-
-            <div className="mt-6 p-4 bg-white rounded-xl shadow-lg border">
-              <h2 className="text-xl font-bold text-center text-teal-600 mb-2">Cotizador de Digitalización</h2>
-              <label className="block text-sm font-semibold mb-1">Selecciona tu plan:</label>
-              <select
-                className="w-full border rounded px-3 py-2 mb-3 text-teal-950"
-                value={selectedId}
-                onChange={handleSelect}
-              >
-                <option value="">-- Escoge un plan --</option>
-                {options.map(opt => (
-                  <option key={opt.id} value={opt.id}>
-                    {opt.label} — ${Number(opt.value).toLocaleString("es-ES")}
-                  </option>
-                ))}
-              </select>
-
-              {selectedOpt && (
-                <>
-                  <div className="flex justify-center gap-4 mb-4">
-                    <label className="flex items-center space-x-1 text-sm">
-                      <input
-                        type="radio"
-                        checked={!isMonthly}
-                        onChange={() => setIsMonthly(false)}
-                      />
-                      <span>Anual: ${annualTotal.toLocaleString("es-ES")}</span>
-                    </label>
-                    <label className="flex items-center space-x-1 text-sm">
-                      <input
-                        type="radio"
-                        checked={isMonthly}
-                        onChange={() => setIsMonthly(true)}
-                      />
-                      <span>Mensual: ${monthlyPrice.toLocaleString("es-ES")}/mes</span>
-                    </label>
-                  </div>
-
-                  <p className="mb-2 text-center"><strong>Opción:</strong> {selectedOpt.label}</p>
-                  <p className="mb-2 text-center"><strong>Precio {isMonthly ? "(mensual)" : "(anual)"}:</strong> ${displayTotal.toLocaleString("es-ES")}</p>
-                </>
-              )}
-
-              <div className="mt-4 gap-2 flex justify-center">
-                <button
-                  type="button"
-                  onClick={handlePayment}
-                  className="bg-teal-500 text-white px-6 py-2 rounded-full hover:bg-teal-600 transition-colors"
-                >
-                  Cotizar {isMonthly ? "Mensual" : "Anual"}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => router.push("/paginas/contactanos")}
-                  className="bg-teal-500 text-white px-6 py-2 rounded-full hover:bg-teal-600 transition-colors"
-                >
-                  Ampliar Información
-                </button>
-              </div>
+      {loadingServices ? (
+        <p>Cargando planes...</p>
+      ) : errorServices ? (
+        <p className="text-red-600">Error al cargar planes: {errorServices.message}</p>
+      ) : (
+        <>
+          {/* Título */}
+          <div className={`flex justify-center text-2xl md:text-4xl font-bold transition-all duration-500 ease-in-out text-teal-600 text-center titulo-shadow mb-10 ${isAnyDropdownActive ? "mt-24" : ""}`}>
+            <div className="w-full lg:w-[85%] text-xl">
+              <h1>Olvídate de los documentos físicos, digitalízalos con nosotros. Seguridad, orden y accesibilidad.</h1>
             </div>
           </div>
 
-          {/* Derecha: Formulario de Compra */}
-          <div className="w-full lg:w-[40%]">
-            <div className="bg-gray-50 p-6 rounded-lg shadow-lg h-full flex flex-col">
-              <h2 className="text-xl font-bold text-teal-600 text-center mb-6">¡Adquiérelo ahora!</h2>
-              <form onSubmit={handleSubmit} className="flex flex-col gap-4 flex-1">
-                {/* Campos personales */}
-                <div className="flex flex-col space-y-4">
-                  <div className="flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0">
-                    <input
-                      type="text"
-                      name="nombre"
-                      placeholder="Nombre:"
-                      className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900 w-full"
-                      value={formData.nombre}
-                      onChange={handleChange}
-                      required
-                    />
-                    <input
-                      type="text"
-                      name="apellido"
-                      placeholder="Apellido:"
-                      className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900 w-full"
-                      value={formData.apellido}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
-                  <input
-                    type="text"
-                    name="entidad"
-                    placeholder="Entidad y/o empresa:"
-                    className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900 w-full"
-                    value={formData.entidad}
-                    onChange={handleChange}
-                    required
-                  />
-                  <div className="flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0">
-                    <input
-                      type="email"
-                      name="email"
-                      placeholder="E-mail:"
-                      className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900 w-full"
-                      value={formData.email}
-                      onChange={handleChange}
-                      required
-                    />
-                    <input
-                      type="tel"
-                      name="telefono"
-                      placeholder="Teléfono celular:"
-                      className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900 w-full"
-                      value={formData.telefono}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
+          <div className="flex flex-col justify-between p-4">
+            <div className="w-full mx-auto flex flex-col lg:flex-row justify-evenly gap-4 flex-1">
+
+              {/* Izquierda: Cotizador */}
+              <div className="w-full lg:w-[40%]">
+                <div className="lg:text-left bg-white bg-opacity-0 backdrop-blur-xl p-6 rounded-xl border border-white/30">
+                  <p className="mb-4 text-xl font-bold text-black text-justify">
+                    Digitalización de Documentos: Seguridad, Orden y Accesibilidad
+                  </p>
+                  <p className="mb-4 leading-relaxed text-black text-base font-medium text-justify">
+                    Dile adiós al desorden y al riesgo de pérdida de documentos. Con nuestro servicio de digitalización, transformamos tu archivo físico en un sistema seguro, accesible y eficiente.
+                  </p>
+                  <ul className="list-disc list-inside mb-4 text-black text-base font-medium text-justify">
+                    <li>Organización y protección en formato digital.</li>
+                    <li>Acceso rápido y respaldo seguro desde cualquier lugar.</li>
+                    <li>Optimiza espacio y reduce costos.</li>
+                  </ul>
+                  <p className="mb-4 leading-relaxed text-black text-base font-medium text-justify">
+                    En la sección{" "}
+                    <Link href="/paginas/cotizaTuServicio" legacyBehavior>
+                      <a className="text-blue-600 underline">¡cotiza tu servicio!</a>
+                    </Link>{" "}
+                    podrás conocer los precios y planes.
+                  </p>
                 </div>
 
-                {/* Observaciones */}
-                <div className="flex flex-col mt-2 space-y-2">
-                  <label className="text-sm text-gray-700 font-semibold">Observaciones:</label>
-                  <textarea
-                    name="observaciones"
-                    placeholder="Ingresa tus observaciones aquí..."
-                    className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
-                    rows="4"
-                    value={formData.observaciones}
-                    onChange={handleChange}
-                  />
-                </div>
-
-                {/* Plan */}
-                <div className="flex flex-col mt-2">
-                  <label className="text-sm text-gray-700 font-semibold mb-1">Plan de Digitalización:</label>
+                <div className="mt-6 p-4 bg-white rounded-xl shadow-lg border">
+                  <h2 className="text-xl font-bold text-center text-teal-600 mb-2">Cotizador de Digitalización</h2>
+                  <label className="block text-sm font-semibold mb-1">Selecciona tu plan:</label>
                   <select
-                    name="opcionSeleccionada"
-                    value={formData.opcionSeleccionada}
-                    onChange={handleChange}
-                    required
-                    className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
+                    className="w-full border rounded px-3 py-2 mb-3 text-teal-950"
+                    value={selectedId}
+                    onChange={handleSelect}
                   >
                     <option value="">-- Escoge un plan --</option>
-                    {options.map(o => (
-                      <option key={o.id} value={o.id}>
-                        {o.label} — ${Number(o.value).toLocaleString("es-ES")}
+                    {options.map(opt => (
+                      <option key={opt.id} value={opt.id}>
+                        {opt.label} — ${Number(opt.value).toLocaleString("es-ES")}
                       </option>
                     ))}
                   </select>
-                  {formData.opcionSeleccionada && (
-                    <div className="flex justify-center gap-4 mt-2 text-xs">
-                      <label className="flex items-center space-x-1">
-                        <input type="radio" checked={!isMonthly} onChange={() => setIsMonthly(false)} />
-                        <span>Anual</span>
-                      </label>
-                      <label className="flex items-center space-x-1">
-                        <input type="radio" checked={isMonthly} onChange={() => setIsMonthly(true)} />
-                        <span>Mensual</span>
-                      </label>
-                    </div>
+
+                  {selectedOpt && (
+                    <>
+                      <div className="flex justify-center gap-4 mb-4">
+                        <label className="flex items-center space-x-1 text-sm">
+                          <input
+                            type="radio"
+                            checked={!isMonthly}
+                            onChange={() => setIsMonthly(false)}
+                          />
+                          <span>Anual: ${annualTotal.toLocaleString("es-ES")}</span>
+                        </label>
+                        <label className="flex items-center space-x-1 text-sm">
+                          <input
+                            type="radio"
+                            checked={isMonthly}
+                            onChange={() => setIsMonthly(true)}
+                          />
+                          <span>Mensual: ${monthlyPrice.toLocaleString("es-ES")}/mes</span>
+                        </label>
+                      </div>
+
+                      <p className="mb-2 text-center"><strong>Opción:</strong> {selectedOpt.label}</p>
+                      <p className="mb-2 text-center"><strong>Precio {isMonthly ? "(mensual)" : "(anual)"}:</strong> ${displayTotal.toLocaleString("es-ES")}</p>
+                    </>
                   )}
-                </div>
 
-                {/* Errores */}
-                {radError && <p className="text-red-600">Error: {radError.message}</p>}
-                {payError && <p className="text-red-600">Error de pago: {payError.message}</p>}
-
-                {/* Botón Enviar */}
-                <div className="mt-1">
-                  <div className="flex flex-col gap-4">
-                    <style jsx>{`
-                      .btn-wave {
-                        position: relative;
-                        overflow: hidden;
-                      }
-                      .btn-wave::before {
-                        content: "";
-                        position: absolute;
-                        top: 0;
-                        left: -100%;
-                        width: 100%;
-                        height: 100%;
-                        background: rgba(255,255,255,0.2);
-                        transform: skewX(-20deg);
-                        transition: left 0.5s ease;
-                      }
-                      .btn-wave:hover::before {
-                        left: 100%;
-                      }
-                    `}</style>
-                  </div>
-                  <div className="lg:w-1/2 flex mx-auto items-end mt-2">
+                  <div className="mt-4 gap-2 flex justify-center">
                     <button
-                      type="submit"
-                      className="btn-wave w-full bg-teal-500 text-white font-bold py-2 rounded-md transition-colors duration-300 hover:bg-teal-600"
-                      disabled={loadingRad}
+                      type="button"
+                      onClick={handlePayment}
+                      className="bg-teal-500 text-white px-6 py-2 rounded-full hover:bg-teal-600 transition-colors"
                     >
-                      {loadingRad ? "Procesando..." : "Enviar"}
+                      Cotizar {isMonthly ? "Mensual" : "Anual"}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => router.push("/paginas/contactanos")}
+                      className="bg-teal-500 text-white px-6 py-2 rounded-full hover:bg-teal-600 transition-colors"
+                    >
+                      Ampliar Información
                     </button>
                   </div>
                 </div>
-              </form>
+              </div>
+
+              {/* Derecha: Formulario de Compra */}
+              <div className="w-full lg:w-[40%]">
+                <div className="bg-gray-50 p-6 rounded-lg shadow-lg h-full flex flex-col">
+                  <h2 className="text-xl font-bold text-teal-600 text-center mb-6">¡Adquiérelo ahora!</h2>
+                  <form onSubmit={handleSubmit} className="flex flex-col gap-4 flex-1">
+                    {/* Campos personales */}
+                    <div className="flex flex-col space-y-4">
+                      <div className="flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0">
+                        <input
+                          type="text"
+                          name="nombre"
+                          placeholder="Nombre:"
+                          className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900 w-full"
+                          value={formData.nombre}
+                          onChange={handleChange}
+                          required
+                        />
+                        <input
+                          type="text"
+                          name="apellido"
+                          placeholder="Apellido:"
+                          className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900 w-full"
+                          value={formData.apellido}
+                          onChange={handleChange}
+                          required
+                        />
+                      </div>
+                      <input
+                        type="text"
+                        name="entidad"
+                        placeholder="Entidad y/o empresa:"
+                        className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900 w-full"
+                        value={formData.entidad}
+                        onChange={handleChange}
+                        required
+                      />
+                      <div className="flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0">
+                        <input
+                          type="email"
+                          name="email"
+                          placeholder="E-mail:"
+                          className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900 w-full"
+                          value={formData.email}
+                          onChange={handleChange}
+                          required
+                        />
+                        <input
+                          type="tel"
+                          name="telefono"
+                          placeholder="Teléfono celular:"
+                          className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900 w-full"
+                          value={formData.telefono}
+                          onChange={handleChange}
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    {/* Observaciones */}
+                    <div className="flex flex-col mt-2 space-y-2">
+                      <label className="text-sm text-gray-700 font-semibold">Observaciones:</label>
+                      <textarea
+                        name="observaciones"
+                        placeholder="Ingresa tus observaciones aquí..."
+                        className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
+                        rows="4"
+                        value={formData.observaciones}
+                        onChange={handleChange}
+                      />
+                    </div>
+
+                    {/* Plan de Digitalización */}
+                    <div className="flex flex-col mt-2">
+                      <label className="text-sm text-gray-700 font-semibold mb-1">Plan de Digitalización:</label>
+                      <select
+                        name="opcionSeleccionada"
+                        value={formData.opcionSeleccionada}
+                        onChange={handleChange}
+                        required
+                        className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
+                      >
+                        <option value="">-- Escoge un plan --</option>
+                        {options.map(o => (
+                          <option key={o.id} value={o.id}>
+                            {o.label} — ${Number(o.value).toLocaleString("es-ES")}
+                          </option>
+                        ))}
+                      </select>
+                      {formData.opcionSeleccionada && (
+                        <div className="flex justify-center gap-4 mt-2 text-xs">
+                          <label className="flex items-center space-x-1">
+                            <input type="radio" checked={!isMonthly} onChange={() => setIsMonthly(false)} />
+                            <span>Anual</span>
+                          </label>
+                          <label className="flex items-center space-x-1">
+                            <input type="radio" checked={isMonthly} onChange={() => setIsMonthly(true)} />
+                            <span>Mensual</span>
+                          </label>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Errores */}
+                    {radError && <p className="text-red-600">Error: {radError.message}</p>}
+                    {payError && <p className="text-red-600">Error de pago: {payError.message}</p>}
+
+                    {/* Botón Enviar */}
+                    <div className="mt-1">
+                      <div className="flex flex-col gap-4">
+                        <style jsx>{`
+                          .btn-wave {
+                            position: relative;
+                            overflow: hidden;
+                          }
+                          .btn-wave::before {
+                            content: "";
+                            position: absolute;
+                            top: 0;
+                            left: -100%;
+                            width: 100%;
+                            height: 100%;
+                            background: rgba(255,255,255,0.2);
+                            transform: skewX(-20deg);
+                            transition: left 0.5s ease;
+                          }
+                          .btn-wave:hover::before {
+                            left: 100%;
+                          }
+                        `}</style>
+                      </div>
+                      <div className="lg:w-1/2 flex mx-auto items-end mt-2">
+                        <button
+                          type="submit"
+                          className="btn-wave w-full bg-teal-500 text-white font-bold py-2 rounded-md transition-colors duration-300 hover:bg-teal-600"
+                          disabled={loadingRad}
+                        >
+                          {loadingRad ? "Procesando..." : "Enviar"}
+                        </button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+
             </div>
           </div>
-
-        </div>
-      </div>
+        </>
+      )}
     </div>
   );
 };
