@@ -322,20 +322,24 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
 
           {/* Izquierda: Cotizador */}
           <div className="w-full lg:w-[40%]">
-            <div className="lg:text-left bg-white bg-opacity-0 backdrop-blur-xl p-6 rounded-xl border border-white/30">
+          <div className="lg:text-left bg-white bg-opacity-0 backdrop-blur-xl p-6 rounded-xl border border-white/30">
               <p className="mb-4 text-xl font-bold text-black text-justify">
-                Digitalización de Documentos: Seguridad y Accesibilidad
+                Digitalización de Documentos: Seguridad, Orden y Accesibilidad
               </p>
               <p className="mb-4 leading-relaxed text-black text-base font-medium text-justify">
-                Transforma tu archivo físico en un sistema digital seguro, accesible y eficiente.
+                Dile adiós al desorden y al riesgo de pérdida de documentos. Con nuestro servicio de digitalización, transformamos tu archivo físico en un sistema seguro, accesible y eficiente.
               </p>
               <ul className="list-disc list-inside mb-4 text-black text-base font-medium text-justify">
-                <li>Protección y respaldo permanente</li>
-                <li>Acceso rápido desde cualquier lugar</li>
-                <li>Reduce espacio y costos</li>
+                <li>Organización y protección en formato digital.</li>
+                <li>Acceso rápido y respaldo seguro desde cualquier lugar.</li>
+                <li>Optimiza espacio y reduce costos.</li>
               </ul>
               <p className="mb-4 leading-relaxed text-black text-base font-medium text-justify">
-                En <Link href="/paginas/cotizaTuServicio"><a className="text-blue-600 underline">¡cotiza tu servicio!</a></Link> encontrarás precios según folios a digitalizar.
+                Si estás interesado, en la sección{" "}
+                <Link href="/paginas/cotizaTuServicio" legacyBehavior>
+                  <a className="text-blue-600 underline">¡cotiza tu servicio!</a>
+                </Link>{" "}
+                podrás conocer los precios y planes. Recuerda que el valor total depende del número de folios a digitalizar.
               </p>
             </div>
 
