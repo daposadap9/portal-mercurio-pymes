@@ -5,10 +5,6 @@ import {
   FaLaptopCode,
   FaBoxOpen,
   FaRegImage,
-  FaEdit,
-  FaSave,
-  FaMoneyBillWave,
-  FaRocket,
 } from 'react-icons/fa';
 import { ThemeContext } from '@/context/ThemeContext';
 import { TransactionContext } from '@/context/TransactionContext';
@@ -16,7 +12,6 @@ import { UserContext } from '@/context/UserContext';
 import { useDropdown } from '@/context/DropdownContext';
 import { v4 as uuidv4 } from 'uuid';
 import Cookies from 'js-cookie';
-import { useDebounce } from 'use-debounce';
 import Link from 'next/link';
 
 // ----------------------------
@@ -66,62 +61,6 @@ const GET_SERVICES = gql`
   }
 `;
 
-const CREATE_SERVICE = gql`
-  mutation CreateService($name: String!, $icon: String) {
-    createService(name: $name, icon: $icon) {
-      id
-      name
-      icon
-      options {
-        id
-        label
-        value
-        startup
-      }
-    }
-  }
-`;
-
-const CREATE_SERVICE_OPTION = gql`
-  mutation CreateServiceOption($serviceId: String!, $label: String!, $value: Float!, $startup: Float) {
-    createServiceOption(serviceId: $serviceId, label: $label, value: $value, startup: $startup) {
-      id
-      label
-      value
-      startup
-      serviceId
-    }
-  }
-`;
-
-const UPDATE_SERVICE_OPTION = gql`
-  mutation UpdateServiceOption($id: ID!, $label: String, $value: Float, $startup: Float) {
-    updateServiceOption(id: $id, label: $label, value: $value, startup: $startup) {
-      id
-      label
-      value
-      startup
-    }
-  }
-`;
-
-const DELETE_SERVICE_OPTION = gql`
-  mutation DeleteServiceOption($id: ID!) {
-    deleteServiceOption(id: $id) {
-      id
-    }
-  }
-`;
-
-const UPDATE_SERVICE = gql`
-  mutation UpdateService($id: ID!, $name: String!) {
-    updateService(id: $id, name: $name) {
-      id
-      name
-    }
-  }
-`;
-
 // ----------------------------
 // Función para obtener el icono según el nombre del servicio
 // ----------------------------
@@ -158,33 +97,24 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
   });
 
   // Cotizador de digitalización (izquierda)
-  const [digitalizacionOptions, setDigitalizacionOptions] = useState([]);
-  const [leftSelectedId, setLeftSelectedId] = useState("");
-  const [leftOption, setLeftOption]         = useState(null);
+  const [options, setOptions]      = useState([]);
+  const [selectedId, setSelectedId]= useState("");
+  const [selectedOpt, setSelectedOpt] = useState(null);
+
+  // Toggle Anual/Mensual
+  const [isMonthly, setIsMonthly] = useState(false);
 
   // Mutations
   const [insertMertRecibido, { loading: loadingRad, error: radError }] = useMutation(INSERT_MERT_RECIBIDO);
-  const [savePayment, { loading: loadingPay, error: payError }]        = useMutation(SAVE_TRANSACTION);
+  const [savePayment,       { loading: loadingPay, error: payError }]  = useMutation(SAVE_TRANSACTION);
 
-  // Totales
-  const calculatedTotal    = leftOption ? Number(leftOption.value) : 0;
+  // Cálculos de totales
+  const annualTotal   = selectedOpt ? Number(selectedOpt.value) + Number(selectedOpt.startup || 0) : 0;
+  const monthlyPrice  = Math.ceil(annualTotal / 12);
+  const displayTotal  = isMonthly ? monthlyPrice : annualTotal;
   const calculatedDiscount = 0;
 
-  // Persistir editMode
-  const [editMode, setEditMode] = useState(() => {
-    if (typeof window !== "undefined") {
-      return JSON.parse(localStorage.getItem("editMode")) || false;
-    }
-    return false;
-  });
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      localStorage.setItem("editMode", JSON.stringify(editMode));
-    }
-  }, [editMode]);
-  useEffect(() => { if (user) setEditMode(true); }, [user]);
-
-  // userId persistente
+  // Persistir userId
   const [userId] = useState(() => {
     let uid = Cookies.get("userId");
     if (!uid) {
@@ -194,57 +124,56 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
     return uid;
   });
 
-  // Cargar servicios y filtrar digitalización
+  // Cargar servicios y filtrar "digital"
   const { data } = useQuery(GET_SERVICES);
   useEffect(() => {
     if (data?.services) {
       const svc = data.services.find(s => s.name.toLowerCase().includes("digital"));
-      if (svc) setDigitalizacionOptions(svc.options || []);
+      if (svc) setOptions(svc.options || []);
     }
   }, [data]);
 
   // Actualizar contexto con la transacción actual
   useEffect(() => {
-    updateTransaction(leftOption, calculatedTotal, calculatedDiscount);
-  }, [leftOption, calculatedTotal, calculatedDiscount]);
+    updateTransaction(selectedOpt, displayTotal, calculatedDiscount);
+  }, [selectedOpt, isMonthly, displayTotal]);
 
-  // Handler para el select de cotización
-  const handleLeftSelect = (e) => {
+  // Handlers
+  const handleSelect = (e) => {
     const id = e.target.value;
-    setLeftSelectedId(id);
+    setSelectedId(id);
     setFormData(prev => ({ ...prev, opcionSeleccionada: id }));
-    const opt = digitalizacionOptions.find(o => o.id === id) || null;
-    setLeftOption(opt);
+    const opt = options.find(o => o.id === id) || null;
+    setSelectedOpt(opt);
   };
 
-  // Handler genérico de inputs, sincroniza leftOption si cambió el select interno
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
     if (name === "opcionSeleccionada") {
-      setLeftSelectedId(value);
-      const opt = digitalizacionOptions.find(o => o.id === value) || null;
-      setLeftOption(opt);
+      setSelectedId(value);
+      const opt = options.find(o => o.id === value) || null;
+      setSelectedOpt(opt);
     }
   };
 
-  // Botón “Cotizar” izquierdo
   const handlePayment = async () => {
-    if (!leftOption) {
+    if (!selectedOpt) {
       alert("Por favor, seleccione un plan para cotizar.");
       return;
     }
     try {
+      const stateLabel = isMonthly ? "suscripción mensual" : "transacción en formulario de pago";
       const { data } = await savePayment({
         variables: {
           userId,
           input: {
-            digitalizacion: leftOption,
+            digitalizacion: selectedOpt,
             software: null,
             custodia: null,
-            total: calculatedTotal,
+            total: displayTotal,
             discount: calculatedDiscount,
-            state: "transaccion en formulario de pago",
+            state: stateLabel,
           },
         },
       });
@@ -257,12 +186,11 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
         alert("Error al guardar la transacción.");
       }
     } catch (err) {
-      console.error("Error en handlePayment:", err);
-      alert("Error de conexión. Por favor intente de nuevo.");
+      console.error(err);
+      alert("Error de conexión. Por favor, intente de nuevo.");
     }
   };
 
-  // Submit del formulario de radicación
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (
@@ -273,17 +201,20 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
       !formData.telefono ||
       !formData.opcionSeleccionada
     ) {
-      alert("Por favor, complete todos los campos obligatorios y seleccione un plan.");
+      alert("Por favor, complete todos los campos y seleccione un plan.");
       return;
     }
-    // Construir documentInfo
-    const chosen              = digitalizacionOptions.find(o => o.id === formData.opcionSeleccionada);
-    const documentInfo        = `${formData.nombre} - ${formData.apellido} - ${formData.entidad} - ${formData.email} - ${formData.telefono} - ${formData.observaciones} - ${chosen?.label || ""} - ${chosen?.value || 0}`;
+    const planType = isMonthly ? "Mensual" : "Anual";
+    const documentInfo = `
+      ${formData.nombre} - ${formData.apellido} - ${formData.entidad} -
+      ${formData.email} - ${formData.telefono} - ${formData.observaciones} -
+      Plan: ${selectedOpt.label} (${planType}) - Valor: ${displayTotal.toLocaleString("es-ES")}
+    `;
     const documentInfoGeneral = "Mercurio Digitalización";
 
     try {
       const { data } = await insertMertRecibido({
-        variables: { documentInfo, documentInfoGeneral }
+        variables: { documentInfo, documentInfoGeneral },
       });
       const result = data.insertMertRecibido;
       if (result.success) {
@@ -294,15 +225,15 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
             observaciones: formData.observaciones,
             documentInfo,
             documentInfoGeneral,
-            radicado: result.idDocumento
-          }
+            radicado: result.idDocumento,
+          },
         });
       } else {
         alert("Error: " + result.message);
       }
     } catch (err) {
-      console.error("Error al radicar:", err);
-      alert("Error al radicar");
+      console.error(err);
+      alert("Error al radicar.");
     }
   };
 
@@ -322,7 +253,7 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
 
           {/* Izquierda: Cotizador */}
           <div className="w-full lg:w-[40%]">
-          <div className="lg:text-left bg-white bg-opacity-0 backdrop-blur-xl p-6 rounded-xl border border-white/30">
+            <div className="lg:text-left bg-white bg-opacity-0 backdrop-blur-xl p-6 rounded-xl border border-white/30">
               <p className="mb-4 text-xl font-bold text-black text-justify">
                 Digitalización de Documentos: Seguridad, Orden y Accesibilidad
               </p>
@@ -335,11 +266,11 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
                 <li>Optimiza espacio y reduce costos.</li>
               </ul>
               <p className="mb-4 leading-relaxed text-black text-base font-medium text-justify">
-                Si estás interesado, en la sección{" "}
+                En la sección{" "}
                 <Link href="/paginas/cotizaTuServicio" legacyBehavior>
                   <a className="text-blue-600 underline">¡cotiza tu servicio!</a>
                 </Link>{" "}
-                podrás conocer los precios y planes. Recuerda que el valor total depende del número de folios a digitalizar.
+                podrás conocer los precios y planes. El valor depende del número de folios.
               </p>
             </div>
 
@@ -348,31 +279,50 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
               <label className="block text-sm font-semibold mb-1">Selecciona tu plan:</label>
               <select
                 className="w-full border rounded px-3 py-2 mb-3 text-teal-950"
-                value={leftSelectedId}
-                onChange={handleLeftSelect}
+                value={selectedId}
+                onChange={handleSelect}
               >
                 <option value="">-- Escoge un plan --</option>
-                {digitalizacionOptions.map(opt => (
+                {options.map(opt => (
                   <option key={opt.id} value={opt.id}>
                     {opt.label} — ${Number(opt.value).toLocaleString("es-ES")}
                   </option>
                 ))}
               </select>
-              {leftOption ? (
+
+              {selectedOpt && (
                 <>
-                  <p className="mb-2 text-center"><strong>Opción:</strong> {leftOption.label}</p>
-                  <p className="mb-2 text-center"><strong>Precio:</strong> ${Number(leftOption.value).toLocaleString("es-ES")}</p>
+                  <div className="flex justify-center gap-4 mb-4">
+                    <label className="flex items-center space-x-1 text-sm">
+                      <input
+                        type="radio"
+                        checked={!isMonthly}
+                        onChange={() => setIsMonthly(false)}
+                      />
+                      <span>Anual: ${annualTotal.toLocaleString("es-ES")}</span>
+                    </label>
+                    <label className="flex items-center space-x-1 text-sm">
+                      <input
+                        type="radio"
+                        checked={isMonthly}
+                        onChange={() => setIsMonthly(true)}
+                      />
+                      <span>Mensual: ${monthlyPrice.toLocaleString("es-ES")}/mes</span>
+                    </label>
+                  </div>
+
+                  <p className="mb-2 text-center"><strong>Opción:</strong> {selectedOpt.label}</p>
+                  <p className="mb-2 text-center"><strong>Precio {isMonthly ? "(mensual)" : "(anual)"}:</strong> ${displayTotal.toLocaleString("es-ES")}</p>
                 </>
-              ) : (
-                <p className="mb-2 text-center">No se ha seleccionado un plan</p>
               )}
+
               <div className="mt-4 gap-2 flex justify-center">
                 <button
                   type="button"
                   onClick={handlePayment}
                   className="bg-teal-500 text-white px-6 py-2 rounded-full hover:bg-teal-600 transition-colors"
                 >
-                  Cotizar
+                  Cotizar {isMonthly ? "Mensual" : "Anual"}
                 </button>
                 <button
                   type="button"
@@ -390,6 +340,7 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
             <div className="bg-gray-50 p-6 rounded-lg shadow-lg h-full flex flex-col">
               <h2 className="text-xl font-bold text-teal-600 text-center mb-6">¡Adquiérelo ahora!</h2>
               <form onSubmit={handleSubmit} className="flex flex-col gap-4 flex-1">
+                {/* Campos personales */}
                 <div className="flex flex-col space-y-4">
                   <div className="flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0">
                     <input
@@ -442,6 +393,7 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
                   </div>
                 </div>
 
+                {/* Observaciones */}
                 <div className="flex flex-col mt-2 space-y-2">
                   <label className="text-sm text-gray-700 font-semibold">Observaciones:</label>
                   <textarea
@@ -454,7 +406,7 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
                   />
                 </div>
 
-                {/* Select dentro del formulario */}
+                {/* Plan */}
                 <div className="flex flex-col mt-2">
                   <label className="text-sm text-gray-700 font-semibold mb-1">Plan de Digitalización:</label>
                   <select
@@ -465,17 +417,31 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
                     className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
                   >
                     <option value="">-- Escoge un plan --</option>
-                    {digitalizacionOptions.map(opt => (
-                      <option key={opt.id} value={opt.id}>
-                        {opt.label} — ${Number(opt.value).toLocaleString("es-ES")}
-                        {opt.startup > 0 ? ` + Startup: $${Number(opt.startup).toLocaleString("es-ES")}` : ""}
+                    {options.map(o => (
+                      <option key={o.id} value={o.id}>
+                        {o.label} — ${Number(o.value).toLocaleString("es-ES")}
                       </option>
                     ))}
                   </select>
+                  {formData.opcionSeleccionada && (
+                    <div className="flex justify-center gap-4 mt-2 text-xs">
+                      <label className="flex items-center space-x-1">
+                        <input type="radio" checked={!isMonthly} onChange={() => setIsMonthly(false)} />
+                        <span>Anual</span>
+                      </label>
+                      <label className="flex items-center space-x-1">
+                        <input type="radio" checked={isMonthly} onChange={() => setIsMonthly(true)} />
+                        <span>Mensual</span>
+                      </label>
+                    </div>
+                  )}
                 </div>
 
+                {/* Errores */}
                 {radError && <p className="text-red-600">Error: {radError.message}</p>}
+                {payError && <p className="text-red-600">Error de pago: {payError.message}</p>}
 
+                {/* Botón Enviar */}
                 <div className="mt-1">
                   <div className="flex flex-col gap-4">
                     <style jsx>{`
