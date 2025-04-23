@@ -124,7 +124,7 @@ const getIconForService = (serviceName) => {
   const name = serviceName.toLowerCase();
   if (name.includes("software")) return <FaLaptopCode className="mr-2 inline-block" />;
   if (name.includes("custodia")) return <FaBoxOpen className="mr-2 inline-block" />;
-  if (name.includes("digital")) return <FaRegImage className="mr-2 inline-block" />;
+  if (name.includes("digital"))  return <FaRegImage className="mr-2 inline-block" />;
   return null;
 };
 
@@ -140,7 +140,7 @@ const MercurioPYMES = ({ disabledProvider }) => {
     ? false
     : (dropdownActive.services || dropdownActive.tramites);
 
-  // Formulario (derecha)
+  // Formulario “¡Adquiérelo ahora!”
   const [formData, setFormData] = useState({
     nombre: "",
     apellido: "",
@@ -154,31 +154,31 @@ const MercurioPYMES = ({ disabledProvider }) => {
   // Cotizador (izquierda)
   const [softwareOptions, setSoftwareOptions] = useState([]);
   const [leftSelectedId, setLeftSelectedId] = useState("");
-  const [leftOption, setLeftOption] = useState(null);
+  const [leftOption, setLeftOption]         = useState(null);
 
   // Toggle Anual/Mensual
   const [isMonthly, setIsMonthly] = useState(false);
 
-  // Radicación
-  const [newRadicado, setNewRadicado] = useState(null);
+  // Mutations
   const [insertMertRecibido, { loading: loadingRad, error: radError }] = useMutation(INSERT_MERT_RECIBIDO);
-
-  // Pago (izquierda)
   const [savePayment] = useMutation(SAVE_TRANSACTION);
 
-  // Totales
-  const annualTotal    = leftOption ? Number(leftOption.value) + Number(leftOption.startup || 0) : 0;
+  // Totales basados en leftOption
+  const annualTotal    = leftOption ? (Number(leftOption.value) + Number(leftOption.startup || 0)) : 0;
   const monthlyPayment = leftOption ? (annualTotal / 12) : 0;
   const calculatedDiscount = 0;
 
   // userId persistente
   const [userId] = useState(() => {
     let uid = Cookies.get("userId");
-    if (!uid) { uid = uuidv4(); Cookies.set("userId", uid, { expires: 7 }); }
+    if (!uid) {
+      uid = uuidv4();
+      Cookies.set("userId", uid, { expires: 7 });
+    }
     return uid;
   });
 
-  // Traer servicios
+  // Traer servicios al montar
   const { data } = useQuery(GET_SERVICES);
   useEffect(() => {
     if (data?.services) {
@@ -187,27 +187,41 @@ const MercurioPYMES = ({ disabledProvider }) => {
     }
   }, [data]);
 
-  // Actualizar contexto
+  // Actualizar la transacción en el contexto (usa leftOption y monto correcto)
   useEffect(() => {
-    updateTransaction(leftOption, isMonthly ? monthlyPayment : annualTotal, calculatedDiscount);
+    const amount = isMonthly ? monthlyPayment : annualTotal;
+    updateTransaction(leftOption, amount, calculatedDiscount);
   }, [leftOption, isMonthly, monthlyPayment, annualTotal]);
 
-  // Handlers
+  // Manejador para el select izquierdo (Cotizador)
   const handleLeftSelect = (e) => {
     const id = e.target.value;
     setLeftSelectedId(id);
     setFormData(prev => ({ ...prev, opcionSeleccionada: id }));
-    setLeftOption(softwareOptions.find(o => o.id === id) || null);
+    const opt = softwareOptions.find(o => o.id === id) || null;
+    setLeftOption(opt);
   };
 
+  // Manejador genérico de inputs
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+
+    // Si fue el select de plan en el formulario, sincronizamos leftOption
+    if (name === "opcionSeleccionada") {
+      setLeftSelectedId(value);
+      const opt = softwareOptions.find(o => o.id === value) || null;
+      setLeftOption(opt);
+    }
   };
 
+  // Botón “Cotizar” de la tarjeta izquierda
   const handlePayment = async () => {
-    if (!leftOption) { alert("Selecciona un plan."); return; }
-    const totalToPay = isMonthly ? monthlyPayment : annualTotal;
+    if (!leftOption) {
+      alert("Selecciona un plan primero.");
+      return;
+    }
+    const amount = isMonthly ? monthlyPayment : annualTotal;
     const { data } = await savePayment({
       variables: {
         userId,
@@ -215,40 +229,59 @@ const MercurioPYMES = ({ disabledProvider }) => {
           software: leftOption,
           custodia: null,
           digitalizacion: null,
-          total: totalToPay,
+          total: amount,
           discount: calculatedDiscount,
           state: "transaccion en formulario de pago",
         },
       },
     });
     if (data.saveTransaction) {
-      router.push({ pathname: "/PaymentFormPSE", query: { previousPage: "/paginas/cotizaTuServicio" } });
+      router.push({
+        pathname: "/PaymentFormPSE",
+        query: { previousPage: "/paginas/cotizaTuServicio" },
+      });
     } else {
       alert("Error al guardar la transacción.");
     }
   };
 
+  // Submit del formulario “¡Adquiérelo ahora!”
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.nombre || !formData.apellido || !formData.entidad ||
-        !formData.email || !formData.telefono || !formData.opcionSeleccionada) {
-      alert("Completa todos los campos y selecciona un plan."); return;
+    // Validaciones
+    if (
+      !formData.nombre ||
+      !formData.apellido ||
+      !formData.entidad ||
+      !formData.email ||
+      !formData.telefono ||
+      !formData.opcionSeleccionada
+    ) {
+      alert("Completa todos los campos y selecciona un plan.");
+      return;
     }
-    const chosen = softwareOptions.find(o => o.id === formData.opcionSeleccionada);
+
+    // Recalculamos montos basados en leftOption
+    const startup    = leftOption.startup || 0;
+    const totalValue = Number(leftOption.value) + Number(startup);
+    const monthlyVal = totalValue / 12;
+    const valor      = isMonthly ? monthlyVal : totalValue;
+
+    // Preparamos datos para insertar
     const planType = isMonthly ? "Mensual" : "Anual";
-    const valor    = isMonthly ? monthlyPayment : annualTotal;
     const documentInfo = `
       ${formData.nombre} - ${formData.apellido} - ${formData.entidad} -
       ${formData.email} - ${formData.telefono} - ${formData.observaciones} -
-      Plan: ${chosen.label} (${planType}) -
+      Plan: ${leftOption.label} (${planType}) -
       Valor: ${valor.toLocaleString("es-ES")}
     `;
     const documentInfoGeneral = "Mercurio PYMES";
+
     try {
-      const { data } = await insertMertRecibido({ variables: { documentInfo, documentInfoGeneral } });
-      const res = data.insertMertRecibido;
-      if (res.success) {
-        setNewRadicado(res.idDocumento);
+      const { data } = await insertMertRecibido({
+        variables: { documentInfo, documentInfoGeneral },
+      });
+      if (data.insertMertRecibido.success) {
         router.push({
           pathname: "/radicadoExitoso",
           query: {
@@ -256,14 +289,15 @@ const MercurioPYMES = ({ disabledProvider }) => {
             observaciones: formData.observaciones,
             documentInfo,
             documentInfoGeneral,
-            radicado: res.idDocumento
-          }
+            radicado: data.insertMertRecibido.idDocumento,
+          },
         });
       } else {
-        alert("Error: " + res.message);
+        alert("Error: " + data.insertMertRecibido.message);
       }
-    } catch {
-      alert("Error al radicar");
+    } catch (err) {
+      console.error("Error al radicar:", err);
+      alert("Error al procesar la radicación.");
     }
   };
 
@@ -272,14 +306,16 @@ const MercurioPYMES = ({ disabledProvider }) => {
       {/* Título Principal */}
       <div className={`flex justify-center text-2xl md:text-4xl font-bold transition-all duration-500 ease-in-out text-teal-600 text-center titulo-shadow mb-10 ${isAnyDropdownActive ? "mt-24" : ""}`}>
         <div className="w-full lg:w-[85%] text-xl">
-          <h1>Mercurio PYMES es una forma ágil, fácil y práctica para la gestión documental de pequeñas y medianas empresas.</h1>
+          <h1>
+            Mercurio PYMES es una forma ágil, fácil y práctica para la gestión documental de pequeñas y medianas empresas.
+          </h1>
         </div>
       </div>
 
       <div className="flex flex-col justify-between p-4">
         <div className="w-full mx-auto flex flex-col lg:flex-row justify-evenly gap-4 flex-1">
 
-          {/* IZQUIERDA: Cotizador */}
+          {/* Columna Izquierda: Tarjeta de Cotizador */}
           <div className="w-full lg:w-[40%]">
             <div className="lg:text-left bg-white bg-opacity-0 backdrop-blur-xl p-6 rounded-xl border border-white/30">
               <p className="mb-4 text-xl font-bold text-black text-justify">
@@ -301,6 +337,8 @@ const MercurioPYMES = ({ disabledProvider }) => {
                 podrás conocer los precios y planes. El valor final depende del número de licencias (usuarios) requeridas.
               </p>
             </div>
+
+            {/* Tarjeta de Cotizador */}
             <div className="mt-6 p-4 bg-white rounded-xl shadow-lg border">
               <h2 className="text-xl font-bold text-center text-teal-600 mb-2">Cotizador de Software</h2>
               <label className="block text-sm font-semibold mb-1">Selecciona tu plan:</label>
@@ -323,7 +361,7 @@ const MercurioPYMES = ({ disabledProvider }) => {
                   <p className="mb-2 text-center"><strong>Precio:</strong> ${Number(leftOption.value).toLocaleString("es-ES")}</p>
                   <p className="mb-2 text-center"><strong>Startup:</strong> ${Number(leftOption.startup).toLocaleString("es-ES")} (único Pago)</p>
                   <p className="mb-2 text-center"><strong>Total, Inversión Anual:</strong> ${annualTotal.toLocaleString("es-ES")}</p>
-                  <p className="mb-2 text-center"><strong>Pago mensual:</strong> ${monthlyPayment.toLocaleString("es-ES",{minimumFractionDigits:2,maximumFractionDigits:2})}</p>
+                  <p className="mb-2 text-center"><strong>Pago mensual:</strong> ${monthlyPayment.toLocaleString("es-ES",{ minimumFractionDigits:2, maximumFractionDigits:2 })}</p>
                   <div className="flex justify-center gap-4 mb-4">
                     <label className="flex items-center space-x-1 text-xs">
                       <input type="radio" checked={!isMonthly} onChange={() => setIsMonthly(false)} />
@@ -357,7 +395,7 @@ const MercurioPYMES = ({ disabledProvider }) => {
             </div>
           </div>
 
-          {/* DERECHA: Formulario “¡Adquiérelo ahora!” */}
+          {/* Columna Derecha: Formulario de Compra */}
           <div className="w-full lg:w-[40%]">
             <div className="bg-gray-50 p-6 rounded-lg shadow-lg h-full flex flex-col">
               <h2 className="text-xl font-bold text-teal-600 text-center mb-6">¡Adquiérelo ahora!</h2>
