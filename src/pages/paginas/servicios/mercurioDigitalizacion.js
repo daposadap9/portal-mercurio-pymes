@@ -329,7 +329,7 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
                             px-4 py-2 rounded-full
                             ${isMonthly
                               ? 'bg-teal-600 text-white'
-                              : 'bg-gray-200 text-gray-800'
+                              : 'bg-teal-600 text-gray-800'
                             }
                           `}
                           onClick={() => setIsMonthly(true)}
