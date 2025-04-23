@@ -129,7 +129,7 @@ const getIconForService = (serviceName) => {
   const name = serviceName.toLowerCase();
   if (name.includes("software")) return <FaLaptopCode className="mr-2 inline-block" />;
   if (name.includes("custodia")) return <FaBoxOpen className="mr-2 inline-block" />;
-  if (name.includes("digital")) return <FaRegImage className="mr-2 inline-block" />;
+  if (name.includes("digital"))  return <FaRegImage className="mr-2 inline-block" />;
   return null;
 };
 
@@ -146,7 +146,7 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
     ? false
     : (dropdownActive.services || dropdownActive.tramites);
 
-  // Formulario (derecha)
+  // Formulario de radicación (derecha)
   const [formData, setFormData] = useState({
     nombre: "",
     apellido: "",
@@ -157,49 +157,32 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
     opcionSeleccionada: "",
   });
 
-  // Cotizador (izquierda)
+  // Cotizador de digitalización (izquierda)
   const [digitalizacionOptions, setDigitalizacionOptions] = useState([]);
   const [leftSelectedId, setLeftSelectedId] = useState("");
-  const [leftOption, setLeftOption] = useState(null);
+  const [leftOption, setLeftOption]         = useState(null);
 
-  // Radicación
-  const [newRadicado, setNewRadicado] = useState(null);
+  // Mutations
   const [insertMertRecibido, { loading: loadingRad, error: radError }] = useMutation(INSERT_MERT_RECIBIDO);
+  const [savePayment, { loading: loadingPay, error: payError }]        = useMutation(SAVE_TRANSACTION);
 
-  // Guardar transacción para Pago
-  const [savePayment, { loading: loadingPay, error: payError }] = useMutation(SAVE_TRANSACTION);
-
-  // Cálculo de totales
-  const calculatedTotal = leftOption ? Number(leftOption.value) : 0;
+  // Totales
+  const calculatedTotal    = leftOption ? Number(leftOption.value) : 0;
   const calculatedDiscount = 0;
 
-  // Otros hooks
-  const { data } = useQuery(GET_SERVICES);
-  const [createService] = useMutation(CREATE_SERVICE);
-  const [createServiceOption] = useMutation(CREATE_SERVICE_OPTION);
-  const [updateServiceOption] = useMutation(UPDATE_SERVICE_OPTION);
-  const [deleteServiceOption] = useMutation(DELETE_SERVICE_OPTION);
-  const [updateService] = useMutation(UPDATE_SERVICE);
-  const [debounced] = useDebounce(leftOption, 500);
-
-  // Edit mode persisted
+  // Persistir editMode
   const [editMode, setEditMode] = useState(() => {
-    if (typeof window !== "undefined")
+    if (typeof window !== "undefined") {
       return JSON.parse(localStorage.getItem("editMode")) || false;
+    }
     return false;
   });
-  const [editingTitles, setEditingTitles] = useState({});
-  const [editedTitles, setEditedTitles] = useState({});
-
   useEffect(() => {
     if (typeof window !== "undefined") {
       localStorage.setItem("editMode", JSON.stringify(editMode));
     }
   }, [editMode]);
-
-  useEffect(() => {
-    if (user) setEditMode(true);
-  }, [user]);
+  useEffect(() => { if (user) setEditMode(true); }, [user]);
 
   // userId persistente
   const [userId] = useState(() => {
@@ -211,38 +194,41 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
     return uid;
   });
 
-  // Filtrar opciones de digitalización
+  // Cargar servicios y filtrar digitalización
+  const { data } = useQuery(GET_SERVICES);
   useEffect(() => {
-    if (data && data.services) {
+    if (data?.services) {
       const svc = data.services.find(s => s.name.toLowerCase().includes("digital"));
       if (svc) setDigitalizacionOptions(svc.options || []);
     }
   }, [data]);
 
-  // Actualizar contexto
+  // Actualizar contexto con la transacción actual
   useEffect(() => {
     updateTransaction(leftOption, calculatedTotal, calculatedDiscount);
-  }, [leftOption, calculatedTotal, calculatedDiscount, updateTransaction]);
+  }, [leftOption, calculatedTotal, calculatedDiscount]);
 
-  // Handlers
+  // Handler para el select de cotización
   const handleLeftSelect = (e) => {
     const id = e.target.value;
     setLeftSelectedId(id);
     setFormData(prev => ({ ...prev, opcionSeleccionada: id }));
-    if (id) {
-      const opt = digitalizacionOptions.find(o => o.id === id);
-      setLeftOption(opt || null);
-    } else {
-      setLeftOption(null);
-    }
+    const opt = digitalizacionOptions.find(o => o.id === id) || null;
+    setLeftOption(opt);
   };
 
+  // Handler genérico de inputs, sincroniza leftOption si cambió el select interno
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+    if (name === "opcionSeleccionada") {
+      setLeftSelectedId(value);
+      const opt = digitalizacionOptions.find(o => o.id === value) || null;
+      setLeftOption(opt);
+    }
   };
 
-  // Pago (izquierda)
+  // Botón “Cotizar” izquierdo
   const handlePayment = async () => {
     if (!leftOption) {
       alert("Por favor, seleccione un plan para cotizar.");
@@ -276,7 +262,7 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
     }
   };
 
-  // Radicar demo (derecha)
+  // Submit del formulario de radicación
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (
@@ -290,16 +276,17 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
       alert("Por favor, complete todos los campos obligatorios y seleccione un plan.");
       return;
     }
-    const chosen = digitalizacionOptions.find(o => o.id === formData.opcionSeleccionada);
-    const documentInfo = `${formData.nombre} - ${formData.apellido} - ${formData.entidad} - ${formData.email} - ${formData.telefono} - ${formData.observaciones} - ${chosen?.label || ""} - ${chosen?.value || 0}`;
+    // Construir documentInfo
+    const chosen              = digitalizacionOptions.find(o => o.id === formData.opcionSeleccionada);
+    const documentInfo        = `${formData.nombre} - ${formData.apellido} - ${formData.entidad} - ${formData.email} - ${formData.telefono} - ${formData.observaciones} - ${chosen?.label || ""} - ${chosen?.value || 0}`;
     const documentInfoGeneral = "Mercurio Digitalización";
+
     try {
       const { data } = await insertMertRecibido({
         variables: { documentInfo, documentInfoGeneral }
       });
       const result = data.insertMertRecibido;
       if (result.success) {
-        setNewRadicado(result.idDocumento);
         router.push({
           pathname: "/radicadoExitoso",
           query: {
@@ -325,7 +312,7 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
       <div className={`flex justify-center text-2xl md:text-4xl font-bold transition-all duration-500 ease-in-out text-teal-600 text-center titulo-shadow mb-10 ${isAnyDropdownActive ? "mt-24" : ""}`}>
         <div className="w-full lg:w-[85%] text-xl">
           <h1>
-            Olvídate de los documentos físicos, digitalízalos con nosotros. La Gestión Documental avanza y tu compañía también.
+            Olvídate de los documentos físicos, digitalízalos con nosotros. Seguridad, orden y accesibilidad.
           </h1>
         </div>
       </div>
@@ -335,24 +322,20 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
 
           {/* Izquierda: Cotizador */}
           <div className="w-full lg:w-[40%]">
-          <div className="lg:text-left bg-white bg-opacity-0 backdrop-blur-xl p-6 rounded-xl border border-white/30">
+            <div className="lg:text-left bg-white bg-opacity-0 backdrop-blur-xl p-6 rounded-xl border border-white/30">
               <p className="mb-4 text-xl font-bold text-black text-justify">
-                Digitalización de Documentos: Seguridad, Orden y Accesibilidad
+                Digitalización de Documentos: Seguridad y Accesibilidad
               </p>
               <p className="mb-4 leading-relaxed text-black text-base font-medium text-justify">
-                Dile adiós al desorden y al riesgo de pérdida de documentos. Con nuestro servicio de digitalización, transformamos tu archivo físico en un sistema seguro, accesible y eficiente.
+                Transforma tu archivo físico en un sistema digital seguro, accesible y eficiente.
               </p>
               <ul className="list-disc list-inside mb-4 text-black text-base font-medium text-justify">
-                <li>Organización y protección en formato digital.</li>
-                <li>Acceso rápido y respaldo seguro desde cualquier lugar.</li>
-                <li>Optimiza espacio y reduce costos.</li>
+                <li>Protección y respaldo permanente</li>
+                <li>Acceso rápido desde cualquier lugar</li>
+                <li>Reduce espacio y costos</li>
               </ul>
               <p className="mb-4 leading-relaxed text-black text-base font-medium text-justify">
-                Si estás interesado, en la sección{" "}
-                <Link href="/paginas/cotizaTuServicio" legacyBehavior>
-                  <a className="text-blue-600 underline">¡cotiza tu servicio!</a>
-                </Link>{" "}
-                podrás conocer los precios y planes. Recuerda que el valor total depende del número de folios a digitalizar.
+                En <Link href="/paginas/cotizaTuServicio"><a className="text-blue-600 underline">¡cotiza tu servicio!</a></Link> encontrarás precios según folios a digitalizar.
               </p>
             </div>
 
@@ -379,7 +362,7 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
               ) : (
                 <p className="mb-2 text-center">No se ha seleccionado un plan</p>
               )}
-                            <div className="mt-4 gap-2 flex justify-center">
+              <div className="mt-4 gap-2 flex justify-center">
                 <button
                   type="button"
                   onClick={handlePayment}
@@ -404,7 +387,7 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
               <h2 className="text-xl font-bold text-teal-600 text-center mb-6">¡Adquiérelo ahora!</h2>
               <form onSubmit={handleSubmit} className="flex flex-col gap-4 flex-1">
                 <div className="flex flex-col space-y-4">
-                <div className="flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0">
+                  <div className="flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0">
                     <input
                       type="text"
                       name="nombre"
