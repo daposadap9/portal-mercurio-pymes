@@ -22,17 +22,14 @@ const ServiciosAdicionales = () => {
     email: "",
     telefono: "",
     observaciones: "",
-    opcionSeleccionada: "Servicios adicionales"  // se mantiene en el objeto pero no se muestra un <select>
+    opcionSeleccionada: "Servicios adicionales"  // valor fijo
   });
 
   const [insertMertRecibido, { loading, error }] = useMutation(INSERT_MERT_RECIBIDO);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
@@ -49,7 +46,7 @@ const ServiciosAdicionales = () => {
       return;
     }
 
-    // Formar el string que espera la mutation
+    // Construir string para la mutation
     const documentInfo = [
       nombre,
       apellido,
@@ -59,7 +56,6 @@ const ServiciosAdicionales = () => {
       observaciones,
       opcionSeleccionada
     ].join(" - ");
-
     const documentInfoGeneral = "Servicios Adicionales";
 
     try {
@@ -83,8 +79,13 @@ const ServiciosAdicionales = () => {
         alert("Error: " + result.message);
       }
     } catch (err) {
-      console.error("Error al radicar:", err);
-      alert("Error al radicar");
+      // Manejo de 504 Gateway Timeout
+      if (err.networkError?.statusCode === 504) {
+        alert("No se pudo conectar con el servidor (504). Por favor, inténtalo más tarde.");
+      } else {
+        console.error("Error al radicar:", err);
+        alert("Error al radicar");
+      }
     }
   };
 
@@ -173,12 +174,12 @@ const ServiciosAdicionales = () => {
               value={formData.opcionSeleccionada}
             />
 
-            {/* Error */}
+            {/* Error de mutation */}
             {error && (
               <p className="text-red-600">Error al enviar: {error.message}</p>
             )}
 
-            {/* Botón */}
+            {/* Botón de envío */}
             <button
               type="submit"
               disabled={loading}
