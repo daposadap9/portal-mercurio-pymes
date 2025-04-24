@@ -22,8 +22,9 @@ const ServiciosAdicionales = () => {
     email: "",
     telefono: "",
     observaciones: "",
-    opcionSeleccionada: "Servicios adicionales"  // valor fijo
+    opcionSeleccionada: "Servicios adicionales" // valor fijo
   });
+  const [timeoutError, setTimeoutError] = useState(false);
 
   const [insertMertRecibido, { loading, error }] = useMutation(INSERT_MERT_RECIBIDO);
 
@@ -33,7 +34,9 @@ const ServiciosAdicionales = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e?.preventDefault();
+    setTimeoutError(false);
+
     const {
       nombre, apellido, entidad,
       email, telefono, observaciones,
@@ -81,7 +84,7 @@ const ServiciosAdicionales = () => {
     } catch (err) {
       // Manejo de 504 Gateway Timeout
       if (err.networkError?.statusCode === 504) {
-        alert("No se pudo conectar con el servidor (504). Por favor, inténtalo más tarde.");
+        setTimeoutError(true);
       } else {
         console.error("Error al radicar:", err);
         alert("Error al radicar");
@@ -106,6 +109,19 @@ const ServiciosAdicionales = () => {
           <h2 className="text-xl font-bold text-teal-600 text-center mb-6">
             ¡Adquiérelo ahora!
           </h2>
+
+          {timeoutError && (
+            <div className="mb-4 p-3 bg-yellow-100 text-yellow-800 rounded">
+              <p>Error de conexión (504). Por favor, revisa tu conexión y haz clic en “Reintentar”.</p>
+              <button
+                onClick={handleSubmit}
+                className="mt-2 bg-teal-500 text-white px-4 py-1 rounded hover:bg-teal-600"
+              >
+                Reintentar
+              </button>
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             {/* Datos personales */}
             <input
@@ -175,7 +191,7 @@ const ServiciosAdicionales = () => {
             />
 
             {/* Error de mutation */}
-            {error && (
+            {error && !timeoutError && (
               <p className="text-red-600">Error al enviar: {error.message}</p>
             )}
 
