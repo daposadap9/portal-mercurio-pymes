@@ -6,7 +6,7 @@ import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 const defaultMedia = [
   { type: 'video', publicId: 'imagen1' },
   { type: 'video', publicId: 'imagen2' },
-  { type: 'video', publicId: 'imagen3' }
+  { type: 'video', publicId: 'banner' }
   // Ejemplo de imagen (webm animado, por ejemplo):
   // { type: 'image', publicId: 'imagen4' }
 ];
