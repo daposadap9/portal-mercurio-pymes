@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
 // Definimos un arreglo de medios. En este ejemplo, son videos (o imágenes en webm)
-// Cada objeto tiene una propiedad "type" y "publicId". Usa únicamente el publicId (sin ruta completa).
+// Cada objeto tiene una propiedad "type" y "publicId". Usa únicamente el publicId (sin ruta completa)..
 const defaultMedia = [
   { type: 'video', publicId: 'imagen1' },
   { type: 'video', publicId: 'imagen2' },
