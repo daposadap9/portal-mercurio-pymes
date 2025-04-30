@@ -216,7 +216,7 @@ const Header = ({ handleNavigation, loading }) => {
   );
 
   return (
-    // Se aplica la clase "header-custom" para que los colores (background y texto) sean personalizables
+    // Se aplica la clase "header-custom" para que los colores (background y texto) sean personalizabless
     <header
       className="sticky top-0 w-full border-b border-teal-100 z-50 h-14 shadow-lg header-custom transition-colors duration-500"
     >

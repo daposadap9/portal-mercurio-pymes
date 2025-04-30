@@ -18,7 +18,7 @@ const defaultMedia = [
 const buildVideoUrl = (publicId) => {
   // Si los videos están en una carpeta "videos" dentro de public, usa:
   // return `/videos/${publicId}.webm`;
-  // Si están directamente en public, usa:
+  // Si están directamente en public, usa::
   return `/${publicId}.webm`;
 };
 
