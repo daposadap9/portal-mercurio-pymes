@@ -1,9 +1,13 @@
 // components/Card.jsx
 import React, { useContext } from 'react';
+import Image from 'next/image';
 import { FaDollarSign } from 'react-icons/fa';
 import { ThemeContext } from '../context/ThemeContext';
 
 const Card = ({
+  imageSrc,              // ruta de la imagen en /public
+  imageAlt = '',         // texto alternativo
+  imageClassName = '',   // clases extra para la imagen
   lines,
   borderColorClass = "hover:border-blue-400",
   titleColorClass = "text-black",
@@ -34,13 +38,24 @@ const Card = ({
         ${borderColorClass} ${bgClass} border border-white/30
       `}
     >
+      {/* Imagen en la parte superior */}
+      {imageSrc && (
+        <div className="relative w-full h-40 mb-4 overflow-hidden rounded-lg">
+          <Image
+            src={imageSrc}
+            alt={imageAlt}
+            fill
+            className={`object-cover ${imageClassName}`}
+          />
+        </div>
+      )}
+
       {badgeText && (
         <div className="absolute -top-2 -right-0 bg-black text-white text-xs font-bold px-2 py-1 rounded-full">
           {badgeText}
         </div>
       )}
 
-      {/* Contenido principal con flex-1 para ocupar el espacio */}
       <div className="flex-1 w-full text-left break-words whitespace-normal">
         <ul className="space-y-2">
           {lines.map((line, index) => {
@@ -51,16 +66,13 @@ const Card = ({
                 <span className={`mr-2 text-xl ${iconColorClass}`}>
                   {icon}
                 </span>
-                <span className="text-black">
-                  {text}
-                </span>
+                <span className="text-black">{text}</span>
               </li>
             );
           })}
         </ul>
       </div>
 
-      {/* Botones en la parte inferior */}
       {showViewMore && (
         <div className="mt-4 w-full">
           <button
