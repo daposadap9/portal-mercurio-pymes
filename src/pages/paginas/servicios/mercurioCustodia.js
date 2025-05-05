@@ -390,7 +390,7 @@ const MercurioCustodia = ({ disabledProvider }) => {
                   onClick={handlePayment}
                   className="bg-teal-500 text-white px-6 py-2 rounded-full hover:bg-teal-600 transition-colors"
                 >
-                  Cotizar
+                  Conoce el detalle
                 </button>
                 <button
                   type="button"
