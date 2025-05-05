@@ -305,7 +305,7 @@ const MercurioPYMES = ({ disabledProvider }) => {
     <div className="min-h-full flex flex-col items-center px-2 md:px-0">
       {/* Título Principal */}
       <div className={`flex justify-center text-2xl md:text-4xl font-bold transition-all duration-500 ease-in-out text-teal-600 text-center titulo-shadow mb-10 ${isAnyDropdownActive ? "mt-24" : ""}`}>
-        <div className="w-full lg:w-[85%] text-xl">
+        <div className="w-full lg:w-[85%] w-full text-xl">
           <h1>
             Mercurio PYMES es una forma ágil, fácil y práctica para la gestión documental de pequeñas y medianas empresas.
           </h1>

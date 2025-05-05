@@ -250,7 +250,7 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
             duration-500 ease-in-out text-teal-600 text-center titulo-shadow mb-10
             ${isAnyDropdownActive ? "mt-24" : ""}
           `}>
-            <div className="w-full lg:w-[85%] text-xl">
+            <div className="w-full lg:w-[85%] text-xl w-full">
               <h1>
                 Olvídate de los documentos físicos, digitalízalos con nosotros.
                 Seguridad, orden y accesibilidad.
