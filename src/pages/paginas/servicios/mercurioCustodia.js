@@ -372,7 +372,7 @@ const MercurioCustodia = ({ disabledProvider }) => {
                 <option value="">-- Escoge un plan --</option>
                 {custodiaOptions.map(option => (
                   <option key={option.id} value={option.id}>
-                    {option.label} — ${Number(option.value).toLocaleString("es-ES")}
+                    {option.label} Desde ${Number(option.value).toLocaleString("es-ES")}
                   </option>
                 ))}
               </select>
@@ -385,13 +385,13 @@ const MercurioCustodia = ({ disabledProvider }) => {
                 <p className="mb-2 text-center">No se ha seleccionado un plan</p>
               )}
               <div className="mt-4 gap-2 flex justify-center">
-                <button
+                {/*<button
                   type="button"
                   onClick={handlePayment}
                   className="bg-teal-500 text-white px-6 py-2 rounded-full hover:bg-teal-600 transition-colors"
                 >
                   Conoce el detalle
-                </button>
+                </button>*/}
                 <button
                   type="button"
                   onClick={() => router.push("/paginas/contactanos")}

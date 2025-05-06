@@ -43,17 +43,8 @@ const RadicadoExitoso = () => {
             <span className="font-semibold">Radicado por:</span> {nombre}
           </p>
           <p className="text-lg">
-            <span className="font-semibold">Fecha agendada:</span> {fecha}
-          </p>
-          <p className="text-lg">
             <span className="font-semibold">Observaciones:</span> {observaciones}
           </p>
-        </div>
-        <div className="border-t mt-6 pt-4 text-left">
-          <h2 className="text-xl font-bold mb-2">Información del Formulario</h2>
-          <pre className="bg-gray-100 p-4 rounded text-sm overflow-auto max-h-60">
-            {documentInfo}
-          </pre>
         </div>
         <div className="mt-6">
           <button

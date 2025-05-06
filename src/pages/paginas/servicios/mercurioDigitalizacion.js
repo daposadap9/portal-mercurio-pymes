@@ -301,7 +301,7 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
                     <option value="">-- Escoge un plan --</option>
                     {options.map(opt => (
                       <option key={opt.id} value={opt.id}>
-                        {opt.label} — ${Number(opt.value).toLocaleString("es-ES")}
+                        {opt.label} Desde ${Number(opt.value).toLocaleString("es-ES")}
                         {opt.startup > 0 ? ` + Startup: $${Number(opt.startup).toLocaleString("es-ES")}` : ""}
                       </option>
                     ))}
@@ -343,13 +343,13 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
 
 
                   <div className="mt-4 gap-2 flex justify-center">
-                    <button
+                    {/*<button
                       type="button"
                       onClick={handlePayment}
                       className="bg-teal-500 text-white px-6 py-2 rounded-full hover:bg-teal-600 transition-colors"
                     >
                       Conoce el detalle 
-                    </button>
+                    </button>*/}
                     <button
                       type="button"
                       onClick={() => router.push("/paginas/contactanos")}

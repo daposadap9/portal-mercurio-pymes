@@ -6,7 +6,9 @@ import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 const defaultMedia = [
   { type: 'video', publicId: 'imagen1' },
   { type: 'video', publicId: 'imagen2' },
-  { type: 'video', publicId: 'banner' }
+  { type: 'video', publicId: 'banner' },
+  { type: 'video', publicId: 'banner' },
+  { type: 'video', publicId: 'banner2' }
   // Ejemplo de imagen (webm animado, por ejemplo):
   // { type: 'image', publicId: 'imagen4' }
 ];
@@ -98,7 +100,7 @@ const Slider = ({ media = defaultMedia, autoPlay = false, autoPlayTime = 3000 })
       {/* Botón de flecha izquierda */}
       <button
         onClick={prevSlide}
-        className="absolute top-1/2 left-4 transform -translate-y-1/2 text-gray-950 bg-teal-500 shadow-md bg-opacity-80 p-3 rounded-full hover:bg-opacity-75 z-10"
+        className="absolute top-1/2 left-4 transform -translate-y-1/2 text-white bg-teal-500 shadow-md bg-opacity-80 p-3 rounded-full hover:bg-opacity-75 z-10"
       >
         <FaChevronLeft size={20} />
       </button>
@@ -106,7 +108,7 @@ const Slider = ({ media = defaultMedia, autoPlay = false, autoPlayTime = 3000 })
       {/* Botón de flecha derecha */}
       <button
         onClick={nextSlide}
-        className="absolute top-1/2 right-4 transform -translate-y-1/2 text-gray-950 bg-teal-500 shadow-md bg-opacity-80 p-3 rounded-full hover:bg-opacity-75 z-10"
+        className="absolute top-1/2 right-4 transform -translate-y-1/2 text-white bg-teal-500 shadow-md bg-opacity-80 p-3 rounded-full hover:bg-opacity-75 z-10"
       >
         <FaChevronRight size={20} />
       </button>
