@@ -507,7 +507,7 @@ const CotizaTuServicio = ({ disabledProvider }) => {
                 <option value="">-- Selecciona una opción --</option>
                 {editableOptions[svc.id]?.map(o => (
                   <option key={o.id} value={o.id}>
-                  {o.label} — ${o.value.toLocaleString("es-ES")}
+                  {o.label} Desde ${o.value.toLocaleString("es-ES")}
                   { svc.name.toLowerCase().includes("software") && o.startup
                       ? ` + Startup: $${o.startup.toLocaleString("es-ES")}`
                       : "" }
