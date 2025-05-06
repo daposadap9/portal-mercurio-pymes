@@ -476,7 +476,7 @@ const MercurioPYMES = ({ disabledProvider }) => {
                     <option value="">-- Escoge un plan --</option>
                     {softwareOptions.map(o => (
                       <option key={o.id} value={o.id}>
-                        {o.label} — ${Number(o.value).toLocaleString("es-ES")}
+                        {o.label} Desde ${Number(o.value).toLocaleString("es-ES")}
                         {o.startup ? ` + Startup: $${Number(o.startup).toLocaleString("es-ES")}` : ""}
                       </option>
                     ))}

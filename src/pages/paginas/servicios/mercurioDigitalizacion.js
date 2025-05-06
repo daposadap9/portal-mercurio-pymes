@@ -450,7 +450,7 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
                         <option value="">-- Escoge un plan --</option>
                         {options.map(o => (
                           <option key={o.id} value={o.id}>
-                            {o.label} — ${Number(o.value).toLocaleString("es-ES")}
+                            {o.label} Desde ${Number(o.value).toLocaleString("es-ES")}
                           </option>
                         ))}
                       </select>

@@ -487,7 +487,7 @@ const MercurioCustodia = ({ disabledProvider }) => {
                     <option value="">-- Escoge un plan --</option>
                     {custodiaOptions.map(option => (
                       <option key={option.id} value={option.id}>
-                        {option.label} — ${Number(option.value).toLocaleString("es-ES")}
+                        {option.label} Desde ${Number(option.value).toLocaleString("es-ES")}
                         {option.startup > 0
                           ? ` + Startup: $${Number(option.startup).toLocaleString("es-ES")}`
                           : ""}
