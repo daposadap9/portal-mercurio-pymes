@@ -599,7 +599,7 @@ const CotizaTuServicio = ({ disabledProvider }) => {
                 if (!sel) return null;
                 return (
                   <li key={svc.id}>
-                    <strong>{svc.name}:</strong> {sel.label} - $
+                    <strong>{svc.name}:</strong> {sel.label} Desde $
                     {Number(sel.value).toLocaleString("es-ES")}
                     {svc.name.toLowerCase().includes("software") && sel.startup
                       ? ` + Startup: $${Number(sel.startup).toLocaleString("es-ES")}`
