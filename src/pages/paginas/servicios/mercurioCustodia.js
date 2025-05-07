@@ -371,24 +371,23 @@ const MercurioCustodia = ({ disabledProvider }) => {
               >
                 <option value="">-- Escoge un plan --</option>
                 {custodiaOptions.map(opt => {
-                  // 1) Extraer número de cajas de opt.label
-                  const numImages = parseInt(
-                    opt.label.replace(/\D/g, ''),  // elimina todo lo que no sea dígito
-                    10
-                  ) || 1;                          // en caso de fallo, al menos 1 evita división por cero
+  // 1) Obtener todos los números de la etiqueta y quedarnos con el último
+  const matches = opt.label.match(/\d+/g) || [];
+  const numBoxes = parseInt(matches.pop() || "1", 10);
 
-                  // 2) Precio anual
-                  const annualPrice = Number(opt.value);
+  // 2) Precio anual (o total mensual si así lo defines)
+  const annualPrice = Number(opt.value);
 
-                  // 3) Calcular precio por imagen (redondeado al entero más cercano)
-                  const perImage = Math.round(annualPrice / numImages);
+  // 3) Calcular precio por caja
+  const perBox = Math.round(annualPrice / numBoxes);
 
-                  return (
-                    <option key={opt.id} value={opt.id}>
-                      {`${numImages.toLocaleString('es-ES')} cajas Desde $${perImage.toLocaleString('es-ES')} C/U, total: $${annualPrice.toLocaleString('es-ES')} mensual`}
-                    </option>
-                  );
-                })}
+  return (
+    <option key={opt.id} value={opt.id}>
+      {`${numBoxes.toLocaleString('es-ES')} cajas • Desde $${perBox.toLocaleString('es-ES')} C/U, total: $${annualPrice.toLocaleString('es-ES')} mensual`}
+    </option>
+  );
+})}
+
               </select>
               {leftOption ? (
                 <>
@@ -500,24 +499,23 @@ const MercurioCustodia = ({ disabledProvider }) => {
                   >
                     <option value="">-- Escoge un plan --</option>
                     {custodiaOptions.map(opt => {
-                  // 1) Extraer número de cajas de opt.label
-                  const numImages = parseInt(
-                    opt.label.replace(/\D/g, ''),  // elimina todo lo que no sea dígito
-                    10
-                  ) || 1;                          // en caso de fallo, al menos 1 evita división por cero
+                    // 1) Obtener todos los números de la etiqueta y quedarnos con el último
+                    const matches = opt.label.match(/\d+/g) || [];
+                    const numBoxes = parseInt(matches.pop() || "1", 10);
 
-                  // 2) Precio anual
-                  const annualPrice = Number(opt.value);
+                    // 2) Precio anual (o total mensual si así lo defines)
+                    const annualPrice = Number(opt.value);
 
-                  // 3) Calcular precio por imagen (redondeado al entero más cercano)
-                  const perImage = Math.round(annualPrice / numImages);
+                    // 3) Calcular precio por caja
+                    const perBox = Math.round(annualPrice / numBoxes);
 
-                  return (
-                    <option key={opt.id} value={opt.id}>
-                      {`${numImages.toLocaleString('es-ES')} cajas Desde $${perImage.toLocaleString('es-ES')} C/U, total: $${annualPrice.toLocaleString('es-ES')} mensual`}
-                    </option>
-                  );
-                })}
+                    return (
+                      <option key={opt.id} value={opt.id}>
+                        {`${numBoxes.toLocaleString('es-ES')} cajas • Desde $${perBox.toLocaleString('es-ES')} C/U, total: $${annualPrice.toLocaleString('es-ES')} mensual`}
+                      </option>
+                    );
+                  })}
+
                   </select>
                 </div>
 
