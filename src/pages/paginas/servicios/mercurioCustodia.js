@@ -383,7 +383,7 @@ const MercurioCustodia = ({ disabledProvider }) => {
 
   return (
     <option key={opt.id} value={opt.id}>
-      {`${numBoxes.toLocaleString('es-ES')} cajas • Desde $${perBox.toLocaleString('es-ES')} C/U, total: $${annualPrice.toLocaleString('es-ES')} mensual`}
+      {`${numBoxes.toLocaleString('es-ES')} cajas Desde $${perBox.toLocaleString('es-ES')} C/U, total: $${annualPrice.toLocaleString('es-ES')} mensual`}
     </option>
   );
 })}
@@ -511,7 +511,7 @@ const MercurioCustodia = ({ disabledProvider }) => {
 
                     return (
                       <option key={opt.id} value={opt.id}>
-                        {`${numBoxes.toLocaleString('es-ES')} cajas • Desde $${perBox.toLocaleString('es-ES')} C/U, total: $${annualPrice.toLocaleString('es-ES')} mensual`}
+                        {`${numBoxes.toLocaleString('es-ES')} cajas Desde $${perBox.toLocaleString('es-ES')} C/U, total: $${annualPrice.toLocaleString('es-ES')} mensual`}
                       </option>
                     );
                   })}
