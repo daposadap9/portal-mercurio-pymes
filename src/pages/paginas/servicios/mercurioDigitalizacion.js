@@ -459,7 +459,7 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
                       // 1) Extraer número de imágenes de opt.id
                       const numImages = parseInt(opt.id.replace(/\D/g, ''), 10) || 0;
                       // 2) Hacer la división (imágenes / precio anual)
-                      const division = (numImages / Number(opt.value)).toFixed(2);
+                      const division = (Number(opt.value)).toFixed(2) / numImages;
 
                       return (
                         <option key={opt.id} value={opt.id}>
