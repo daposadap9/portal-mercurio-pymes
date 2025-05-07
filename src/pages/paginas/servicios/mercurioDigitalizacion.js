@@ -314,7 +314,7 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
 
   return (
     <option key={opt.id} value={opt.id}>
-      {`${numImages.toLocaleString('es-ES')} imágenes • Desde $${perImage.toLocaleString('es-ES')} C/U, total: $${annualPrice.toLocaleString('es-ES')}`}
+      {`${numImages.toLocaleString('es-ES')} imágenes Desde $${perImage.toLocaleString('es-ES')} C/U, total: $${annualPrice.toLocaleString('es-ES')}`}
     </option>
   );
 })}
@@ -478,7 +478,7 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
 
   return (
     <option key={opt.id} value={opt.id}>
-      {`${numImages.toLocaleString('es-ES')} imágenes • Desde $${perImage.toLocaleString('es-ES')} C/U, total: $${annualPrice.toLocaleString('es-ES')}`}
+      {`${numImages.toLocaleString('es-ES')} imágenes Desde $${perImage.toLocaleString('es-ES')} C/U, total: $${annualPrice.toLocaleString('es-ES')}`}
     </option>
   );
 })}
