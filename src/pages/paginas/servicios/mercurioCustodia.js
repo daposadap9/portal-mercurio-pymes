@@ -383,8 +383,6 @@ const MercurioCustodia = ({ disabledProvider }) => {
               </select>
               {leftOption ? (
                 <>
-                  <p className="mb-2 text-center"><strong>Opción:</strong> {leftOption.label}</p>
-                  <p className="mb-2 text-center"><strong>Precio:</strong> ${Number(leftOption.value).toLocaleString("es-ES")}</p>
                 </>
               ) : (
                 <p className="mb-2 text-center">No se ha seleccionado un plan</p>

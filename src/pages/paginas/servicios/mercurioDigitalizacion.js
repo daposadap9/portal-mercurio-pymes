@@ -322,40 +322,6 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
 
                   </select>
 
-                  {selectedOpt && (
-                    <>
-                      <div className="mb-4 flex justify-center space-x-8">
-                        <label className="flex items-center space-x-2 text-sm">
-                          <input
-                            type="radio"
-                            name="billingPeriod"
-                            checked={!isMonthly}
-                            onChange={() => setIsMonthly(false)}
-                            className="form-radio"
-                          />
-                          <span>Pago Anual</span>
-                        </label>
-                        <label className="flex items-center space-x-2 text-sm">
-                          <input
-                            type="radio"
-                            name="billingPeriod"
-                            checked={isMonthly}
-                            onChange={() => setIsMonthly(true)}
-                            className="form-radio"
-                          />
-                          <span>Mensual: ${monthlyPrice.toLocaleString("es-ES")}/mes</span>
-                        </label>
-                      </div>
-                      <p className="mb-2 text-center">
-                        <strong>Opciones:</strong> {selectedOpt.label}
-                      </p>
-                      <p className="mb-2 text-center">
-                        <strong>Precio {isMonthly ? '(mensual)' : '(anual)'}:</strong> $
-                        {displayTotal.toLocaleString("es-ES")}
-                      </p>
-                    </>
-                  )}
-
 
                   <div className="mt-4 gap-2 flex justify-center">
                     {/*<button
