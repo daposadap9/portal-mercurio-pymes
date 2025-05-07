@@ -356,21 +356,6 @@ const MercurioPYMES = ({ disabledProvider }) => {
               </select>
               {leftOption ? (
                 <>
-                  <p className="mb-2 text-center"><strong>Opción:</strong> {leftOption.label}</p>
-                  <p className="mb-2 text-center"><strong>Precio:</strong> ${Number(leftOption.value).toLocaleString("es-ES")}</p>
-                  <p className="mb-2 text-center"><strong>Startup:</strong> ${Number(leftOption.startup).toLocaleString("es-ES")} (único Pago)</p>
-                  <p className="mb-2 text-center"><strong>Total, Inversión Anual:</strong> ${annualTotal.toLocaleString("es-ES")}</p>
-                  <p className="mb-2 text-center"><strong>Pago mensual:</strong> ${monthlyPayment.toLocaleString("es-ES",{ minimumFractionDigits:2, maximumFractionDigits:2 })}</p>
-                  <div className="flex justify-center gap-4 mb-4">
-                    <label className="flex items-center space-x-1 text-xs">
-                      <input type="radio" checked={!isMonthly} onChange={() => setIsMonthly(false)} />
-                      <span>Anual</span>
-                    </label>
-                    <label className="flex items-center space-x-1 text-xs">
-                      <input type="radio" checked={isMonthly} onChange={() => setIsMonthly(true)} />
-                      <span>Mensual</span>
-                    </label>
-                  </div>
                 </>
               ) : (
                 <p className="mb-2 text-center">No se ha seleccionado un plan</p>
