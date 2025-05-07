@@ -370,11 +370,25 @@ const MercurioCustodia = ({ disabledProvider }) => {
                 onChange={handleLeftSelect}
               >
                 <option value="">-- Escoge un plan --</option>
-                {custodiaOptions.map(option => (
-                  <option key={option.id} value={option.id}>
-                    {option.label} Desde ${Number(option.value).toLocaleString("es-ES")}
-                  </option>
-                ))}
+                {custodiaOptions.map(opt => {
+                  // 1) Extraer número de cajas de opt.label
+                  const numImages = parseInt(
+                    opt.label.replace(/\D/g, ''),  // elimina todo lo que no sea dígito
+                    10
+                  ) || 1;                          // en caso de fallo, al menos 1 evita división por cero
+
+                  // 2) Precio anual
+                  const annualPrice = Number(opt.value);
+
+                  // 3) Calcular precio por imagen (redondeado al entero más cercano)
+                  const perImage = Math.round(annualPrice / numImages);
+
+                  return (
+                    <option key={opt.id} value={opt.id}>
+                      {`${numImages.toLocaleString('es-ES')} cajas Desde $${perImage.toLocaleString('es-ES')} C/U, total: $${annualPrice.toLocaleString('es-ES')} mensual`}
+                    </option>
+                  );
+                })}
               </select>
               {leftOption ? (
                 <>
@@ -485,14 +499,25 @@ const MercurioCustodia = ({ disabledProvider }) => {
                     className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
                   >
                     <option value="">-- Escoge un plan --</option>
-                    {custodiaOptions.map(option => (
-                      <option key={option.id} value={option.id}>
-                        {option.label} Desde ${Number(option.value).toLocaleString("es-ES")}
-                        {option.startup > 0
-                          ? ` + Startup: $${Number(option.startup).toLocaleString("es-ES")}`
-                          : ""}
-                      </option>
-                    ))}
+                    {custodiaOptions.map(opt => {
+                  // 1) Extraer número de cajas de opt.label
+                  const numImages = parseInt(
+                    opt.label.replace(/\D/g, ''),  // elimina todo lo que no sea dígito
+                    10
+                  ) || 1;                          // en caso de fallo, al menos 1 evita división por cero
+
+                  // 2) Precio anual
+                  const annualPrice = Number(opt.value);
+
+                  // 3) Calcular precio por imagen (redondeado al entero más cercano)
+                  const perImage = Math.round(annualPrice / numImages);
+
+                  return (
+                    <option key={opt.id} value={opt.id}>
+                      {`${numImages.toLocaleString('es-ES')} cajas Desde $${perImage.toLocaleString('es-ES')} C/U, total: $${annualPrice.toLocaleString('es-ES')} mensual`}
+                    </option>
+                  );
+                })}
                   </select>
                 </div>
 

@@ -333,7 +333,7 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
                             onChange={() => setIsMonthly(false)}
                             className="form-radio"
                           />
-                          <span>Pago único</span>
+                          <span>Pago Anual</span>
                         </label>
                         <label className="flex items-center space-x-2 text-sm">
                           <input
@@ -351,7 +351,7 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
                       </p>
                       <p className="mb-2 text-center">
                         <strong>Precio {isMonthly ? '(mensual)' : '(anual)'}:</strong> $
-                        {displayTotal.toLocaleString("es-ES")}
+                        `{displayTotal.toLocaleString("es-ES")}`
                       </p>
                     </>
                   )}
