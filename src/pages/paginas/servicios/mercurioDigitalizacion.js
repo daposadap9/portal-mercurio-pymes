@@ -351,7 +351,7 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
                       </p>
                       <p className="mb-2 text-center">
                         <strong>Precio {isMonthly ? '(mensual)' : '(anual)'}:</strong> $
-                        `{displayTotal.toLocaleString("es-ES")}`
+                        {displayTotal.toLocaleString("es-ES")}
                       </p>
                     </>
                   )}

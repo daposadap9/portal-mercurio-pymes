@@ -371,14 +371,14 @@ const MercurioCustodia = ({ disabledProvider }) => {
               >
                 <option value="">-- Escoge un plan --</option>
                 {custodiaOptions.map(opt => {
-    const monthlyPrice = Number(opt.value);
+                const monthlyPrice = Number(opt.value);
 
-    return (
-      <option key={opt.id} value={opt.id}>
-        {`${opt.label} Desde $${opt.value} mensual`}
-      </option>
-    );
-  })}
+                return (
+                  <option key={opt.id} value={opt.id}>
+                    {`${opt.label} Desde $${opt.value} mensual`}
+                  </option>
+                );
+              })}
 
               </select>
               {leftOption ? (
