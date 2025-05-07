@@ -572,7 +572,7 @@ const CotizaTuServicio = ({ disabledProvider }) => {
         {/* Botón Cotizar */}
         <div className="flex justify-center">
           <button
-            onClick={router.push("/paginas/contactanos")}
+            onClick={()=> router.push("/paginas/contactanos")}
             className="bg-teal-500 text-white px-6 py-2 rounded-full hover:bg-teal-600 transition-colors mt-2"
           >
             conoce el detalle
