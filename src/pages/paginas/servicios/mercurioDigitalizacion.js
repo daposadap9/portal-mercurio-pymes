@@ -314,7 +314,7 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
 
   return (
     <option key={opt.id} value={opt.id}>
-      {`${opt.label} Desde $${opt.value.toLocaleString('es-ES')} C/U`}
+      {`${opt.label} Desde $${perImage} C/U`}
     </option>
   );
 })}
@@ -478,7 +478,7 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
 
   return (
     <option key={opt.id} value={opt.id}>
-      {`${opt.label} Desde $${opt.value.toLocaleString('es-ES')} C/U`}
+      {`${opt.label} Desde $${perImage} C/U`}
     </option>
   );
 })}
