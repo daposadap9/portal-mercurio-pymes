@@ -300,22 +300,25 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
                   >
                     <option value="">-- Escoge un plan --</option>
                     {options.map(opt => {
-    // 1) Extraer número de imágenes de opt.id
-    const numImages = parseInt(opt.id.replace(/\D/g, ''), 10) || 0;
+  // 1) Extraer número de imágenes de opt.label
+  const numImages = parseInt(
+    opt.label.replace(/\D/g, ''),  // elimina todo lo que no sea dígito
+    10
+  ) || 1;                          // en caso de fallo, al menos 1 evita división por cero
 
-    // 2) Calcular división (precio anual / número de imágenes)
-    const rawDivision = numImages > 0
-      ? Number(opt.value) / numImages
-      : 0;
-    // 3) Redondear al entero más cercano (o usa Math.floor/Math.ceil si lo prefieres)
-    const division = Math.round(rawDivision);
+  // 2) Precio anual
+  const annualPrice = Number(opt.value);
 
-    return (
-      <option key={opt.id} value={opt.id}>
-        {`${numImages} imágenes • Desde $${division.toLocaleString('es-ES')} C/U, total: $${Number(opt.value).toLocaleString('es-ES')}`}
-      </option>
-    );
-  })}
+  // 3) Calcular precio por imagen (redondeado al entero más cercano)
+  const perImage = Math.round(annualPrice / numImages);
+
+  return (
+    <option key={opt.id} value={opt.id}>
+      {`${numImages.toLocaleString('es-ES')} imágenes • Desde $${perImage.toLocaleString('es-ES')} C/U, total: $${annualPrice.toLocaleString('es-ES')}`}
+    </option>
+  );
+})}
+
 
                   </select>
 
@@ -461,22 +464,25 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
                       >
                         <option value="">-- Escoge un plan --</option>
                         {options.map(opt => {
-    // 1) Extraer número de imágenes de opt.id
-    const numImages = parseInt(opt.id.replace(/\D/g, ''), 10) || 0;
+  // 1) Extraer número de imágenes de opt.label
+  const numImages = parseInt(
+    opt.label.replace(/\D/g, ''),  // elimina todo lo que no sea dígito
+    10
+  ) || 1;                          // en caso de fallo, al menos 1 evita división por cero
 
-    // 2) Calcular división (precio anual / número de imágenes)
-    const rawDivision = numImages > 0
-      ? Number(opt.value) / numImages
-      : 0;
-    // 3) Redondear al entero más cercano (o usa Math.floor/Math.ceil si lo prefieres)
-    const division = Math.round(rawDivision);
+  // 2) Precio anual
+  const annualPrice = Number(opt.value);
 
-    return (
-      <option key={opt.id} value={opt.id}>
-        {`${numImages} imágenes • Desde $${division.toLocaleString('es-ES')} C/U, total: $${Number(opt.value).toLocaleString('es-ES')}`}
-      </option>
-    );
-  })}
+  // 3) Calcular precio por imagen (redondeado al entero más cercano)
+  const perImage = Math.round(annualPrice / numImages);
+
+  return (
+    <option key={opt.id} value={opt.id}>
+      {`${numImages.toLocaleString('es-ES')} imágenes • Desde $${perImage.toLocaleString('es-ES')} C/U, total: $${annualPrice.toLocaleString('es-ES')}`}
+    </option>
+  );
+})}
+
                       </select>
                       {formData.opcionSeleccionada && (
                         <div className="flex justify-center gap-4 mt-2 text-xs">
