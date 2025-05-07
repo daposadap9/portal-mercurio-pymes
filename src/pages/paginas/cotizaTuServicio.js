@@ -508,9 +508,6 @@ const CotizaTuServicio = ({ disabledProvider }) => {
                 {editableOptions[svc.id]?.map(o => (
                   <option key={o.id} value={o.id}>
                   {o.label} Desde ${o.value.toLocaleString("es-ES")}
-                  { svc.name.toLowerCase().includes("software") && o.startup
-                      ? ` + Startup: $${o.startup.toLocaleString("es-ES")}`
-                      : "" }
                 </option>
                 ))}
               </select>
@@ -528,10 +525,6 @@ const CotizaTuServicio = ({ disabledProvider }) => {
                   {svc.name.toLowerCase().includes("software") && localServices[svc.id].startup && (
                     <div className="flex items-center">
                       <FaRocket className="text-teal-500 mr-2 text-xl" />
-                      <span className="font-bold">Startup:</span>
-                      <span className="ml-2 text-xl font-extrabold">
-                        ${Number(localServices[svc.id].startup).toLocaleString("es-ES")}
-                      </span>
                     </div>
                   )}
                 </div>
@@ -579,7 +572,7 @@ const CotizaTuServicio = ({ disabledProvider }) => {
         {/* Botón Cotizar */}
         <div className="flex justify-center">
           <button
-            onClick={handlePayment}
+            onClick={router.push("/paginas/contactanos")}
             className="bg-teal-500 text-white px-6 py-2 rounded-full hover:bg-teal-600 transition-colors mt-2"
           >
             conoce el detalle
@@ -601,9 +594,6 @@ const CotizaTuServicio = ({ disabledProvider }) => {
                   <li key={svc.id}>
                     <strong>{svc.name}:</strong> {sel.label} Desde $
                     {Number(sel.value).toLocaleString("es-ES")}
-                    {svc.name.toLowerCase().includes("software") && sel.startup
-                      ? ` + Startup: $${Number(sel.startup).toLocaleString("es-ES")}`
-                      : ""}
                   </li>
                 );
               })}
