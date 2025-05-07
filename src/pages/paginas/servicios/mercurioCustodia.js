@@ -371,22 +371,27 @@ const MercurioCustodia = ({ disabledProvider }) => {
               >
                 <option value="">-- Escoge un plan --</option>
                 {custodiaOptions.map(opt => {
-  // 1) Obtener todos los números de la etiqueta y quedarnos con el último
-  const matches = opt.label.match(/\d+/g) || [];
-  const numBoxes = parseInt(matches.pop() || "1", 10);
+    // 1) Extraer todos los números de la etiqueta y quedarnos con el último
+    const matches = opt.label.match(/\d+/g) || [];
+    const numBoxes = parseInt(matches.pop() || "1", 10);
 
-  // 2) Precio anual (o total mensual si así lo defines)
-  const annualPrice = Number(opt.value);
+    // 2) Precio mensual que viene en opt.value
+    const monthlyPrice = Number(opt.value);
 
-  // 3) Calcular precio por caja
-  const perBox = Math.round(annualPrice / numBoxes);
+    // 3) Calcular precio por caja y redondear
+    const perBox = Math.round(monthlyPrice / numBoxes);
 
-  return (
-    <option key={opt.id} value={opt.id}>
-      {`${numBoxes.toLocaleString('es-ES')} cajas Desde $${perBox.toLocaleString('es-ES')} C/U, total: $${annualPrice.toLocaleString('es-ES')} mensual`}
-    </option>
-  );
-})}
+    // 4) Formatear todo con separadores de miles
+    const numBoxesFmt     = numBoxes.toLocaleString("es-ES");
+    const perBoxFmt       = perBox.toLocaleString("es-ES");
+    const monthlyPriceFmt = monthlyPrice.toLocaleString("es-ES");
+
+    return (
+      <option key={opt.id} value={opt.id}>
+        {`${numBoxesFmt} cajas • Desde $${perBoxFmt} C/U, total: $${monthlyPriceFmt} mensual`}
+      </option>
+    );
+  })}
 
               </select>
               {leftOption ? (
@@ -499,22 +504,27 @@ const MercurioCustodia = ({ disabledProvider }) => {
                   >
                     <option value="">-- Escoge un plan --</option>
                     {custodiaOptions.map(opt => {
-                    // 1) Obtener todos los números de la etiqueta y quedarnos con el último
-                    const matches = opt.label.match(/\d+/g) || [];
-                    const numBoxes = parseInt(matches.pop() || "1", 10);
+    // 1) Extraer todos los números de la etiqueta y quedarnos con el último
+    const matches = opt.label.match(/\d+/g) || [];
+    const numBoxes = parseInt(matches.pop() || "1", 10);
 
-                    // 2) Precio anual (o total mensual si así lo defines)
-                    const annualPrice = Number(opt.value);
+    // 2) Precio mensual que viene en opt.value
+    const monthlyPrice = Number(opt.value);
 
-                    // 3) Calcular precio por caja
-                    const perBox = Math.round(annualPrice / numBoxes);
+    // 3) Calcular precio por caja y redondear
+    const perBox = Math.round(monthlyPrice / numBoxes);
 
-                    return (
-                      <option key={opt.id} value={opt.id}>
-                        {`${numBoxes.toLocaleString('es-ES')} cajas Desde $${perBox.toLocaleString('es-ES')} C/U, total: $${annualPrice.toLocaleString('es-ES')} mensual`}
-                      </option>
-                    );
-                  })}
+    // 4) Formatear todo con separadores de miles
+    const numBoxesFmt     = numBoxes.toLocaleString("es-ES");
+    const perBoxFmt       = perBox.toLocaleString("es-ES");
+    const monthlyPriceFmt = monthlyPrice.toLocaleString("es-ES");
+
+    return (
+      <option key={opt.id} value={opt.id}>
+        {`${numBoxesFmt} cajas • Desde $${perBoxFmt} C/U, total: $${monthlyPriceFmt} mensual`}
+      </option>
+    );
+  })}
 
                   </select>
                 </div>
