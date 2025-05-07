@@ -299,12 +299,19 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
                     onChange={handleSelect}
                   >
                     <option value="">-- Escoge un plan --</option>
-                    {options.map(opt => (
-                      <option key={opt.id} value={opt.id}>
-                        {opt.label} Desde ${Number(opt.value).toLocaleString("es-ES")}
-                        {opt.startup > 0 ? ` + Startup: $${Number(opt.startup).toLocaleString("es-ES")}` : ""}
-                      </option>
-                    ))}
+                    {options.map(opt => {
+                      // 1) Extraer número de imágenes de opt.id
+                      const numImages = parseInt(opt.id.replace(/\D/g, ''), 10) || 0;
+                      // 2) Hacer la división (imágenes / precio anual)
+                      const division = (numImages / Number(opt.value)).toFixed(2);
+
+                      return (
+                        <option key={opt.id} value={opt.id}>
+                          {`Desde $${Number(opt.value).toLocaleString('es-ES')} $ ${division}  C/U, total $${Number(opt.value).toLocaleString('es-ES')}`}
+                        </option>
+                      );
+                    })}
+
                   </select>
 
                   {selectedOpt && (
@@ -448,11 +455,18 @@ const MercurioDigitalizacion = ({ disabledProvider }) => {
                         className="shadow-inset-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900"
                       >
                         <option value="">-- Escoge un plan --</option>
-                        {options.map(o => (
-                          <option key={o.id} value={o.id}>
-                            {o.label} Desde ${Number(o.value).toLocaleString("es-ES")}
-                          </option>
-                        ))}
+                        {options.map(opt => {
+                      // 1) Extraer número de imágenes de opt.id
+                      const numImages = parseInt(opt.id.replace(/\D/g, ''), 10) || 0;
+                      // 2) Hacer la división (imágenes / precio anual)
+                      const division = (numImages / Number(opt.value)).toFixed(2);
+
+                      return (
+                        <option key={opt.id} value={opt.id}>
+                          {`Desde $${Number(opt.value).toLocaleString('es-ES')} $ ${division}  C/U, total $${Number(opt.value).toLocaleString('es-ES')}`}
+                        </option>
+                      );
+                      })}
                       </select>
                       {formData.opcionSeleccionada && (
                         <div className="flex justify-center gap-4 mt-2 text-xs">
