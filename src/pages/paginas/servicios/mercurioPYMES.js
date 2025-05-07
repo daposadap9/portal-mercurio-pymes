@@ -464,18 +464,6 @@ const MercurioPYMES = ({ disabledProvider }) => {
                       </option>
                     ))}
                   </select>
-                  {formData.opcionSeleccionada && (
-                    <div className="flex justify-center gap-4 mt-2 text-xs">
-                      <label className="flex items-center space-x-1">
-                        <input type="radio" checked={!isMonthly} onChange={() => setIsMonthly(false)} />
-                        <span>Anual</span>
-                      </label>
-                      <label className="flex items-center space-x-1">
-                        <input type="radio" checked={isMonthly} onChange={() => setIsMonthly(true)} />
-                        <span>Mensual</span>
-                      </label>
-                    </div>
-                  )}
                 </div>
 
                 {radError && <p className="text-red-600">Error: {radError.message}</p>}
