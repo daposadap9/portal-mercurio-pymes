@@ -388,7 +388,7 @@ const MercurioCustodia = ({ disabledProvider }) => {
 
     return (
       <option key={opt.id} value={opt.id}>
-        {`${opt.label} cajas • Desde $${perBoxFmt} C/U, total: $${monthlyPriceFmt} mensual`}
+        {`${opt.label} Desde $${perBoxFmt} C/U, total: $${monthlyPriceFmt} mensual`}
       </option>
     );
   })}
@@ -521,7 +521,7 @@ const MercurioCustodia = ({ disabledProvider }) => {
 
     return (
       <option key={opt.id} value={opt.id}>
-        {`${opt.label} cajas • Desde $${perBoxFmt} C/U, total: $${monthlyPriceFmt} mensual`}
+        {`${opt.label} Desde $${perBoxFmt} C/U, total: $${monthlyPriceFmt} mensual`}
       </option>
     );
   })}
