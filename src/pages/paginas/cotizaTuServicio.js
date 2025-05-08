@@ -417,36 +417,30 @@ const CotizaTuServicio = ({ disabledProvider }) => {
       <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl p-6 md:p-8">
         {/* Tabs con eliminación */}
         <div className="flex flex-wrap justify-center border-b mb-2">
-        {servicesData.map(svc => {
-  // Detectamos si es el servicio “software”
-  const isSoftware = svc.name.toLowerCase() === "software";
-  // O, si realmente quieres basarte en svc.id:
-  // const isSoftware = svc.id === "software" || svc.id === "Software";
-
-  // Definimos el texto que vamos a mostrar
-  const displayName = isSoftware ? "Mercurio PYMES" : svc.name;
-
-  return (
-    <div key={svc.id} className="relative m-1 inline-block">
-      <button
-        onClick={() => setActiveService(svc.id)}
-        className={`px-4 py-2 focus:outline-none ${
-          activeService === svc.id
-            ? "border-b-2 border-teal-500 text-teal-500 font-bold"
-            : "text-gray-700"
-        }`}
-      >
-        {getIconForService(svc.name)}
-        {displayName}
-      </button>
-      {user && (
-        <FaTrash
-          onClick={() => handleDeleteService(svc.id)}
-          className="absolute -top-2 -right-2 text-red-500 cursor-pointer"
-        />
-      )}
-    </div>
-          );
+        {orderedSvcs.map(svc => {
+            const isSoftware = svc.name.toLowerCase().includes("software");
+            const displayName = isSoftware ? "Mercurio PYMES" : svc.name;
+            return (
+              <div key={svc.id} className="relative m-1 inline-block">
+                <button
+                  onClick={() => setActiveService(svc.id)}
+                  className={`px-4 py-2 focus:outline-none ${
+                    activeService === svc.id
+                      ? "border-b-2 border-teal-500 text-teal-500 font-bold"
+                      : "text-gray-700"
+                  }`}
+                >
+                  {getIconForService(svc.name)}
+                  {displayName}
+                </button>
+                {user && (
+                  <FaTrash
+                    onClick={() => handleDeleteService(svc.id)}
+                    className="absolute -top-2 -right-2 text-red-500 cursor-pointer"
+                  />
+                )}
+              </div>
+            );
           })}
           {user && (
             <button
