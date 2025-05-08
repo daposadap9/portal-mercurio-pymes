@@ -397,6 +397,19 @@ const CotizaTuServicio = ({ disabledProvider }) => {
       query: { previousPage: "/paginas/cotizaTuServicio" }
     });
   };
+  const orderedSvcs = [
+    // 1) Software (será Mercurio PYMES)
+    ...servicesData.filter(svc => svc.name.toLowerCase().includes('software')),
+    // 2) Custodia
+    ...servicesData.filter(svc => svc.name.toLowerCase().includes('custodia')),
+    // 3) Digitalización
+    ...servicesData.filter(svc => svc.name.toLowerCase().includes('digital')),
+    // 4) Resto
+    ...servicesData.filter(svc => {
+      const n = svc.name.toLowerCase();
+      return !n.includes('software') && !n.includes('custodia') && !n.includes('digital');
+    }),
+  ];
 
   return (
     <div className="min-h-full flex flex-col items-center px-2 md:px-0">
@@ -618,38 +631,34 @@ const CotizaTuServicio = ({ disabledProvider }) => {
           <div className="mb-4">
             <h4 className="font-semibold text-sm md:text-base">Resumen</h4>
             <ul className="text-sm md:text-base">
-  {servicesData.map(svc => {
-    const sel = localServices[svc.id];
-    if (!sel) return null;
+              {orderedSvcs.map(svc => {
+                const sel = localServices[svc.id];
+                if (!sel) return null;
 
-    const name = svc.name.toLowerCase();
-    // Detectamos si es software
-    const isSoftware = name.includes("software");
-    // Nombre a mostrar
-    const displayName = isSoftware ? "Mercurio PYMES" : svc.name;
+                const name = svc.name.toLowerCase();
+                const isSoftware = name.includes('software');
+                const displayName = isSoftware ? 'Mercurio PYMES' : svc.name;
 
-    // Construimos la descripción según tipo
-    let description;
-    if (name.includes("software")) {
-      description = `${sel.label} Desde $${Number(sel.value).toLocaleString("es-ES")} Anual`;
-    } else if (name.includes("custodia")) {
-      description = `${sel.label} Desde $${Number(sel.value).toLocaleString("es-ES")} Mensual`;
-    } else if (name.includes("digital")) {
-      const numImages = parseInt(sel.label.replace(/\D/g, ''), 10) || 1;
-      const annualPrice = Number(sel.value);
-      const perImage = Math.round(annualPrice / numImages);
-      description = `${sel.label} Desde $${perImage.toLocaleString("es-ES")} C/U`;
-    } else {
-      description = `${sel.label} Desde $${Number(sel.value).toLocaleString("es-ES")}`;
-    }
+                let description;
+                if (isSoftware) {
+                  description = `${sel.label} Desde $${Number(sel.value).toLocaleString('es-ES')} Anual`;
+                } else if (name.includes('custodia')) {
+                  description = `${sel.label} Desde $${Number(sel.value).toLocaleString('es-ES')} Mensual`;
+                } else if (name.includes('digital')) {
+                  const numImages = parseInt(sel.label.replace(/\D/g, ''), 10) || 1;
+                  const perImage = Math.round(Number(sel.value) / numImages);
+                  description = `${sel.label} Desde $${perImage.toLocaleString('es-ES')} C/U`;
+                } else {
+                  description = `${sel.label} Desde $${Number(sel.value).toLocaleString('es-ES')}`;
+                }
 
-    return (
-      <li key={svc.id}>
-        <strong>{displayName}:</strong> {description}
-      </li>
-    );
-  })}
-</ul>
+                return (
+                  <li key={svc.id}>
+                    <strong>{displayName}:</strong> {description}
+                  </li>
+                );
+              })}
+            </ul>
 
 
           </div>
