@@ -350,7 +350,7 @@ const MercurioPYMES = ({ disabledProvider }) => {
                 <option value="">-- Escoge un plan --</option>
                 {softwareOptions.map(option => (
                   <option key={option.id} value={option.id}>
-                    {option.label} Desde ${Number(option.value).toLocaleString("es-ES")}
+                    {option.label} Desde ${Number(option.value).toLocaleString("es-ES")} Anual
                   </option>
                 ))}
               </select>
@@ -460,7 +460,7 @@ const MercurioPYMES = ({ disabledProvider }) => {
                     <option value="">-- Escoge un plan --</option>
                     {softwareOptions.map(o => (
                       <option key={o.id} value={o.id}>
-                        {o.label} Desde ${Number(o.value).toLocaleString("es-ES")}
+                        {o.label} Desde ${Number(o.value).toLocaleString("es-ES")} Anual
                       </option>
                     ))}
                   </select>
