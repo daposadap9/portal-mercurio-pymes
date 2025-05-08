@@ -404,26 +404,37 @@ const CotizaTuServicio = ({ disabledProvider }) => {
       <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl p-6 md:p-8">
         {/* Tabs con eliminación */}
         <div className="flex flex-wrap justify-center border-b mb-2">
-          {servicesData.map(svc => (
-            <div key={svc.id} className="relative m-1 inline-block">
-              <button
-                onClick={() => setActiveService(svc.id)}
-                className={`px-4 py-2 focus:outline-none ${
-                  activeService === svc.id
-                    ? "border-b-2 border-teal-500 text-teal-500 font-bold"
-                    : "text-gray-700"
-                }`}
-              >
-                {getIconForService(svc.name)}{svc.name}
-              </button>
-              {user && (
-                <FaTrash
-                  onClick={() => handleDeleteService(svc.id)}
-                  className="absolute -top-2 -right-2 text-red-500 cursor-pointer"
-                />
-              )}
-            </div>
-          ))}
+        {servicesData.map(svc => {
+  // Detectamos si es el servicio “software”
+  const isSoftware = svc.name.toLowerCase() === "software";
+  // O, si realmente quieres basarte en svc.id:
+  // const isSoftware = svc.id === "software" || svc.id === "Software";
+
+  // Definimos el texto que vamos a mostrar
+  const displayName = isSoftware ? "Mercurio PYMES" : svc.name;
+
+  return (
+    <div key={svc.id} className="relative m-1 inline-block">
+      <button
+        onClick={() => setActiveService(svc.id)}
+        className={`px-4 py-2 focus:outline-none ${
+          activeService === svc.id
+            ? "border-b-2 border-teal-500 text-teal-500 font-bold"
+            : "text-gray-700"
+        }`}
+      >
+        {getIconForService(svc.name)}
+        {displayName}
+      </button>
+      {user && (
+        <FaTrash
+          onClick={() => handleDeleteService(svc.id)}
+          className="absolute -top-2 -right-2 text-red-500 cursor-pointer"
+        />
+      )}
+    </div>
+          );
+          })}
           {user && (
             <button
               onClick={handleAddService}
@@ -437,7 +448,6 @@ const CotizaTuServicio = ({ disabledProvider }) => {
         {/* Descuentos */}
         <div className="text-center text-teal-500 mb-4">
           <p><strong>Descuentos:</strong></p>
-          <p>Con 1 servicio: sin descuento.</p>
           <p>Con 2 servicios: 7% de descuento.</p>
           <p>Con 3 o más servicios: 10% de descuento.</p>
         </div>
@@ -450,16 +460,24 @@ const CotizaTuServicio = ({ disabledProvider }) => {
             <div className="p-4 border rounded-xl shadow-sm mb-6">
               {/* Título editable */}
               <div className="flex items-center justify-center mb-2">
-                <h3 className="text-lg font-bold">{svc.name}</h3>
+                <h3 className="text-lg font-bold">
+                  {svc.name.toLowerCase() === "software"
+                    ? "Mercurio PYMES"
+                    : svc.name}
+                </h3>
                 {user && (
                   <button
-                    onClick={() => setEditingTitles(prev => ({ ...prev, [svc.id]: true }))}
+                    onClick={() =>
+                      setEditingTitles(prev => ({ ...prev, [svc.id]: true }))
+                    }
                     className="ml-2"
                   >
                     <FaEdit className="text-yellow-500 text-xl" />
                   </button>
                 )}
               </div>
+
+
               {editingTitles[svc.id] && user && (
                 <div className="flex flex-col items-center space-y-2 mb-2">
                   <input
@@ -500,17 +518,40 @@ const CotizaTuServicio = ({ disabledProvider }) => {
 
               {/* Select de opciones */}
               <select
-                className="w-full border rounded px-3 py-2 mb-2 text-teal-900"
-                value={localServices[svc.id]?.id || ""}
-                onChange={e => handleServiceSelect(svc.id, e.target.value)}
-              >
-                <option value="">-- Selecciona una opción --</option>
-                {editableOptions[svc.id]?.map(o => (
-                  <option key={o.id} value={o.id}>
-                  {o.label} Desde ${o.value.toLocaleString("es-ES")}
-                </option>
-                ))}
-              </select>
+  className="w-full border rounded px-3 py-2 mb-2 text-teal-900"
+  value={localServices[svc.id]?.id || ""}
+  onChange={e => handleServiceSelect(svc.id, e.target.value)}
+>
+  <option value="">-- Selecciona una opción --</option>
+  {editableOptions[svc.id]?.map(o => {
+    const name = svc.name.toLowerCase();
+    let labelText;
+
+    if (name.includes("software")) {
+      // Software: agregar "Anual"
+      labelText = `${o.label} Desde $${o.value.toLocaleString("es-ES")} Anual`;
+    } else if (name.includes("custodia")) {
+      // Custodia: agregar "Mensual"
+      labelText = `${o.label} Desde $${o.value.toLocaleString("es-ES")} Mensual`;
+    } else if (name.includes("digital")) {
+      // Digitalización: calcular precio por imagen
+      const numImages = parseInt(o.label.replace(/\D/g, ''), 10) || 1;
+      const annualPrice = Number(o.value);
+      const perImage = Math.round(annualPrice / numImages);
+      labelText = `${o.label} Desde $${perImage.toLocaleString("es-ES")} C/U`;
+    } else {
+      // Cualquier otro servicio (fallback)
+      labelText = `${o.label} Desde $${o.value.toLocaleString("es-ES")}`;
+    }
+
+    return (
+      <option key={o.id} value={o.id}>
+        {labelText}
+      </option>
+    );
+  })}
+</select>
+
 
               {/* Detalles de la opción */}
               {localServices[svc.id] && !editMode && (
@@ -568,16 +609,6 @@ const CotizaTuServicio = ({ disabledProvider }) => {
             </div>
           );
         })()}
-
-        {/* Botón Cotizar */}
-        <div className="flex justify-center">
-          <button
-            onClick={()=> router.push("/paginas/contactanos")}
-            className="bg-teal-500 text-white px-6 py-2 rounded-full hover:bg-teal-600 transition-colors mt-2"
-          >
-            conoce el detalle
-          </button>
-        </div>
       </div>
 
       {/* Resultado Cotización */}
@@ -587,29 +618,46 @@ const CotizaTuServicio = ({ disabledProvider }) => {
           <div className="mb-4">
             <h4 className="font-semibold text-sm md:text-base">Resumen</h4>
             <ul className="text-sm md:text-base">
-              {servicesData.map(svc => {
-                const sel = localServices[svc.id];
-                if (!sel) return null;
-                return (
-                  <li key={svc.id}>
-                    <strong>{svc.name}:</strong> {sel.label} Desde $
-                    {Number(sel.value).toLocaleString("es-ES")}
-                  </li>
-                );
-              })}
-            </ul>
+  {servicesData.map(svc => {
+    const sel = localServices[svc.id];
+    if (!sel) return null;
+
+    const name = svc.name.toLowerCase();
+    // Detectamos si es software
+    const isSoftware = name.includes("software");
+    // Nombre a mostrar
+    const displayName = isSoftware ? "Mercurio PYMES" : svc.name;
+
+    // Construimos la descripción según tipo
+    let description;
+    if (name.includes("software")) {
+      description = `${sel.label} Desde $${Number(sel.value).toLocaleString("es-ES")} Anual`;
+    } else if (name.includes("custodia")) {
+      description = `${sel.label} Desde $${Number(sel.value).toLocaleString("es-ES")} Mensual`;
+    } else if (name.includes("digital")) {
+      const numImages = parseInt(sel.label.replace(/\D/g, ''), 10) || 1;
+      const annualPrice = Number(sel.value);
+      const perImage = Math.round(annualPrice / numImages);
+      description = `${sel.label} Desde $${perImage.toLocaleString("es-ES")} C/U`;
+    } else {
+      description = `${sel.label} Desde $${Number(sel.value).toLocaleString("es-ES")}`;
+    }
+
+    return (
+      <li key={svc.id}>
+        <strong>{displayName}:</strong> {description}
+      </li>
+    );
+  })}
+</ul>
+
+
           </div>
-          <p className="text-sm md:text-base mb-1">
-            <strong>Subtotal:</strong> ${Math.round(subtotal).toLocaleString("es-ES")}
-          </p>
           {globalDiscount > 0 && (
             <p className="text-sm md:text-base text-green-600 mb-1">
               <strong>Descuento:</strong> {(globalDiscount * 100).toFixed(0)}%
             </p>
           )}
-          <p className="text-2xl md:text-3xl font-bold">
-            Total: ${Math.round(globalTotal).toLocaleString("es-ES")}
-          </p>
           <div className="mt-4 gap-2 flex justify-center">
                 <button
                   type="button"
